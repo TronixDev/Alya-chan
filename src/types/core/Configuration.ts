@@ -1,5 +1,5 @@
 import type { PermissionStrings } from "seyfert";
-import type { EmojiConfig } from "#soundy/config";
+import type { EmojiConfig } from "#alya/config";
 import type { SearchPlatform } from "lavalink-client";
 
 /**
@@ -36,7 +36,7 @@ interface Colors {
 /**
  * The configuration interface.
  */
-export interface SoundyConfiguration {
+export interface AlyaConfiguration {
 	/**
 	 * The default prefix used to use text commands.
 	 * @type {string}
@@ -106,9 +106,9 @@ export interface SoundyConfiguration {
 	color: Colors;
 	/**
 	 * The webhooks configuration.
-	 * @type {SoundyWebhooks}
+	 * @type {AlyaWebhooks}
 	 */
-	webhooks: SoundyWebhooks;
+	webhooks: AlyaWebhooks;
 	/**
 	 * The emoji configuration.
 	 * @type {EmojiConfig}
@@ -176,7 +176,7 @@ interface PermissionsConfig {
 	voicePermissions: PermissionStrings;
 }
 
-interface SoundyWebhooks {
+interface AlyaWebhooks {
 	/** Discord webhook URL for node logs */
 	nodeLog: string;
 	/** Discord webhook URL for vote logs */
@@ -212,7 +212,7 @@ interface TopGG {
 /**
  * The environment variables interface.
  */
-export interface SoundyEnvironment {
+export interface AlyaEnvironment {
 	/**
 	 * The bot token.
 	 * @type {string}

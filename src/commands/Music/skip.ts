@@ -5,16 +5,16 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 @Declare({
 	name: "skip",
 	description: "Skip the current track",
 })
 @LocalesT("cmd.skip.name", "cmd.skip.description")
-@SoundyOptions({
-	category: SoundyCategory.Music,
+@AlyaOptions({
+	category: AlyaCategory.Music,
 	cooldown: 3,
 })
 @Middlewares([

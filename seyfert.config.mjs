@@ -1,6 +1,6 @@
 import { config } from "seyfert";
 import { GatewayIntentBits } from "seyfert/lib/types";
-import { Environment } from "#soundy/config";
+import { Environment } from "#alya/config";
 
 export default config.bot({
 	token: Environment.Token ?? "Huh? You need a token to run this bot!",

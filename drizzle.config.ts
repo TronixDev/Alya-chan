@@ -1,4 +1,4 @@
-import { Environment } from "#soundy/config";
+import { Environment } from "#alya/config";
 import type { Config } from "drizzle-kit";
 
 export default {

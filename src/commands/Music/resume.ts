@@ -5,16 +5,16 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 @Declare({
 	name: "resume",
 	description: "Resume the paused track",
 })
 @LocalesT("cmd.resume.name", "cmd.resume.description")
-@SoundyOptions({
-	category: SoundyCategory.Music,
+@AlyaOptions({
+	category: AlyaCategory.Music,
 	cooldown: 3,
 })
 @Middlewares(["checkVoiceChannel", "checkBotVoiceChannel", "checkPlayer"])

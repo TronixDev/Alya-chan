@@ -1,5 +1,5 @@
 import { createMiddleware } from "seyfert";
-import { getCollectionKey } from "#soundy/utils";
+import { getCollectionKey } from "#alya/utils";
 
 import { MessageFlags } from "seyfert/lib/types";
 

@@ -1,11 +1,11 @@
 import { ActionRow, Button, Embed, createMiddleware } from "seyfert";
 import { ButtonStyle } from "seyfert/lib/types";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaCategory } from "#alya/types";
 
 const PREMIUM_CATEGORIES = [
-	SoundyCategory.Music,
-	SoundyCategory.Playlists,
-	SoundyCategory.Filters,
+	AlyaCategory.Music,
+	AlyaCategory.Playlists,
+	AlyaCategory.Filters,
 ];
 
 const FREE_COMMANDS_LIMIT = 6;
@@ -25,15 +25,15 @@ export const checkPremium = createMiddleware<void>(async (middle) => {
 	const { client, command } = context;
 
 	// Robust category detection
-	let category: SoundyCategory | undefined;
+	let category: AlyaCategory | undefined;
 	if ("category" in command && typeof command.category !== "undefined") {
-		category = command.category as SoundyCategory;
+		category = command.category as AlyaCategory;
 	} else if (
 		"constructor" in command &&
-		typeof (command.constructor as unknown as { category?: SoundyCategory })
+		typeof (command.constructor as unknown as { category?: AlyaCategory })
 			.category !== "undefined"
 	) {
-		category = (command.constructor as unknown as { category?: SoundyCategory })
+		category = (command.constructor as unknown as { category?: AlyaCategory })
 			.category;
 	}
 

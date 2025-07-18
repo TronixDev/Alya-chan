@@ -7,8 +7,8 @@ import {
 	Middlewares,
 	type User,
 } from "seyfert";
-import { SoundyCategory } from "#soundy/types";
-import { SoundyOptions, TimeFormat } from "#soundy/utils";
+import { AlyaCategory } from "#alya/types";
+import { AlyaOptions, TimeFormat } from "#alya/utils";
 
 @Declare({
 	name: "replay",
@@ -17,7 +17,7 @@ import { SoundyOptions, TimeFormat } from "#soundy/utils";
 	contexts: ["Guild"],
 })
 @LocalesT("cmd.replay.name", "cmd.replay.description")
-@SoundyOptions({ cooldown: 3, category: SoundyCategory.Music })
+@AlyaOptions({ cooldown: 3, category: AlyaCategory.Music })
 @Middlewares([
 	"checkNodes",
 	"checkVoiceChannel",

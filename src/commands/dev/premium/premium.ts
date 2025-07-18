@@ -1,6 +1,6 @@
 import { AutoLoad, Command, Declare } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 @Declare({
 	name: "premium",
@@ -8,9 +8,9 @@ import { SoundyCategory } from "#soundy/types";
 	integrationTypes: ["GuildInstall"],
 	contexts: ["Guild"],
 })
-@SoundyOptions({
+@AlyaOptions({
 	cooldown: 5,
-	category: SoundyCategory.Developers,
+	category: AlyaCategory.Developers,
 	onlyDeveloper: true,
 })
 @AutoLoad()

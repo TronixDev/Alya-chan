@@ -1,6 +1,6 @@
 import { ComponentCommand, type ComponentContext, Middlewares } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { PlayerSaver } from "#soundy/utils";
+import { PlayerSaver } from "#alya/utils";
 
 @Middlewares([
 	"checkNodes",

@@ -4,7 +4,7 @@ import type {
 	APIActionRowComponent,
 	APIMessageActionRowComponent,
 } from "seyfert/lib/types";
-import { PlayerSaver } from "#soundy/utils";
+import { PlayerSaver } from "#alya/utils";
 
 @Middlewares([
 	"checkNodes",

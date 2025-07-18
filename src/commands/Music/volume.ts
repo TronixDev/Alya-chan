@@ -7,8 +7,8 @@ import {
 	Options,
 	createIntegerOption,
 } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 const option = {
 	volume: createIntegerOption({
@@ -31,7 +31,7 @@ const option = {
 	aliases: ["v", "vol"],
 })
 @LocalesT("cmd.volume.name", "cmd.volume.description")
-@SoundyOptions({ cooldown: 5, category: SoundyCategory.Music })
+@AlyaOptions({ cooldown: 5, category: AlyaCategory.Music })
 @Options(option)
 @Middlewares([
 	"checkNodes",

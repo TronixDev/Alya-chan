@@ -9,8 +9,8 @@ import {
 	StringSelectOption,
 } from "seyfert";
 import { EmbedColors } from "seyfert/lib/common";
-import { SoundyOptions, TimeFormat } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions, TimeFormat } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 @Declare({
 	name: "nodes",
@@ -19,7 +19,7 @@ import { SoundyCategory } from "#soundy/types";
 	contexts: ["Guild"],
 })
 @LocalesT("cmd.nodes.name", "cmd.nodes.description")
-@SoundyOptions({ cooldown: 5, category: SoundyCategory.Informations })
+@AlyaOptions({ cooldown: 5, category: AlyaCategory.Informations })
 export default class NodesCommand extends Command {
 	async run(ctx: CommandContext) {
 		const { client } = ctx;

@@ -9,7 +9,7 @@ import {
 	rgb24,
 	yellow,
 } from "seyfert/lib/common";
-import { Configuration } from "#soundy/config";
+import { Configuration } from "#alya/config";
 
 type ColorFunction = (text: string) => string;
 
@@ -86,35 +86,35 @@ ${logo}
 function getRandomText(): string {
 	const texts = [
 		"Let the music play~",
-		"Soundy's melody magic!",
-		"Rhythm and beats with Soundy!",
+		"Alya's melody magic!",
+		"Rhythm and beats with Alya!",
 		"Your musical companion!",
 		"Dropping beats with style!",
-		"Soundy's harmony helper!",
+		"Alya's harmony helper!",
 		"Music to your ears!",
-		"Soundy's sound sanctuary!",
-		"Vibing with Soundy!",
+		"Alya's sound sanctuary!",
+		"Vibing with Alya!",
 		"Your DJ assistant!",
-		"Soundy's musical magic!",
+		"Alya's musical magic!",
 		"Bringing the beats!",
-		"Soundy's sound waves!",
+		"Alya's sound waves!",
 		"Music made easy!",
-		"Harmony with Soundy!",
+		"Harmony with Alya!",
 		"Beats from the heart!",
-		"Soundy's rhythm realm!",
-		"Musical help, Soundy way!",
+		"Alya's rhythm realm!",
+		"Musical help, Alya way!",
 		"Express your sound!",
-		"Soundy's musical aid!",
+		"Alya's musical aid!",
 		"Melodies for everyone!",
-		"Soundy's smooth tunes!",
-		"Musical support, Soundy style!",
+		"Alya's smooth tunes!",
+		"Musical support, Alya style!",
 		"Discord's best DJ!",
-		"Musical aid from Soundy!",
+		"Musical aid from Alya!",
 		"Rhythm express!",
-		"Soundy's musical care!",
+		"Alya's musical care!",
 		"Support with a beat!",
-		"Soundy's playlist power!",
-		"Musical help, Soundy touch!",
+		"Alya's playlist power!",
+		"Musical help, Alya touch!",
 		"Help from the beats!",
 	];
 
@@ -129,7 +129,7 @@ function getRandomText(): string {
  * @param args The log arguments.
  * @returns
  */
-export function SoundyLogger(
+export function AlyaLogger(
 	_this: Logger,
 	level: LogLevels,
 	args: unknown[],
@@ -156,20 +156,20 @@ export function SoundyLogger(
 		[LogLevels.Fatal]: red,
 	};
 
-	const text = `${gray(`${timeFormat}`)} ${gray(formatMemoryUsage(memory.rss))} ${gray("[Soundy]")} ${emojis[level]} [${colors[
+	const text = `${gray(`${timeFormat}`)} ${gray(formatMemoryUsage(memory.rss))} ${gray("[Alya]")} ${emojis[level]} [${colors[
 		level
 	](label)}] ${addPadding(label)}`;
 
 	return [text, ...args];
 }
 
-Logger.customize(SoundyLogger);
+Logger.customize(AlyaLogger);
 
 /**
  * The logger instance.
  */
 export const logger = new Logger({
-	name: "[Soundy]",
+	name: "[Alya]",
 	saveOnFile: false,
 	active: true,
 });

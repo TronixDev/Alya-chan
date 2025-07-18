@@ -1,4 +1,4 @@
-export enum SoundyCategory {
+export enum AlyaCategory {
 	Unknown = 0,
 	Configurations = 1,
 	Informations = 2,

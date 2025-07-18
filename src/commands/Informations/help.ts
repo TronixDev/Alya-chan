@@ -12,8 +12,8 @@ import {
 	createStringOption,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { SoundyOptions, EmbedPaginator, SoundyStringMenu } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions, EmbedPaginator, AlyaStringMenu } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 const option = {
 	command: createStringOption({
@@ -34,7 +34,7 @@ const option = {
 })
 @LocalesT("cmd.help.name", "cmd.help.description")
 @Options(option)
-@SoundyOptions({ category: SoundyCategory.Informations, cooldown: 5 })
+@AlyaOptions({ category: AlyaCategory.Informations, cooldown: 5 })
 export default class HelpCommand extends Command {
 	async run(ctx: CommandContext<typeof option>) {
 		const { client, options } = ctx;
@@ -46,27 +46,26 @@ export default class HelpCommand extends Command {
 			.map((command) => Number(command.category))
 			.filter(
 				(item, index, commands) =>
-					commands.indexOf(item) === index &&
-					item !== SoundyCategory.Developers,
+					commands.indexOf(item) === index && item !== AlyaCategory.Developers,
 			);
 
 		const getCategoryName = (category: number) => {
-			return SoundyCategory[category as SoundyCategory] ?? cmd.help.run.unknown;
+			return AlyaCategory[category as AlyaCategory] ?? cmd.help.run.unknown;
 		};
 
 		const getCategoryEmoji = (category: number): string => {
 			switch (category) {
-				case SoundyCategory.Configurations:
+				case AlyaCategory.Configurations:
 					return client.config.emoji.pencil;
-				case SoundyCategory.Informations:
+				case AlyaCategory.Informations:
 					return client.config.emoji.info;
-				case SoundyCategory.Music:
+				case AlyaCategory.Music:
 					return client.config.emoji.music;
-				case SoundyCategory.Filters:
+				case AlyaCategory.Filters:
 					return client.config.emoji.list;
-				case SoundyCategory.Playlists:
+				case AlyaCategory.Playlists:
 					return client.config.emoji.folder;
-				case SoundyCategory.Reports:
+				case AlyaCategory.Reports:
 					return client.config.emoji.warn;
 				default:
 					return client.config.emoji.question;
@@ -75,8 +74,8 @@ export default class HelpCommand extends Command {
 
 		if (!options.command) {
 			const paginator = new EmbedPaginator(ctx).setDisabled(true);
-			const row = new ActionRow<SoundyStringMenu>().addComponents(
-				new SoundyStringMenu()
+			const row = new ActionRow<AlyaStringMenu>().addComponents(
+				new AlyaStringMenu()
 					.setPlaceholder(cmd.help.run.select)
 					.setCustomId("guild-helpMenu")
 					.setOptions(
@@ -178,7 +177,7 @@ export default class HelpCommand extends Command {
 			.setColor(client.config.color.primary)
 			.setTitle(
 				cmd.help.run.categoryTitle({
-					category: getCategoryName(command.category ?? SoundyCategory.Unknown),
+					category: getCategoryName(command.category ?? AlyaCategory.Unknown),
 				}),
 			)
 			.setDescription(parseCommand(command));

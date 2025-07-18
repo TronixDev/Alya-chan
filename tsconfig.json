@@ -42,13 +42,13 @@
     "baseUrl": ".",
     "rootDir": "./src",
     "paths": {
-      "#soundy/client": ["./src/client/Soundy.ts"],
-      "#soundy/config": ["./src/config/config.ts"],
-      "#soundy/types": ["./src/types/index.ts"],
-      "#soundy/utils": ["./src/utils/index.ts"],
-      "#soundy/api": ["./src/api/server.ts"],
-      "#soundy/db": ["./src/db/index.ts"],
-      "#soundy/middlewares": ["./src/middlewares/index.ts"]
+      "#alya/client": ["./src/client/Alya.ts"],
+      "#alya/config": ["./src/config/config.ts"],
+      "#alya/types": ["./src/types/index.ts"],
+      "#alya/utils": ["./src/utils/index.ts"],
+      "#alya/api": ["./src/api/server.ts"],
+      "#alya/db": ["./src/db/index.ts"],
+      "#alya/middlewares": ["./src/middlewares/index.ts"]
     }
   },
   

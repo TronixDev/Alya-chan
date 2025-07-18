@@ -1,14 +1,14 @@
 import "@dotenvx/dotenvx/config";
-import Soundy from "#soundy/client";
+import Alya from "#alya/client";
 import { Logger } from "seyfert";
-import { SoundyLogger, validateEnv } from "#soundy/utils";
-import { APIServer } from "#soundy/api";
+import { AlyaLogger, validateEnv } from "#alya/utils";
+import { APIServer } from "#alya/api";
 
-Logger.customize(SoundyLogger);
+Logger.customize(AlyaLogger);
 
 validateEnv();
 
-const client = new Soundy();
+const client = new Alya();
 (async () => {
 	await APIServer(client);
 })();

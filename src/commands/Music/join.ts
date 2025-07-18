@@ -5,15 +5,15 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 @Declare({
 	name: "join",
 	description: "Make the bot join your voice channel",
 })
-@SoundyOptions({
-	category: SoundyCategory.Music,
+@AlyaOptions({
+	category: AlyaCategory.Music,
 	cooldown: 3,
 })
 @LocalesT("cmd.join.name", "cmd.join.description")

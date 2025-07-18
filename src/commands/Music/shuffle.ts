@@ -5,8 +5,8 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 @Declare({
 	name: "shuffle",
@@ -16,9 +16,9 @@ import { SoundyCategory } from "#soundy/types";
 	aliases: ["shu", "sh", "shuf"],
 })
 @LocalesT("cmd.shuffle.name", "cmd.shuffle.description")
-@SoundyOptions({
+@AlyaOptions({
 	cooldown: 5,
-	category: SoundyCategory.Music,
+	category: AlyaCategory.Music,
 })
 @Middlewares([
 	"checkNodes",

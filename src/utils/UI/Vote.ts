@@ -2,7 +2,7 @@ import { Embed, type User, type UsingClient } from "seyfert";
 
 /**
  * Sends a vote notification through Discord webhook
- * @param client - The Soundy client instance
+ * @param client - The Alya client instance
  * @param voter - The user who voted
  * @returns Promise<Response> - The webhook response
  */
@@ -29,11 +29,11 @@ export async function sendVoteWebhook(
 		.setThumbnail(avatarUrl)
 		.setDescription(
 			[
-				`${client.config.emoji.user} **${voter.username}** \`(${voter.id})\` just rocked the vote for Soundy on [Top.gg](${client.config.info.voteLink})!\n`,
+				`${client.config.emoji.user} **${voter.username}** \`(${voter.id})\` just rocked the vote for Alya on [Top.gg](${client.config.info.voteLink})!\n`,
 				"You're awesome for choosing us! May your day be filled with fantastic tunes and good vibes. Let's keep the music playing!",
 			].join("\n"),
 		)
-		.setFooter({ text: "Thanks for choosing Soundy!" })
+		.setFooter({ text: "Thanks for choosing Alya!" })
 		.setTimestamp();
 
 	return await fetch(client.config.webhooks.voteLog, {

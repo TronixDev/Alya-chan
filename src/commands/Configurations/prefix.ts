@@ -6,8 +6,8 @@ import {
 	Options,
 	createStringOption,
 } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 const option = {
 	prefix: createStringOption({
@@ -29,7 +29,7 @@ const option = {
 	defaultMemberPermissions: ["ManageGuild"],
 })
 @LocalesT("cmd.prefix.name", "cmd.prefix.description")
-@SoundyOptions({ cooldown: 10, category: SoundyCategory.Configurations })
+@AlyaOptions({ cooldown: 10, category: AlyaCategory.Configurations })
 @Options(option)
 export default class PrefixCommand extends Command {
 	public override async run(ctx: CommandContext<typeof option>) {

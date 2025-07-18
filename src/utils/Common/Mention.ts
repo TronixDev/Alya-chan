@@ -42,7 +42,7 @@ export async function handleMention(
 		const response = {
 			embed: new Embed()
 				.setColor(0x2ecc71) // success color
-				.setTitle(`${client.config.emoji.music} Welcome to Soundy!`)
+				.setTitle(`${client.config.emoji.music} Welcome to Alya!`)
 				.setDescription(
 					[
 						`${client.config.emoji.slash} Use \`${prefixes[0]}help\` or \`/help\` to discover all my amazing commands`,

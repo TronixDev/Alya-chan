@@ -8,7 +8,7 @@ import type {
 	QueueTrack,
 	NowPlayingMessage,
 	LyricsData,
-} from "#soundy/types";
+} from "#alya/types";
 import {
 	PlayerSaverUtils,
 	DatabaseOperations,

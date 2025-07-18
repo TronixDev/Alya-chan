@@ -1,6 +1,6 @@
-import { PlayerSaver } from "#soundy/utils";
-import { LavalinkEventTypes } from "#soundy/types";
-import { createLavalinkEvent, createNullEmbed } from "#soundy/utils";
+import { PlayerSaver } from "#alya/utils";
+import { LavalinkEventTypes } from "#alya/types";
+import { createLavalinkEvent } from "#alya/utils";
 
 export default createLavalinkEvent({
 	name: "queueEnd",
@@ -10,17 +10,6 @@ export default createLavalinkEvent({
 
 		const voice = await client.channels.fetch(player.voiceChannelId);
 		if (!voice.is(["GuildStageVoice", "GuildVoice"])) return;
-
-		// Reset voice channel status if possible
-		if (voice.is(["GuildVoice"])) {
-			// Check if voice status is enabled for this guild
-			const voiceStatusEnabled = await client.database.getVoiceStatus(
-				player.guildId,
-			);
-			if (voiceStatusEnabled) {
-				await voice.setVoiceStatus(null).catch(() => null);
-			}
-		}
 
 		const playerSaver = new PlayerSaver(client.logger);
 		let messageId = player.get("messageId");
@@ -47,41 +36,9 @@ export default createLavalinkEvent({
 			}
 		}
 
-		const setupData = await client.database.getSetup(player.guildId);
-		if (setupData?.messageId && setupData.channelId) {
-			try {
-				const setupMessage = await client.messages.fetch(
-					setupData.messageId,
-					setupData.channelId,
-				);
-				if (setupMessage) {
-					await client.messages.edit(
-						setupMessage.id,
-						setupData.channelId,
-						await createNullEmbed(client, player.guildId),
-					);
-				}
-			} catch (error) {
-				client.logger.debug(`[Music] Failed to update setup message: ${error}`);
-			}
-		}
-
-		if (
-			setupData?.messageId &&
-			setupData?.channelId &&
-			messageId === setupData.messageId &&
-			channelId === setupData.channelId
-		) {
-			// Ini setup message, jangan dihapus
-		} else if (messageId && channelId) {
-			try {
-				await client.messages.delete(messageId as string, channelId);
-				player.set("messageId", undefined);
-				await playerSaver.clearLastNowPlayingMessage(player.guildId);
-			} catch {
-				// Silently fail if message deletion fails
-			}
-		}
+		await client.messages.delete(messageId as string, channelId);
+		player.set("messageId", undefined);
+		await playerSaver.clearLastNowPlayingMessage(player.guildId);
 
 		const playerData = player.toJSON();
 		const safeData = playerSaver.extractSafePlayerData(
@@ -126,16 +83,5 @@ export default createLavalinkEvent({
 		player.set("lyricsRequester", undefined);
 
 		await playerSaver.clearLyricsData(player.guildId);
-
-		const mode247 = await client.database.get247Mode(player.guildId);
-		if (!mode247?.enabled) {
-			const disconnectTimeout = setTimeout(async () => {
-				const currentPlayer = client.manager.getPlayer(player.guildId);
-				if (currentPlayer && !currentPlayer.queue.current) {
-					await currentPlayer.destroy();
-				}
-			}, 60000); // 1 menit
-			player.set("disconnectTimeout", disconnectTimeout);
-		}
 	},
 });

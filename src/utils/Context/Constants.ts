@@ -8,22 +8,22 @@ import {
 const packageJSON = JSON.parse(readFileSync("./package.json", "utf-8"));
 
 /**
- * Soundy version.
+ * Alya version.
  */
 export const BOT_VERSION: string = packageJSON.version;
 
 /**
- * Check if Soundy is running in DEBUG MODE.
+ * Check if Alya is running in DEBUG MODE.
  */
 export const DEBUG_MODE: boolean = process.argv.includes("--debug");
 
 /**
- * Check if Soundy is running in DEV MODE.
+ * Check if Alya is running in DEV MODE.
  */
 export const DEV_MODE: boolean = process.argv.includes("--dev");
 
 /**
- * Soundy think messages.
+ * Alya think messages.
  */
 export const THINK_MESSAGES: string[] = [
 	"is contemplating nature...",
@@ -45,7 +45,7 @@ export const THINK_MESSAGES: string[] = [
 ];
 
 /**
- * Soundy eval secrets messages.
+ * Alya eval secrets messages.
  */
 export const SECRETS_MESSAGES: string[] = [
 	"That's... restricted information...",
@@ -62,7 +62,7 @@ export const SECRETS_MESSAGES: string[] = [
 ];
 
 /**
- * Soundy presence activities.
+ * Alya presence activities.
  */
 export const BOT_ACTIVITIES: GatewayActivityUpdateData[] = [
 	{ name: "the Space. 🌠", type: ActivityType.Listening },

@@ -4,7 +4,7 @@ import type {
 	TrackExceptionEvent,
 } from "lavalink-client";
 import { Embed, type UsingClient } from "seyfert";
-import { formatTrackInfo } from "#soundy/utils";
+import { formatTrackInfo } from "#alya/utils";
 
 /**
  * Send node log to webhook
@@ -131,7 +131,7 @@ export async function sendNodeLog(
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
-			username: "Soundy Node Logger",
+			username: "Alya Node Logger",
 			avatar_url: client.me.avatarURL(),
 			embeds: [embed.toJSON()],
 		}),

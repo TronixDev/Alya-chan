@@ -1,6 +1,6 @@
 import { Embed } from "seyfert";
-import type Soundy from "#soundy/client";
-import { Configuration } from "#soundy/config";
+import type Alya from "#alya/client";
+import { Configuration } from "#alya/config";
 
 /**
  * Send error log to webhook
@@ -10,7 +10,7 @@ import { Configuration } from "#soundy/config";
  * @returns Promise<Response> - The webhook response
  */
 export async function sendErrorLog(
-	client: Soundy,
+	client: Alya,
 	error: Error,
 	context?: string,
 ): Promise<Response> {
@@ -50,7 +50,7 @@ export async function sendErrorLog(
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
-			username: "Soundy Error Logger",
+			username: "Alya Error Logger",
 			avatar_url: client.me.avatarURL(),
 			embeds: [embed.toJSON()],
 		}),

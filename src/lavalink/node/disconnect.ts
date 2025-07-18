@@ -1,5 +1,5 @@
-import { LavalinkEventTypes } from "#soundy/types";
-import { createLavalinkEvent, sendNodeLog } from "#soundy/utils";
+import { LavalinkEventTypes } from "#alya/types";
+import { createLavalinkEvent, sendNodeLog } from "#alya/utils";
 
 export default createLavalinkEvent({
 	name: "disconnect",

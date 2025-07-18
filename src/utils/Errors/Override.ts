@@ -4,7 +4,7 @@ import { EmbedColors } from "seyfert/lib/common";
 
 /**
  *
- * The Soundy's default error handler.
+ * The Alya's default error handler.
  * @param ctx The context of the command.
  * @param error The error that was thrown.
  * @returns

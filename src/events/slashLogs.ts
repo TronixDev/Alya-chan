@@ -1,5 +1,5 @@
 import { type ChatInputCommandInteraction, createEvent } from "seyfert";
-import { sendCommandLog } from "#soundy/utils";
+import { sendCommandLog } from "#alya/utils";
 
 export default createEvent({
 	data: {
@@ -11,7 +11,7 @@ export default createEvent({
 
 		try {
 			const guild = guildId ? await client.guilds.fetch(guildId) : null;
-			const member = await commandInteraction.member;
+			const member = commandInteraction.member;
 
 			await sendCommandLog(client, {
 				guildName: guild?.name,

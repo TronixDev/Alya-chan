@@ -5,15 +5,15 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 @Declare({
 	name: "grab",
 	description: "Grab the currently playing song and send it to your DMs",
 })
-@SoundyOptions({
-	category: SoundyCategory.Music,
+@AlyaOptions({
+	category: AlyaCategory.Music,
 	cooldown: 3,
 })
 @LocalesT("cmd.grab.name", "cmd.grab.description")

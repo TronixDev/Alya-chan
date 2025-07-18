@@ -1,4 +1,4 @@
-import type { SoundyCategory } from "#soundy/types";
+import type { AlyaCategory } from "#alya/types";
 export type NonCommandOptions = Omit<Options, "category">;
 
 export interface Options {
@@ -24,9 +24,9 @@ export interface Options {
 	/**
 	 *
 	 * The command category.
-	 * @default SoundyCategory.Unknown
+	 * @default AlyaCategory.Unknown
 	 */
-	category?: SoundyCategory;
+	category?: AlyaCategory;
 	/**
 	 *
 	 * The command premium.

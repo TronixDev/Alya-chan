@@ -4,9 +4,9 @@ import {
 	type SearchResult,
 } from "lavalink-client";
 import { Logger } from "seyfert";
-import { nodes } from "#soundy/config";
-import { LavalinkHandler, PlayerSaver, autoPlayFunction } from "#soundy/utils";
-import type Soundy from "#soundy/client";
+import { nodes } from "#alya/config";
+import { LavalinkHandler, PlayerSaver, autoPlayFunction } from "#alya/utils";
+import type Alya from "#alya/client";
 
 const logger = new Logger({
 	name: "[Manager]",
@@ -15,7 +15,7 @@ const logger = new Logger({
 /**
  * Main music manager class.
  */
-export class SoundyManager extends LavalinkManager {
+export class AlyaManager extends LavalinkManager {
 	/**
 	 * Lavalink handler instance.
 	 * This handles all Lavalink events and interactions.
@@ -30,7 +30,7 @@ export class SoundyManager extends LavalinkManager {
 
 	private playerSaver: PlayerSaver;
 
-	constructor(client: Soundy) {
+	constructor(client: Alya) {
 		super({
 			nodes,
 			sendToShard: (guildId, payload) =>

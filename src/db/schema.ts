@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 // =========================================
 // Guild Settings & Configuration
@@ -12,90 +12,11 @@ export const guild = sqliteTable("guild", {
 	locale: text("locale"),
 	// Prefix settings
 	prefix: text("prefix"),
-	// Player settings
-	defaultVolume: integer("default_volume"),
-	// 24/7 mode settings
-	enabled247: integer("enabled_247", { mode: "boolean" })
-		.notNull()
-		.default(false),
-	channel247Id: text("channel_247_id"),
-	text247Id: text("text_247_id"),
 	// Setup settings
 	setupChannelId: text("setup_channel_id"),
-	setupTextId: text("setup_text_id"),
-	// Voice status
-	voiceStatus: integer("voice_status", { mode: "boolean" })
-		.notNull()
-		.default(true),
 	// Timestamps
 	createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
-});
-
-// =========================================
-// Liked Songs Table
-// =========================================
-
-export const likedSongs = sqliteTable("liked_songs", {
-	id: text("id").primaryKey(),
-	userId: text("user_id").notNull(),
-	trackId: text("track_id").notNull(),
-	title: text("title").notNull(),
-	author: text("author").notNull(),
-	uri: text("uri").notNull(),
-	artwork: text("artwork"),
-	length: integer("length"),
-	isStream: integer("is_stream", { mode: "boolean" }).default(false),
-	likedAt: text("liked_at").default(sql`CURRENT_TIMESTAMP`),
-});
-
-// =========================================
-// Playlist Related Tables
-// =========================================
-
-export const playlist = sqliteTable("playlist", {
-	id: text("id").primaryKey(),
-	userId: text("user_id").notNull(),
-	name: text("name").notNull(),
-	createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-});
-
-export const playlistTrack = sqliteTable("playlist_track", {
-	id: text("id").primaryKey(),
-	url: text("url").notNull(),
-	playlistId: text("playlist_id")
-		.notNull()
-		.references(() => playlist.id, { onDelete: "cascade" }),
-	info: text("info"), // menyimpan info lagu dalam bentuk JSON
-});
-
-// =========================================
-// Statistics Tables
-// =========================================
-
-export const trackStats = sqliteTable("track_stats", {
-	id: text("id").primaryKey(),
-	trackId: text("track_id").notNull(),
-	title: text("title").notNull(),
-	author: text("author").notNull(),
-	uri: text("uri").notNull(),
-	artwork: text("artwork"),
-	length: integer("length"),
-	isStream: integer("is_stream", { mode: "boolean" }).default(false),
-	userId: text("user_id").notNull(), // Tambahkan userId untuk recently played
-	playCount: integer("play_count").notNull().default(1),
-	guildId: text("guild_id").notNull(),
-	lastPlayed: text("last_played").default(sql`CURRENT_TIMESTAMP`),
-	createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-});
-
-export const userStats = sqliteTable("user_stats", {
-	id: text("id").primaryKey(),
-	userId: text("user_id").notNull(),
-	guildId: text("guild_id").notNull(),
-	playCount: integer("play_count").notNull().default(1),
-	lastPlayed: text("last_played").default(sql`CURRENT_TIMESTAMP`),
-	createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // =========================================

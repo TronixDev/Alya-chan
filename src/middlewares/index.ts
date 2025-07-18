@@ -13,7 +13,7 @@ import {
 	checkVoicePermissions,
 } from "./commands/voice";
 
-export const SoundyMiddlewares = {
+export const AlyaMiddlewares = {
 	// Main middlewares
 	checkCooldown,
 	checkVerifications,

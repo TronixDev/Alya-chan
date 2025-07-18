@@ -3,9 +3,8 @@ import {
 	createLavalinkEvent,
 	PlayerSaver,
 	createNowPlayingEmbed,
-} from "#soundy/utils";
-import { LavalinkEventTypes } from "#soundy/types";
-import type { User } from "seyfert";
+} from "#alya/utils";
+import { LavalinkEventTypes } from "#alya/types";
 
 export default createLavalinkEvent({
 	name: "trackStart",
@@ -47,78 +46,12 @@ export default createLavalinkEvent({
 				player.set("disconnectTimeout", undefined);
 			}
 
-			await client.database.updateTrackStats(
-				track.info.uri,
-				track.info.title,
-				track.info.author,
-				player.guildId,
-				(track.requester as User).id,
-				track.info.uri,
-				track.info.artworkUrl ?? undefined,
-				track.info.duration,
-				track.info.isStream,
-			);
-			await client.database.updateUserStats(
-				(track.requester as User).id,
-				player.guildId,
-			);
-
 			const voice = await client.channels.fetch(player.voiceChannelId);
 			if (!voice.is(["GuildStageVoice", "GuildVoice"])) return;
 
-			// Update voice channel status if possible
-			if (voice.is(["GuildVoice"])) {
-				// Check if voice status is enabled for this guild
-				const voiceStatusEnabled = await client.database.getVoiceStatus(
-					player.guildId,
-				);
-				if (voiceStatusEnabled) {
-					await voice
-						.setVoiceStatus(
-							`♪ **${track.info.title}** by **${track.info.author}**`,
-						)
-						.catch(() => null);
-				}
-			}
-
 			// Buat embed now playing
 			const nowPlaying = await createNowPlayingEmbed(client, player, track);
-			// Check for setup message
-			const setupData = await client.database.getSetup(player.guildId);
-			if (setupData?.messageId) {
-				try {
-					const setupMessage = await client.messages.fetch(
-						setupData.messageId,
-						setupData.channelId,
-					);
-					if (setupMessage) {
-						// Update existing setup message
-						await client.messages.edit(
-							setupMessage.id,
-							setupData.channelId,
-							nowPlaying,
-						);
-						// Simpan messageId dan channelId ke database
-						const playerSaver = new PlayerSaver(client.logger);
-						// Save player state using PlayerSaver
-						const playerData = player.toJSON();
-						const safeData = playerSaver.extractSafePlayerData(
-							playerData as unknown as Record<string, unknown>,
-						);
-						safeData.messageId = setupData.messageId;
-						await playerSaver.savePlayer(player.guildId, safeData);
-						client.logger.info(
-							`[Music] Saved player for guild ${player.guildId}`,
-						);
-						return;
-					}
-				} catch (error) {
-					// If setup message not found or can't be edited, continue to regular message
-					client.logger.debug(
-						`[Music] Failed to update setup message: ${error}`,
-					);
-				}
-			}
+
 			const sentMessage = await client.messages.write(
 				player.textChannelId,
 				nowPlaying,

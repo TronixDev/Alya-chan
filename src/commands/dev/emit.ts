@@ -6,7 +6,7 @@ import {
 	Options,
 	createStringOption,
 } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
+import { AlyaOptions } from "#alya/utils";
 
 import { MessageFlags } from "seyfert/lib/types";
 
@@ -34,7 +34,7 @@ const option = {
 	integrationTypes: ["GuildInstall"],
 	contexts: ["Guild"],
 })
-@SoundyOptions({ onlyDeveloper: true })
+@AlyaOptions({ onlyDeveloper: true })
 @Options(option)
 export default class ReloadCommand extends Command {
 	async run(ctx: CommandContext<typeof option>): Promise<void> {

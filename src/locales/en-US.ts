@@ -44,8 +44,7 @@ export default {
 					run: {
 						exists: "A music request channel already exists",
 						failed: "Failed to create music setup messages",
-						topic:
-							"Soundy Music Player - Type a song name or URL to play music.",
+						topic: "Alya Music Player - Type a song name or URL to play music.",
 						success: ({ channel }: { channel: string }) =>
 							`Successfully created music setup in ${channel}`,
 					},
@@ -179,9 +178,9 @@ export default {
 		// About Commands
 		about: {
 			name: "about",
-			description: "Show information about Soundy",
+			description: "Show information about Alya",
 			run: {
-				title: "About Soundy",
+				title: "About Alya",
 				footer: ({
 					guildCount,
 					userCount,
@@ -212,9 +211,9 @@ export default {
 				},
 				contributors: {
 					button: "Contributors",
-					title: "Soundy Contributors",
+					title: "Alya Contributors",
 					1: "Special Thanks",
-					2: ({ author }: { author: string }) => `${author}: Creator of Soundy`,
+					2: ({ author }: { author: string }) => `${author}: Creator of Alya`,
 					3: ({ user }: { user: string }) =>
 						`${user}: Bug Fixer, and more contributions`,
 					4: ({ user }: { user: string }) => `${user}: Part of the source code`,
@@ -228,7 +227,7 @@ export default {
 				},
 				packages: {
 					button: "Packages",
-					title: "Soundy Packages & Runtime",
+					title: "Alya Packages & Runtime",
 					1: "Core Libraries",
 				},
 			},
@@ -306,7 +305,7 @@ export default {
 				},
 			},
 			run: {
-				title: "Soundy Help Menu",
+				title: "Alya Help Menu",
 				description: {
 					1: ({ user, bot }: { user: string; bot: string }) =>
 						`**Haii! ${user} I'm ${bot} your musical companion!**`,
@@ -353,7 +352,7 @@ export default {
 			name: "ping",
 			description: "Check the bot's latency and API response time",
 			run: {
-				title: "Soundy Latency Information",
+				title: "Alya Latency Information",
 				description: {
 					1: "Websocket Latency",
 					2: "Client Latency",
@@ -800,7 +799,7 @@ export default {
 	// Events
 	event: {
 		setup: {
-			title: "Soundy Music Player",
+			title: "Alya Music Player",
 			description:
 				"Join a voice channel and queue songs by name or url in this channel.",
 			no_voice: "You must be in a voice channel to use this!",
@@ -849,7 +848,7 @@ export default {
 			limit_reached: {
 				title: "You've used all your free commands!",
 				description: ({ time }: { time: number }) =>
-					`Please vote for Soundy on top.gg to get ${time} hours of unlimited access.`,
+					`Please vote for Alya on top.gg to get ${time} hours of unlimited access.`,
 			},
 			vote_now: "Vote Now",
 		},
@@ -877,7 +876,7 @@ export default {
 		},
 		// Mention
 		mention: {
-			title: "Welcome to Soundy!",
+			title: "Welcome to Alya!",
 			description: {
 				1: ({ prefix }: { prefix: string }) =>
 					`Use \`${prefix}help\` or \`/help\` to discover all my amazing commands`,

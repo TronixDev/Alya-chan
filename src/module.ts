@@ -1,9 +1,9 @@
-import type Soundy from "./client/Soundy";
+import type Alya from "#alya/client";
 import type { LavalinkManager } from "lavalink-client";
 import type { ParseClient, ParseLocales, ParseMiddlewares } from "seyfert";
-import type { SoundyMiddlewares } from "#soundy/middlewares";
-import type { SoundyContext } from "#soundy/utils";
-import type { Options } from "#soundy/types";
+import type { AlyaMiddlewares } from "#alya/middlewares";
+import type { AlyaContext } from "#alya/utils";
+import type { Options } from "#alya/types";
 import type English from "./locales/en-US";
 
 declare module "seyfert" {
@@ -14,11 +14,11 @@ declare module "seyfert" {
 	interface ContextMenuCommand extends Options {}
 	interface EntryPointCommand extends Options {}
 
-	interface UsingClient extends ParseClient<Soundy> {}
-	interface ExtendContext extends ReturnType<typeof SoundyContext> {}
+	interface UsingClient extends ParseClient<Alya> {}
+	interface ExtendContext extends ReturnType<typeof AlyaContext> {}
 	interface RegisteredMiddlewares
-		extends ParseMiddlewares<typeof SoundyMiddlewares> {}
-	interface GlobalMetadata extends ParseMiddlewares<typeof SoundyMiddlewares> {}
+		extends ParseMiddlewares<typeof AlyaMiddlewares> {}
+	interface GlobalMetadata extends ParseMiddlewares<typeof AlyaMiddlewares> {}
 	interface DefaultLocale extends ParseLocales<typeof English> {}
 
 	interface Client {

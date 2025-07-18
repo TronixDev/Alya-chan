@@ -1,4 +1,4 @@
-export enum SoundyKeys {
+export enum AlyaKeys {
 	Player = "guild:player",
 	Locale = "guild:locale",
 	Prefix = "guild:prefix",

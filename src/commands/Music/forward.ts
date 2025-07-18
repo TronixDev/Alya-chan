@@ -5,15 +5,15 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 @Declare({
 	name: "forward",
 	description: "Forward the current track by 10 seconds",
 })
-@SoundyOptions({
-	category: SoundyCategory.Music,
+@AlyaOptions({
+	category: AlyaCategory.Music,
 	cooldown: 3,
 })
 @LocalesT("cmd.forward.name", "cmd.forward.description")

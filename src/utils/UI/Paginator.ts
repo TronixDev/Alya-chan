@@ -31,12 +31,12 @@ import {
 	InvalidEmbedsLength,
 	InvalidMessage,
 	InvalidPageNumber,
-} from "#soundy/utils";
+} from "#alya/utils";
 
 /**
- * Soundy button class.
+ * Alya button class.
  */
-export class SoundyButton extends Button {
+export class AlyaButton extends Button {
 	/**
 	 * The function to run when the button is clicked.
 	 */
@@ -56,16 +56,16 @@ export class SoundyButton extends Button {
 	 * @param run The function to run when the button is clicked.
 	 * @returns
 	 */
-	public setRun(run: SoundyButton["run"]): this {
+	public setRun(run: AlyaButton["run"]): this {
 		this.run = run;
 		return this;
 	}
 }
 
 /**
- * Soundy string menu class.
+ * Alya string menu class.
  */
-export class SoundyStringMenu extends StringSelectMenu {
+export class AlyaStringMenu extends StringSelectMenu {
 	/**
 	 * The function to run when the string menu is clicked.
 	 */
@@ -85,18 +85,17 @@ export class SoundyStringMenu extends StringSelectMenu {
 	 * @param run The function to run when the string menu is clicked.
 	 * @returns
 	 */
-	public setRun(run: SoundyStringMenu["run"]): this {
+	public setRun(run: AlyaStringMenu["run"]): this {
 		this.run = run;
 		return this;
 	}
 }
 
-type SoundyComponents = SoundyButton | SoundyStringMenu;
-type SoundyComponentInteraction = ButtonInteraction &
-	StringSelectMenuInteraction;
+type AlyaComponents = AlyaButton | AlyaStringMenu;
+type AlyaComponentInteraction = ButtonInteraction & StringSelectMenuInteraction;
 
 /**
- * Main Soundy paginator class.
+ * Main Alya paginator class.
  */
 export class EmbedPaginator {
 	/**
@@ -119,7 +118,7 @@ export class EmbedPaginator {
 	/**
 	 * The rows of the paginator.
 	 */
-	private rows: ActionRow<SoundyComponents>[] = [];
+	private rows: ActionRow<AlyaComponents>[] = [];
 	/**
 	 * The disabled type of the paginator.
 	 */
@@ -266,19 +265,19 @@ export class EmbedPaginator {
 		);
 
 		if (this.rows.length) {
-			collector.run<SoundyComponentInteraction>(/./, (interaction) => {
+			collector.run<AlyaComponentInteraction>(/./, (interaction) => {
 				for (const row of this.rows) {
 					for (const component of row.components) {
 						if (
 							(component.data as { custom_id?: string }).custom_id ===
 							interaction.customId
 						) {
-							if (!(component as SoundyComponents).run)
+							if (!(component as AlyaComponents).run)
 								throw new InvalidComponentRun(
 									`The component: "${interaction.customId}" doesn't have a run function.`,
 								);
 
-							return (component as SoundyComponents).run(
+							return (component as AlyaComponents).run(
 								interaction,
 								async (n: number) => {
 									if (n < 0 || n >= this.embeds.length) return;
@@ -345,7 +344,7 @@ export class EmbedPaginator {
 	 * @param rows The rows.
 	 * @returns
 	 */
-	public setRows(rows: ActionRow<SoundyButton | SoundyStringMenu>[]): this {
+	public setRows(rows: ActionRow<AlyaButton | AlyaStringMenu>[]): this {
 		this.rows = rows;
 		return this;
 	}

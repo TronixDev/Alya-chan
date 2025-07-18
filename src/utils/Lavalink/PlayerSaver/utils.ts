@@ -1,5 +1,5 @@
 import type { Logger } from "seyfert";
-import type { PlayerData } from "#soundy/types";
+import type { PlayerData } from "#alya/types";
 
 /**
  * Helper functions for PlayerSaver

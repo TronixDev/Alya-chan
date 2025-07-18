@@ -10,12 +10,12 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import {
-	SoundyOptions,
+	AlyaOptions,
 	TimeFormat,
 	getAllTopTracks,
 	type RecommendationTrack,
-} from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+} from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 const option = {
 	query: createStringOption({
@@ -123,7 +123,7 @@ const option = {
 	contexts: ["Guild"],
 })
 @LocalesT("cmd.play.name", "cmd.play.description")
-@SoundyOptions({ cooldown: 5, category: SoundyCategory.Music })
+@AlyaOptions({ cooldown: 5, category: AlyaCategory.Music })
 @Options(option)
 @Middlewares([
 	"checkNodes",

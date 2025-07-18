@@ -46,7 +46,7 @@ export default {
 						exists: "Saluran permintaan musik sudah ada",
 						failed: "Gagal membuat pesan pengaturan musik",
 						topic:
-							"Soundy Music Player - Ketik nama lagu atau URL untuk memutar musik.",
+							"Alya Music Player - Ketik nama lagu atau URL untuk memutar musik.",
 						success: ({ channel }) =>
 							`Berhasil membuat pengaturan musik di ${channel}`,
 					},
@@ -179,9 +179,9 @@ export default {
 		// About Commands
 		about: {
 			name: "about",
-			description: "Tampilkan informasi tentang Soundy",
+			description: "Tampilkan informasi tentang Alya",
 			run: {
-				title: "Tentang Soundy",
+				title: "Tentang Alya",
 				footer: ({
 					guildCount,
 					userCount,
@@ -213,9 +213,9 @@ export default {
 				},
 				contributors: {
 					button: "Kontributor",
-					title: "Kontributor Soundy",
+					title: "Kontributor Alya",
 					1: "Terima Kasih Khusus",
-					2: ({ author }: { author: string }) => `- ${author}: Pencipta Soundy`,
+					2: ({ author }: { author: string }) => `- ${author}: Pencipta Alya`,
 					3: ({ user }: { user: string }) =>
 						`- ${user}: Perbaikan Bug, dan kontribusi lainnya`,
 					4: ({ user }: { user: string }) => `- ${user}: Untuk ide bot ini`,
@@ -229,7 +229,7 @@ export default {
 				},
 				packages: {
 					button: "Paket",
-					title: "Paket & Runtime Soundy",
+					title: "Paket & Runtime Alya",
 					1: "Pustaka Inti",
 				},
 			},
@@ -300,7 +300,7 @@ export default {
 				},
 			},
 			run: {
-				title: "Menu Bantuan Soundy",
+				title: "Menu Bantuan Alya",
 				description: {
 					1: ({ user, bot }) =>
 						`**Haii! ${user} aku ${bot} teman musik kamu!**`,
@@ -347,7 +347,7 @@ export default {
 			name: "ping",
 			description: "Periksa latensi bot dan waktu respons API",
 			run: {
-				title: "Informasi Latensi Soundy",
+				title: "Informasi Latensi Alya",
 				description: {
 					1: "Latensi Websocket",
 					2: "Latensi Klien",
@@ -760,7 +760,7 @@ export default {
 	// Events
 	event: {
 		setup: {
-			title: "Soundy Music Player",
+			title: "Alya Music Player",
 			description:
 				"Bergabung dengan voice channel dan antri lagu berdasarkan nama atau url di voice channel ini.",
 			no_voice: "Kamu harus berada di voice channel untuk menggunakan ini!",
@@ -811,7 +811,7 @@ export default {
 			limit_reached: {
 				title: "Kamu telah menggunakan semua perintah gratis kamu!",
 				description: ({ time }) =>
-					`Silakan vote untuk Soundy di top.gg untuk mendapatkan ${time} jam akses tanpa batas.`,
+					`Silakan vote untuk Alya di top.gg untuk mendapatkan ${time} jam akses tanpa batas.`,
 			},
 			vote_now: "Vote Sekarang",
 		},
@@ -840,7 +840,7 @@ export default {
 		},
 		// Mention
 		mention: {
-			title: "Selamat datang di Soundy!",
+			title: "Selamat datang di Alya!",
 			description: {
 				1: ({ prefix }) =>
 					`Gunakan \`${prefix}help\` atau \`/help\` untuk menemukan semua perintah luar biasa ku`,

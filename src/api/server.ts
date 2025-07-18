@@ -1,14 +1,7 @@
 import { Elysia } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import type { UsingClient } from "seyfert";
-import { sendVoteWebhook, PlayerSaver } from "#soundy/utils";
-import {
-	createTopAPI,
-	createMusicAPI,
-	createPlaylistAPI,
-	setupSoundyWebSocket,
-	setupPlayerStatusInterval,
-} from "./index";
+import { sendVoteWebhook } from "#alya/utils";
 
 interface VoteWebhookPayload {
 	user: string;
@@ -77,9 +70,9 @@ export function APIServer(client: UsingClient): void {
 				let totalVoiceConnections = 0;
 
 				// Get stats for current shard
-				const guildCount = (await client.cache.guilds?.count?.()) ?? 0;
-				const channelCount = (await client.cache.channels?.count?.("*")) ?? 0;
-				const userCount = (await client.cache.users?.count?.()) ?? 0;
+				const guildCount = client.cache.guilds?.count?.() ?? 0;
+				const channelCount = client.cache.channels?.count?.("*") ?? 0;
+				const userCount = client.cache.users?.count?.() ?? 0;
 				const voiceConnections = client.manager.players.size;
 
 				totalGuilds = guildCount;
@@ -137,22 +130,10 @@ export function APIServer(client: UsingClient): void {
 			}
 		});
 
-	// Initialize playerSaver with the logger from the client
-	const playerSaver = new PlayerSaver(client.logger);
-
-	// Add music, top, and playlist API endpoints
-	app.use(createMusicAPI(client));
-	app.use(createTopAPI(client));
-	app.use(createPlaylistAPI(client));
-
-	// Setup WebSocket and broadcast interval
-	setupSoundyWebSocket(app, client, playerSaver);
-	setupPlayerStatusInterval(() => app);
-
 	// Listen Elysia
 	app.listen({ port: client.config.serverPort });
 
 	client.logger.info(
-		`[API] REST and WebSocket servers listening on port ${client.config.serverPort}`,
+		`[API] REST servers listening on port ${client.config.serverPort}`,
 	);
 }

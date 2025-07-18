@@ -1,6 +1,6 @@
 import type { Logger } from "seyfert";
 import type { Low } from "lowdb";
-import type { DatabaseSchema } from "#soundy/types";
+import type { DatabaseSchema } from "#alya/types";
 
 /**
  * Database operations for PlayerSaver

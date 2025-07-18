@@ -1,8 +1,8 @@
 import type { Player, Track } from "lavalink-client";
 import { ActionRow, Button, Embed, type User, type UsingClient } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { TimeFormat } from "#soundy/utils";
-import { getSourceIcon } from "#soundy/utils";
+import { TimeFormat } from "#alya/utils";
+import { getSourceIcon } from "#alya/utils";
 
 /**
  * Creates the embed and components for the now playing display

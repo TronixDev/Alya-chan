@@ -1,9 +1,9 @@
 import { pathToFileURL } from "node:url";
 import { readdirSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
-import type { Lavalink } from "#soundy/utils";
+import type { Lavalink } from "#alya/utils";
 import type { LavalinkManagerEvents, NodeManagerEvents } from "lavalink-client";
-import type Soundy from "#soundy/client";
+import type Alya from "#alya/client";
 
 export class LavalinkHandler {
 	// Map event name ke { event, filepath, run }
@@ -11,9 +11,9 @@ export class LavalinkHandler {
 		string,
 		{ event: Lavalink; filepath: string; run: (...args: unknown[]) => void }
 	>();
-	public readonly client: Soundy;
+	public readonly client: Alya;
 
-	constructor(client: Soundy) {
+	constructor(client: Alya) {
 		this.client = client;
 	}
 

@@ -1,6 +1,6 @@
 import { AutoLoad, Command, Declare } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 @Declare({
 	name: "report",
@@ -8,6 +8,6 @@ import { SoundyCategory } from "#soundy/types";
 	integrationTypes: ["GuildInstall"],
 	contexts: ["Guild"],
 })
-@SoundyOptions({ cooldown: 5, category: SoundyCategory.Reports })
+@AlyaOptions({ cooldown: 5, category: AlyaCategory.Reports })
 @AutoLoad()
 export default class ReportCommand extends Command {}

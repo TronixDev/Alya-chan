@@ -1,25 +1,25 @@
 import { LimitedCollection } from "seyfert";
-import { Configuration } from "#soundy/config";
-import type { guild } from "#soundy/db";
-import { SoundyKeys } from "#soundy/types";
+import { Configuration } from "#alya/config";
+import type { guild } from "#alya/db";
+import { AlyaKeys } from "#alya/types";
 
 interface Cache {
-	[SoundyKeys.Locale]: typeof guild.$inferSelect;
-	[SoundyKeys.Player]: typeof guild.$inferSelect;
-	[SoundyKeys.Prefix]: typeof guild.$inferSelect;
+	[AlyaKeys.Locale]: typeof guild.$inferSelect;
+	[AlyaKeys.Player]: typeof guild.$inferSelect;
+	[AlyaKeys.Prefix]: typeof guild.$inferSelect;
 }
 
 /**
- * Main Soundy cache class.
+ * Main Alya cache class.
  */
-export class SoundyCache {
+export class AlyaCache {
 	/**
 	 * The internal cache.
 	 * @readonly
 	 */
 	readonly internal: LimitedCollection<
 		string,
-		LimitedCollection<SoundyKeys, unknown>
+		LimitedCollection<AlyaKeys, unknown>
 	> = new LimitedCollection({
 		limit: Configuration.cache.size,
 	});
@@ -73,7 +73,7 @@ export class SoundyCache {
 			return;
 		}
 
-		const collection = new LimitedCollection<SoundyKeys, unknown>();
+		const collection = new LimitedCollection<AlyaKeys, unknown>();
 		collection.set(key, data);
 		this.internal.set(guildId, collection);
 	}

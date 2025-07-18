@@ -9,8 +9,8 @@ import {
 	createStringOption,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 const options = {
 	type: createStringOption({
@@ -35,9 +35,9 @@ const options = {
 	description: "Clear database data",
 })
 @Options(options)
-@SoundyOptions({
+@AlyaOptions({
 	cooldown: 5,
-	category: SoundyCategory.Developers,
+	category: AlyaCategory.Developers,
 	onlyDeveloper: true,
 })
 export default class ClearDatabaseCommand extends SubCommand {
@@ -120,24 +120,9 @@ export default class ClearDatabaseCommand extends SubCommand {
 								message = `✅ Cleared vote data for user <@${userId}>`;
 								break;
 
-							case "playlists":
-								await client.database.clearPlaylistData(userId);
-								message = `✅ Cleared playlist data for user <@${userId}>`;
-								break;
-
 							case "premium":
 								await client.database.clearPremiumData(userId);
 								message = `✅ Cleared premium data for user <@${userId}>`;
-								break;
-
-							case "stats":
-								await client.database.clearStatsData();
-								message = "✅ Cleared all stats data";
-								break;
-
-							case "all":
-								await client.database.clearAllData(userId);
-								message = `✅ Cleared all data for user <@${userId}>`;
 								break;
 						}
 

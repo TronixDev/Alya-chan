@@ -2,7 +2,7 @@ import { createEvent } from "seyfert";
 import { join } from "node:path";
 import { cwd } from "node:process";
 import { Api } from "@top-gg/sdk";
-import { BOT_VERSION } from "#soundy/utils";
+import { BOT_VERSION } from "#alya/utils";
 
 export default createEvent({
 	data: { once: true, name: "ready" },
@@ -40,7 +40,7 @@ export default createEvent({
 		async function postStats() {
 			try {
 				const api = new Api(client.config.topgg.token);
-				let guildCount = await client.cache.guilds?.count();
+				let guildCount = client.cache.guilds?.count();
 				if (typeof guildCount !== "number" || Number.isNaN(guildCount))
 					guildCount = 0;
 				const shardCount = client.gateway.totalShards;

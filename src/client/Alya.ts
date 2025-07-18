@@ -1,18 +1,18 @@
 import { Client, LimitedCollection } from "seyfert";
 import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
-import type { SoundyConfiguration } from "#soundy/types";
-import { SoundyMiddlewares } from "#soundy/middlewares";
-import { Configuration } from "#soundy/config";
+import type { AlyaConfiguration } from "#alya/types";
+import { AlyaMiddlewares } from "#alya/middlewares";
+import { Configuration } from "#alya/config";
 import {
-	SoundyContext,
+	AlyaContext,
 	getWatermark,
 	handleMention,
 	isBotMention,
 	onRunError,
 	sendCommandLog,
-} from "#soundy/utils";
-import { SoundyDatabase } from "#soundy/db";
-import { SoundyManager } from "./modules/Manager";
+} from "#alya/utils";
+import { AlyaDatabase } from "#alya/db";
+import { AlyaManager } from "./modules/Manager";
 import { HandleCommand } from "seyfert/lib/commands/handle";
 import { Yuna } from "yunaforseyfert";
 
@@ -21,41 +21,41 @@ const THINK_MESSAGES = ["is thinking..."];
 const DEBUG_MODE = false;
 
 /**
- * Main Soundy class.
+ * Main Alya class.
  */
-export default class Soundy extends Client<true> {
+export default class Alya extends Client<true> {
 	/**
-	 * Soundy cooldowns collection.
+	 * Alya cooldowns collection.
 	 */
 	public readonly cooldowns: LimitedCollection<string, number> =
 		new LimitedCollection();
 
 	/**
-	 * Soundy configuration.
+	 * Alya configuration.
 	 */
-	public readonly config: SoundyConfiguration = Configuration;
+	public readonly config: AlyaConfiguration = Configuration;
 
 	/**
-	 * The timestamp when Soundy is ready.
+	 * The timestamp when Alya is ready.
 	 */
 	public readyTimestamp = 0;
 
 	/**
-	 * Soundy manager instance.
+	 * Alya manager instance.
 	 */
-	public readonly manager: SoundyManager;
+	public readonly manager: AlyaManager;
 
 	/**
-	 * Soundy database instance.
+	 * Alya database instance.
 	 */
-	public readonly database: SoundyDatabase;
+	public readonly database: AlyaDatabase;
 
 	/**
-	 * Create a new Soundy instance.
+	 * Create a new Alya instance.
 	 */
 	constructor() {
 		super({
-			context: SoundyContext, // FIX: use custom context so getLocale is available everywhere
+			context: AlyaContext, // FIX: use custom context so getLocale is available everywhere
 			globalMiddlewares: [
 				"checkCooldown",
 				"checkVerifications",
@@ -140,13 +140,13 @@ export default class Soundy extends Client<true> {
 				activities: [{ name: "Traveling... 🌠", type: ActivityType.Playing }],
 			}),
 		});
-		this.manager = new SoundyManager(this);
-		this.database = new SoundyDatabase();
+		this.manager = new AlyaManager(this);
+		this.database = new AlyaDatabase();
 		this.run();
 	}
 
 	/**
-	 * Start the main Soundy process.
+	 * Start the main Alya process.
 	 */
 	private async run(): Promise<"🌟"> {
 		getWatermark();
@@ -155,7 +155,7 @@ export default class Soundy extends Client<true> {
 			return command;
 		};
 		this.setServices({
-			middlewares: SoundyMiddlewares,
+			middlewares: AlyaMiddlewares,
 			cache: {
 				disabledCache: {
 					bans: true,
@@ -191,7 +191,7 @@ export default class Soundy extends Client<true> {
 	}
 
 	/**
-	 * Reload Soundy...
+	 * Reload Alya...
 	 */
 	public async reload(): Promise<void> {
 		this.logger.warn("Attemping to reload...");
@@ -202,7 +202,7 @@ export default class Soundy extends Client<true> {
 			await this.langs?.reloadAll();
 			// await this.manager.handler.reloadAll(); // Tidak ada method ini, hapus
 			// await this.uploadCommands({ cachePath: this.config.cache.filename }); // Pastikan config.cache.filename ada jika ingin pakai
-			this.logger.info("Soundy has been reloaded.");
+			this.logger.info("Alya has been reloaded.");
 		} catch (error) {
 			this.logger.error("Error -", error);
 			throw error;

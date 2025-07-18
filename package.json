@@ -1,17 +1,17 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "soundy",
-  "version": "3.3.5",
+  "version": "2.0.0",
   "description": "A powerful music bot built with Seyfert and lavalink-client to play high quality music in your Discord server for free.",
   "author": "iaMJ",
   "license": "AGPL-3.0",
-  "homepage": "https://github.com/idMJA/Soundy",
+  "homepage": "https://github.com/idMJA/Alya-chan",
   "repository": {
     "type": "git",
-    "url": "https://github.com/idMJA/Soundy"
+    "url": "https://github.com/idMJA/Alya-chan"
   },
   "bugs": {
-    "url": "https://github.com/idMJA/Soundy/issues"
+    "url": "https://github.com/idMJA/Alya-chan/issues"
   },
   "type": "module",
   "main": "src/index.ts",
@@ -48,6 +48,7 @@
     "jsonwebtoken": "^9.0.2",
     "lavalink-client": "^2.5.7",
     "lowdb": "^7.0.1",
+    "openai": "^5.10.1",
     "seyfert": "^3.2.5-dev-16284796103.0",
     "yunaforseyfert": "^1.1.3"
   },

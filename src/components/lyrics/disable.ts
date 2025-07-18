@@ -3,7 +3,7 @@ import {
 	type GuildComponentContext,
 	Middlewares,
 } from "seyfert";
-import { PlayerSaver } from "#soundy/utils";
+import { PlayerSaver } from "#alya/utils";
 
 @Middlewares([
 	"checkNodes",

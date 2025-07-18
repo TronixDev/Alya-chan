@@ -10,7 +10,7 @@ export * from "./Common/CommandLogs";
 export * from "./Common/Mention";
 
 // Context
-export * from "./Context/SoundyContext";
+export * from "./Context/AlyaContext";
 export * from "./Context/Decorator";
 export * from "./Context/Constants";
 

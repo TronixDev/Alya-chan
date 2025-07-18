@@ -1,6 +1,6 @@
 import type { Logger } from "seyfert";
 import type { Low } from "lowdb";
-import type { DatabaseSchema, LyricsData } from "#soundy/types";
+import type { DatabaseSchema, LyricsData } from "#alya/types";
 import type { DatabaseOperations } from ".";
 
 /**

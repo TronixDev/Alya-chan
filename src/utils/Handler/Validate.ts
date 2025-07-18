@@ -1,5 +1,5 @@
 import { Logger } from "seyfert";
-import { InvalidEnvValue } from "#soundy/utils";
+import { InvalidEnvValue } from "#alya/utils";
 
 const logger = new Logger({
 	name: "[ENV]",
@@ -7,7 +7,7 @@ const logger = new Logger({
 
 /**
  *
- * Validate Soundy environment variables.
+ * Validate Alya environment variables.
  * @returns
  */
 export function validateEnv() {

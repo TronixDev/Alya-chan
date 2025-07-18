@@ -10,8 +10,8 @@ import {
 	type Message,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 @Declare({
 	name: "about",
@@ -20,7 +20,7 @@ import { SoundyCategory } from "#soundy/types";
 	contexts: ["Guild"],
 })
 @LocalesT("cmd.about.name", "cmd.about.description")
-@SoundyOptions({ cooldown: 5, category: SoundyCategory.Informations })
+@AlyaOptions({ cooldown: 5, category: AlyaCategory.Informations })
 export default class AboutCommand extends Command {
 	async run(ctx: CommandContext): Promise<void> {
 		const { client } = ctx;
@@ -94,7 +94,7 @@ export default class AboutCommand extends Command {
 					cmd.about.run.contributors[9]({
 						license: "GNU Affero General Public License v3.0",
 					}),
-					`**[${cmd.about.run.contributors[10]}](https://github.com/idMJA/Soundy/blob/master/LICENSE)**`,
+					`**[${cmd.about.run.contributors[10]}](https://github.com/idMJA/Alya/blob/master/LICENSE)**`,
 				].join("\n"),
 			)
 			.setFooter({

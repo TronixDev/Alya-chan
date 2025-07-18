@@ -5,8 +5,8 @@ import {
 	Embed,
 	LocalesT,
 } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 @Declare({
 	name: "ping",
@@ -15,7 +15,7 @@ import { SoundyCategory } from "#soundy/types";
 	contexts: ["Guild"],
 })
 @LocalesT("cmd.ping.name", "cmd.ping.description")
-@SoundyOptions({ cooldown: 5, category: SoundyCategory.Informations })
+@AlyaOptions({ cooldown: 5, category: AlyaCategory.Informations })
 export default class PingCommand extends Command {
 	async run(ctx: CommandContext): Promise<void> {
 		const { client } = ctx;

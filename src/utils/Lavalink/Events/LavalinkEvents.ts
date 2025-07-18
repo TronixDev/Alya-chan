@@ -4,11 +4,11 @@ import type {
 	LavalinkEvent,
 	LavalinkEventRun,
 	LavalinkEventType,
-} from "#soundy/types";
-import { LavalinkEventTypes } from "#soundy/types";
+} from "#alya/types";
+import { LavalinkEventTypes } from "#alya/types";
 
 /**
- * Represents a Lavalink event for Soundy with type-safe event registration and handling.
+ * Represents a Lavalink event for Alya with type-safe event registration and handling.
  *
  * @typeParam K - The event name key from {@link AllEvents}.
  *

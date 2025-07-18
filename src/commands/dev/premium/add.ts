@@ -8,8 +8,8 @@ import {
 	createUserOption,
 } from "seyfert";
 import { EmbedColors } from "seyfert/lib/common";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 const option = {
 	user: createUserOption({
@@ -33,9 +33,9 @@ const option = {
 	description: "Add premium status for a user",
 })
 @Options(option)
-@SoundyOptions({
+@AlyaOptions({
 	cooldown: 5,
-	category: SoundyCategory.Developers,
+	category: AlyaCategory.Developers,
 	onlyDeveloper: true,
 })
 export default class AddPremiumCommand extends SubCommand {

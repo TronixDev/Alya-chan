@@ -9,8 +9,8 @@ import {
 	createStringOption,
 } from "seyfert";
 import { EmbedColors } from "seyfert/lib/common";
-import { SoundyOptions, TimeFormat, ms } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions, TimeFormat, ms } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 const option = {
 	time: createStringOption({
@@ -40,7 +40,7 @@ const option = {
 	aliases: ["sk"],
 })
 @LocalesT("cmd.seek.name", "cmd.seek.description")
-@SoundyOptions({ cooldown: 5, category: SoundyCategory.Music })
+@AlyaOptions({ cooldown: 5, category: AlyaCategory.Music })
 @Options(option)
 @Middlewares([
 	"checkNodes",

@@ -1,13 +1,13 @@
 import { Command, type CommandContext, Declare, Middlewares } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 @Declare({
 	name: "rewind",
 	description: "Rewind the current track by 10 seconds",
 })
-@SoundyOptions({
-	category: SoundyCategory.Music,
+@AlyaOptions({
+	category: AlyaCategory.Music,
 	cooldown: 3,
 })
 @Middlewares(["checkVoiceChannel", "checkBotVoiceChannel", "checkPlayer"])

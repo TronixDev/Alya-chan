@@ -1,7 +1,7 @@
 // filepath: e:/Projects/Soundy v3.3.5/src/lavalink/trackEndEvent.ts
-import { PlayerSaver } from "#soundy/utils";
-import { LavalinkEventTypes } from "#soundy/types";
-import { createLavalinkEvent } from "#soundy/utils";
+import { PlayerSaver } from "#alya/utils";
+import { LavalinkEventTypes } from "#alya/types";
+import { createLavalinkEvent } from "#alya/utils";
 
 export default createLavalinkEvent({
 	name: "trackEnd",
@@ -31,24 +31,6 @@ export default createLavalinkEvent({
 			if (lastMsg) {
 				messageId = lastMsg.messageId;
 				channelId = lastMsg.channelId || channelId;
-			}
-		}
-
-		const setupData = await client.database.getSetup(player.guildId);
-		if (
-			setupData?.messageId &&
-			setupData?.channelId &&
-			messageId === setupData.messageId &&
-			channelId === setupData.channelId
-		) {
-			// Ini setup message, jangan dihapus
-		} else if (messageId && channelId) {
-			try {
-				await client.messages.delete(messageId as string, channelId);
-				player.set("messageId", undefined);
-				await playerSaver.clearLastNowPlayingMessage(player.guildId);
-			} catch {
-				// Silently fail if message deletion fails
 			}
 		}
 

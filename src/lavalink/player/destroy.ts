@@ -1,27 +1,14 @@
-import { PlayerSaver } from "#soundy/utils";
-import { LavalinkEventTypes } from "#soundy/types";
-import { createLavalinkEvent } from "#soundy/utils";
+import { PlayerSaver } from "#alya/utils";
+import { LavalinkEventTypes } from "#alya/types";
+import { createLavalinkEvent } from "#alya/utils";
 import type { Player } from "lavalink-client";
 
 export default createLavalinkEvent({
 	name: "playerDestroy",
 	type: LavalinkEventTypes.Manager,
 	async run(client, player: Player) {
-		const voice = await client.channels.fetch(
-			player.voiceChannelId ?? player.options.voiceChannelId,
-		);
-		if (voice?.is(["GuildVoice"])) {
-			// Check if voice status is enabled for this guild
-			const voiceStatusEnabled = await client.database.getVoiceStatus(
-				player.guildId,
-			);
-			if (voiceStatusEnabled) {
-				await voice.setVoiceStatus(null).catch(() => null);
-			}
-		}
-
 		const playerSaver = new PlayerSaver(client.logger);
-		let messageId = player.get("messageId");
+		const messageId = player.get("messageId");
 		let channelId = "";
 		const rawChannel = player.textChannelId;
 		if (
@@ -35,24 +22,9 @@ export default createLavalinkEvent({
 			channelId = rawChannel;
 		}
 
-		if (!messageId || !channelId) {
-			const lastMsg = await playerSaver.getLastNowPlayingMessage(
-				player.guildId,
-			);
-			if (lastMsg) {
-				messageId = lastMsg.messageId;
-				channelId = lastMsg.channelId || channelId;
-			}
-		}
-		if (messageId && channelId) {
-			try {
-				await client.messages.delete(messageId as string, channelId);
-				player.set("messageId", undefined);
-				await playerSaver.clearLastNowPlayingMessage(player.guildId);
-			} catch {
-				// Silently fail if message deletion fails
-			}
-		}
+		await client.messages.delete(messageId as string, channelId);
+		player.set("messageId", undefined);
+		await playerSaver.clearLastNowPlayingMessage(player.guildId);
 
 		try {
 			await playerSaver.delPlayer(player.guildId);

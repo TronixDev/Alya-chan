@@ -7,8 +7,8 @@ import {
 	Middlewares,
 } from "seyfert";
 import type { User } from "seyfert";
-import { SoundyCategory } from "#soundy/types";
-import { SoundyOptions, TimeFormat, EmbedPaginator } from "#soundy/utils";
+import { AlyaCategory } from "#alya/types";
+import { AlyaOptions, TimeFormat, EmbedPaginator } from "#alya/utils";
 
 @Declare({
 	name: "queue",
@@ -18,7 +18,7 @@ import { SoundyOptions, TimeFormat, EmbedPaginator } from "#soundy/utils";
 	aliases: ["q"],
 })
 @LocalesT("cmd.queue.name", "cmd.queue.description")
-@SoundyOptions({ cooldown: 5, category: SoundyCategory.Music })
+@AlyaOptions({ cooldown: 5, category: AlyaCategory.Music })
 @Middlewares([
 	"checkNodes",
 	"checkVoiceChannel",

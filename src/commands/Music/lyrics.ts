@@ -10,12 +10,12 @@ import {
 	createStringOption,
 } from "seyfert";
 import {
-	SoundyOptions,
+	AlyaOptions,
 	getAllTopTracks,
 	TimeFormat,
 	type RecommendationTrack,
-} from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+} from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 // Initialize Genius client
 const geniusClient = new Genius();
@@ -124,7 +124,7 @@ const options = {
 	contexts: ["Guild"],
 })
 @LocalesT("cmd.lyrics.name", "cmd.lyrics.description")
-@SoundyOptions({ category: SoundyCategory.Music })
+@AlyaOptions({ category: AlyaCategory.Music })
 @Options(options)
 @Middlewares(["checkNodes"])
 export default class LyricsCommand extends Command {

@@ -8,8 +8,8 @@ import {
 	createChannelOption,
 } from "seyfert";
 import { ChannelType } from "seyfert/lib/types";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 const option = {
 	voice: createChannelOption({
@@ -39,7 +39,7 @@ const option = {
 	aliases: ["mov", "m"],
 })
 @LocalesT("cmd.move.name", "cmd.move.description")
-@SoundyOptions({ cooldown: 5, category: SoundyCategory.Music })
+@AlyaOptions({ cooldown: 5, category: AlyaCategory.Music })
 @Options(option)
 @Middlewares(["checkNodes", "checkVoiceChannel", "checkPlayer"])
 export default class MoveCommand extends Command {

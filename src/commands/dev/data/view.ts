@@ -6,8 +6,8 @@ import {
 	createStringOption,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
 
 const options = {
 	type: createStringOption({
@@ -32,9 +32,9 @@ const options = {
 	description: "View database statistics",
 })
 @Options(options)
-@SoundyOptions({
+@AlyaOptions({
 	cooldown: 5,
-	category: SoundyCategory.Developers,
+	category: AlyaCategory.Developers,
 	onlyDeveloper: true,
 })
 export default class ViewDatabaseCommand extends SubCommand {
@@ -60,18 +60,6 @@ export default class ViewDatabaseCommand extends SubCommand {
 					break;
 				}
 
-				case "playlists": {
-					const playlistStats = await client.database.getPlaylistStats(userId);
-					if (userId) {
-						stats.push(`Total Playlists: ${playlistStats.playlists}`);
-						stats.push(`Total Tracks: ${playlistStats.tracks}`);
-					} else {
-						stats.push(`Total Playlists: ${playlistStats.playlists}`);
-						stats.push(`Total Tracks: ${playlistStats.tracks}`);
-					}
-					break;
-				}
-
 				case "premium": {
 					const premiumStats = await client.database.getPremiumStats(userId);
 					if (userId) {
@@ -93,35 +81,17 @@ export default class ViewDatabaseCommand extends SubCommand {
 					break;
 				}
 
-				case "stats": {
-					const generalStats = await client.database.getGeneralStats();
-					stats.push(`Track Statistics Records: ${generalStats.trackStats}`);
-					stats.push(`User Statistics Records: ${generalStats.userStats}`);
-					break;
-				}
-
 				case "all": {
 					if (userId) {
-						const [voteStats, playlistStats, generalStats] = await Promise.all([
+						const [voteStats] = await Promise.all([
 							client.database.getVoteStats(userId),
-							client.database.getPlaylistStats(userId),
-							client.database.getGeneralStats(),
 						]);
 						stats.push(`Total Votes: ${voteStats.total}`);
-						stats.push(`Total Playlists: ${playlistStats.playlists}`);
-						stats.push(`Total Tracks: ${playlistStats.tracks}`);
-						stats.push(`User Statistics Records: ${generalStats.userStats}`);
 					} else {
-						const [voteStats, playlistStats, generalStats] = await Promise.all([
+						const [voteStats] = await Promise.all([
 							client.database.getVoteStats(),
-							client.database.getPlaylistStats(),
-							client.database.getGeneralStats(),
 						]);
 						stats.push(`Total Votes: ${voteStats.total}`);
-						stats.push(`Total Playlists: ${playlistStats.playlists}`);
-						stats.push(`Total Tracks: ${playlistStats.tracks}`);
-						stats.push(`Track Statistics Records: ${generalStats.trackStats}`);
-						stats.push(`User Statistics Records: ${generalStats.userStats}`);
 					}
 					break;
 				}

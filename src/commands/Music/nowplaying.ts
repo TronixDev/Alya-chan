@@ -6,8 +6,8 @@ import {
 	Middlewares,
 	type User,
 } from "seyfert";
-import { SoundyCategory } from "#soundy/types";
-import { SoundyOptions, TimeFormat, getSourceIcon } from "#soundy/utils";
+import { AlyaCategory } from "#alya/types";
+import { AlyaOptions, TimeFormat, getSourceIcon } from "#alya/utils";
 
 @Declare({
 	name: "nowplaying",
@@ -17,7 +17,7 @@ import { SoundyOptions, TimeFormat, getSourceIcon } from "#soundy/utils";
 	aliases: ["np"],
 })
 @LocalesT("cmd.nowplaying.name", "cmd.nowplaying.description")
-@SoundyOptions({ cooldown: 5, category: SoundyCategory.Music })
+@AlyaOptions({ cooldown: 5, category: AlyaCategory.Music })
 @Middlewares(["checkNodes", "checkPlayer"])
 export default class NowPlayingCommand extends Command {
 	async run(ctx: CommandContext) {

@@ -6,9 +6,9 @@ import {
 	Options,
 	createStringOption,
 } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
+import { AlyaOptions } from "#alya/utils";
 import { MessageFlags } from "seyfert/lib/types";
-import { SoundyCategory } from "#soundy/types";
+import { AlyaCategory } from "#alya/types";
 
 const option = {
 	locale: createStringOption({
@@ -37,7 +37,7 @@ const option = {
 	contexts: ["Guild"],
 	defaultMemberPermissions: ["ManageGuild"],
 })
-@SoundyOptions({ cooldown: 10, category: SoundyCategory.Configurations })
+@AlyaOptions({ cooldown: 10, category: AlyaCategory.Configurations })
 @Options(option)
 export default class SetLocaleCommand extends Command {
 	public override async run(ctx: CommandContext<typeof option>) {

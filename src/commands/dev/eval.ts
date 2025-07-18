@@ -11,12 +11,12 @@ import {
 } from "seyfert";
 import { EmbedColors, Formatter } from "seyfert/lib/common";
 import {
-	SoundyOptions,
+	AlyaOptions,
 	SECRETS_MESSAGES,
 	getDepth,
 	ms,
 	sliceText,
-} from "#soundy/utils";
+} from "#alya/utils";
 import {
 	DeclareParserConfig,
 	ParserRecommendedConfig,
@@ -48,7 +48,7 @@ const option = {
 	contexts: ["Guild"],
 })
 @Options(option)
-@SoundyOptions({ onlyDeveloper: true })
+@AlyaOptions({ onlyDeveloper: true })
 @DeclareParserConfig(ParserRecommendedConfig.Eval)
 export default class EvalCommand extends Command {
 	@Watch({

@@ -7,7 +7,7 @@ import {
 	createUserOption,
 } from "seyfert";
 import { EmbedColors } from "seyfert/lib/common";
-import { SoundyOptions } from "#soundy/utils";
+import { AlyaOptions } from "#alya/utils";
 
 const options = {
 	user: createUserOption({
@@ -27,7 +27,7 @@ const options = {
 	integrationTypes: ["GuildInstall"],
 	contexts: ["Guild"],
 })
-@SoundyOptions({ onlyDeveloper: true })
+@AlyaOptions({ onlyDeveloper: true })
 @Options(options)
 export default class AddVoteCommand extends Command {
 	async run(ctx: CommandContext<typeof options>): Promise<void> {

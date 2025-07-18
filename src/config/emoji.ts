@@ -42,7 +42,7 @@ export type EmojiConfig = typeof emoji;
 export type Emoji = keyof EmojiConfig;
 
 /*
- * Soundy - A powerful music bot built with Seyfert and lavalink-client to play high quality music in your Discord server for free.
+ * Alya - A powerful music bot built with Seyfert and lavalink-client to play high quality music in your Discord server for free.
  
  * Credits:
  * - Contributed by: iaMJ

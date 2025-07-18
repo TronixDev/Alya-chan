@@ -1,6 +1,6 @@
-import { PlayerSaver } from "#soundy/utils";
-import { LavalinkEventTypes } from "#soundy/types";
-import { createLavalinkEvent } from "#soundy/utils";
+import { PlayerSaver } from "#alya/utils";
+import { LavalinkEventTypes } from "#alya/types";
+import { createLavalinkEvent } from "#alya/utils";
 
 export default createLavalinkEvent({
 	name: "playerUpdate",

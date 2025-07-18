@@ -5,7 +5,7 @@ import type { LocaleString } from "seyfert/lib/types";
  * The custom context is used to extend the context.
  * @returns {CustomContext} The custom context.
  */
-export const SoundyContext = extendContext((i) => ({
+export const AlyaContext = extendContext((i) => ({
 	/**
 	 * Get the locale from the context.
 	 * @returns {Promise<DefaultLocale>} The locale object.

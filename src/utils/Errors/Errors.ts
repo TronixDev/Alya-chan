@@ -6,7 +6,7 @@
 export class InvalidEnvValue extends Error {
 	constructor(message: string) {
 		super(message);
-		this.name = "Soundy [InvalidEnvValue]";
+		this.name = "Alya [InvalidEnvValue]";
 	}
 }
 
@@ -18,7 +18,7 @@ export class InvalidEnvValue extends Error {
 export class InvalidComponentRun extends Error {
 	constructor(message: string) {
 		super(message);
-		this.name = "Soundy [InvalidComponentRun]";
+		this.name = "Alya [InvalidComponentRun]";
 	}
 }
 
@@ -30,7 +30,7 @@ export class InvalidComponentRun extends Error {
 export class InvalidEmbedsLength extends Error {
 	constructor(message: string) {
 		super(message);
-		this.name = "Soundy [InvalidEmbedsLength]";
+		this.name = "Alya [InvalidEmbedsLength]";
 	}
 }
 
@@ -42,7 +42,7 @@ export class InvalidEmbedsLength extends Error {
 export class InvalidMessage extends Error {
 	constructor(message: string) {
 		super(message);
-		this.name = "Soundy [InvalidMessage]";
+		this.name = "Alya [InvalidMessage]";
 	}
 }
 
@@ -54,7 +54,7 @@ export class InvalidMessage extends Error {
 export class InvalidPageNumber extends Error {
 	constructor(message: string) {
 		super(message);
-		this.name = "Soundy [InvalidPageNumber]";
+		this.name = "Alya [InvalidPageNumber]";
 	}
 }
 
@@ -66,7 +66,7 @@ export class InvalidPageNumber extends Error {
 export class InvalidNodeSession extends Error {
 	constructor(message: string) {
 		super(message);
-		this.name = "Soundy [InvalidSession]";
+		this.name = "Alya [InvalidSession]";
 	}
 }
 
@@ -78,7 +78,7 @@ export class InvalidNodeSession extends Error {
 export class InvalidRow extends Error {
 	constructor(message: string) {
 		super(message);
-		this.name = "Soundy [InvalidRow]";
+		this.name = "Alya [InvalidRow]";
 	}
 }
 
@@ -90,7 +90,7 @@ export class InvalidRow extends Error {
 export class InvalidComponentType extends Error {
 	constructor(message: string) {
 		super(message);
-		this.name = "Soundy [InvalidComponentType]";
+		this.name = "Alya [InvalidComponentType]";
 	}
 }
 
@@ -102,6 +102,6 @@ export class InvalidComponentType extends Error {
 export class InvalidQueue extends Error {
 	constructor(message: string) {
 		super(message);
-		this.name = "Soundy [InvalidQueue]";
+		this.name = "Alya [InvalidQueue]";
 	}
 }

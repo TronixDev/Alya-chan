@@ -8,8 +8,8 @@ import {
 	Thumbnail,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { LavalinkEventTypes } from "#soundy/types";
-import { createLavalinkEvent } from "#soundy/utils";
+import { LavalinkEventTypes } from "#alya/types";
+import { createLavalinkEvent } from "#alya/utils";
 
 export default createLavalinkEvent({
 	name: "LyricsLine",

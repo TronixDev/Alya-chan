@@ -5,9 +5,9 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
-import { SoundyCategory } from "#soundy/types";
-import { PlayerSaver } from "#soundy/utils";
+import { AlyaOptions } from "#alya/utils";
+import { AlyaCategory } from "#alya/types";
+import { PlayerSaver } from "#alya/utils";
 
 @Declare({
 	name: "autoplay",
@@ -16,9 +16,9 @@ import { PlayerSaver } from "#soundy/utils";
 	contexts: ["Guild"],
 	aliases: ["auto", "ap"],
 })
-@SoundyOptions({
+@AlyaOptions({
 	cooldown: 5,
-	category: SoundyCategory.Music,
+	category: AlyaCategory.Music,
 })
 @LocalesT("cmd.autoplay.name", "cmd.autoplay.description")
 @Middlewares([

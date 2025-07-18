@@ -1,5 +1,5 @@
 import type { LavalinkManagerEvents, NodeManagerEvents } from "lavalink-client";
-import type Soundy from "#soundy/client";
+import type Alya from "#alya/client";
 
 /**
  * All lavalink events.
@@ -23,7 +23,7 @@ export type LavalinkEvents = LavalinkManagerEvents & NodeManagerEvents;
  * Function signature for Lavalink event handlers.
  */
 export type LavalinkEventRun<K extends keyof LavalinkEvents> = (
-	client: Soundy,
+	client: Alya,
 	...args: Parameters<LavalinkEvents[K]>
 ) => Promise<void> | void;
 

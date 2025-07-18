@@ -1,14 +1,14 @@
 import { Command, type CommandContext, Declare } from "seyfert";
-import { SoundyOptions } from "#soundy/utils";
+import { AlyaOptions } from "#alya/utils";
 
 @Declare({
 	name: "reload",
-	description: "Reload Soundy",
+	description: "Reload Alya",
 	defaultMemberPermissions: ["ManageGuild", "Administrator"],
 	integrationTypes: ["GuildInstall"],
 	contexts: ["Guild"],
 })
-@SoundyOptions({ onlyDeveloper: true })
+@AlyaOptions({ onlyDeveloper: true })
 export default class ReloadCommand extends Command {
 	async run(ctx: CommandContext): Promise<void> {
 		await ctx.client
@@ -18,7 +18,7 @@ export default class ReloadCommand extends Command {
 					content: "",
 					embeds: [
 						{
-							description: `${ctx.client.config.emoji.yes} Soundy has been reloaded.`,
+							description: `${ctx.client.config.emoji.yes} Alya has been reloaded.`,
 							color: ctx.client.config.color.yes,
 						},
 					],
