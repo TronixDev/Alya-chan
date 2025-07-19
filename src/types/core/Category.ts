@@ -6,5 +6,6 @@ export enum AlyaCategory {
 	Filters = 4,
 	Playlists = 5,
 	Reports = 6,
-	Developers = 7,
+	Fun = 7,
+	Developers = 8,
 }

@@ -36,7 +36,7 @@ export const Configuration: AlyaConfiguration = {
 		voicePermissions: ["ViewChannel", "Connect", "Speak"],
 	},
 	color: {
-		primary: 0x00ff33, // Primary color for embeds
+		primary: 0x5865f2, // Primary color for embeds
 		secondary: 0x00ff00, // Secondary color for embeds
 
 		yes: 0x00ff33, // Color for positive responses

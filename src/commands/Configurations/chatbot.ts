@@ -23,11 +23,13 @@ const options = {
 		],
 	}),
 	channel: createStringOption({
-		description: "Channel ID to allow/disallow chatbot (leave empty for all channels)",
+		description:
+			"Channel ID to allow/disallow chatbot (leave empty for all channels)",
 		required: false,
 	}),
 	guild: createStringOption({
-		description: "Guild ID to allow/disallow chatbot (leave empty for all guilds)",
+		description:
+			"Guild ID to allow/disallow chatbot (leave empty for all guilds)",
 		required: false,
 	}),
 	mention_only: createBooleanOption({
@@ -114,7 +116,7 @@ export default class ChatbotCommand extends Command {
 						`**Mention Only:** ${config.onlyWhenMentioned ? "Yes" : "No"}`,
 						`**Response Chance:** ${config.responseChance}%`,
 						`**Cooldown:** ${config.cooldownMs / 1000} seconds`,
-						`**Allowed Channels:** ${config.allowedChannels.length > 0 ? config.allowedChannels.map(id => `<#${id}>`).join(", ") : "All channels"}`,
+						`**Allowed Channels:** ${config.allowedChannels.length > 0 ? config.allowedChannels.map((id) => `<#${id}>`).join(", ") : "All channels"}`,
 						`**Allowed Guilds:** ${config.allowedGuilds.length > 0 ? config.allowedGuilds.length + " guilds" : "All guilds"}`,
 					].join("\n"),
 					color: client.config.color.primary,
@@ -126,7 +128,10 @@ export default class ChatbotCommand extends Command {
 		});
 	}
 
-	private async handleConfigure(ctx: CommandContext<typeof options>, opts: CommandContext<typeof options>["options"]) {
+	private async handleConfigure(
+		ctx: CommandContext<typeof options>,
+		opts: CommandContext<typeof options>["options"],
+	) {
 		const { client } = ctx;
 		const changes: string[] = [];
 
@@ -183,7 +188,10 @@ export default class ChatbotCommand extends Command {
 		});
 	}
 
-	private async handleEnable(ctx: CommandContext<typeof options>, enable: boolean) {
+	private async handleEnable(
+		ctx: CommandContext<typeof options>,
+		enable: boolean,
+	) {
 		const { client } = ctx;
 
 		// Note: In a real implementation, you would save this to a database
@@ -196,7 +204,7 @@ export default class ChatbotCommand extends Command {
 					description: [
 						`The chatbot has been **${enable ? "enabled" : "disabled"}** for this server.`,
 						"",
-						enable 
+						enable
 							? "🤖 I'll now respond to messages based on the configured settings!"
 							: "😴 I'll stop responding to messages until re-enabled.",
 						"",
