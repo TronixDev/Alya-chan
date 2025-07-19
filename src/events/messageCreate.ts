@@ -24,7 +24,7 @@ export default createEvent({
 	async run(message, client) {
 		if (message.author.bot) return;
 		if (message.content.length < 3) return;
-		
+
 		const allowedChannelId = "1261893751350231121";
 		if (allowedChannelId && message.channelId !== allowedChannelId) return;
 

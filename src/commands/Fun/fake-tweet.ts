@@ -7,7 +7,6 @@ import {
 	Options,
 	Embed,
 	Middlewares,
-	LocalesT,
 } from "seyfert";
 import { AlyaCategory } from "#alya/types";
 import { AlyaOptions } from "#alya/utils";
@@ -33,7 +32,7 @@ const option = {
 
 @Declare({
 	name: "fake-tweet",
-	description: "Make users tweet something ;)",
+	description: "Make users tweet something",
 	aliases: ["fake-tweet"],
 	integrationTypes: ["GuildInstall"],
 	contexts: ["Guild"],

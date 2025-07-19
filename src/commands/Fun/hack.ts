@@ -22,7 +22,7 @@ const option = {
 
 @Declare({
 	name: "hack",
-	description: "Hack the mentioned user. 'its fake so no worries.'",
+	description: "Hack the mentioned user",
 	aliases: ["hack"],
 	integrationTypes: ["GuildInstall"],
 	contexts: ["Guild"],
@@ -36,13 +36,16 @@ export default class HackCommand extends Command {
 		const target = options.user;
 
 		if (!target) {
-			const components = new Container()
-				.addComponents(
-					new TextDisplay()
-						.setContent("**please pick a target to hack!**\n\n*Note: This is fake, just for fun*")
-				);
-			
-			return ctx.editOrReply({ components: [components], flags: MessageFlags.IsComponentsV2 });
+			const components = new Container().addComponents(
+				new TextDisplay().setContent(
+					"**please pick a target to hack!**\n\n*Note: This is fake, just for fun*",
+				),
+			);
+
+			return ctx.editOrReply({
+				components: [components],
+				flags: MessageFlags.IsComponentsV2,
+			});
 		}
 
 		const steps = [
@@ -58,13 +61,14 @@ export default class HackCommand extends Command {
 		];
 
 		for (const step of steps) {
-			const components = new Container()
-				.addComponents(
-					new TextDisplay()
-						.setContent(step)
-				);
-			
-			await ctx.editOrReply({ components: [components], flags: MessageFlags.IsComponentsV2 });
+			const components = new Container().addComponents(
+				new TextDisplay().setContent(step),
+			);
+
+			await ctx.editOrReply({
+				components: [components],
+				flags: MessageFlags.IsComponentsV2,
+			});
 			await new Promise((res) => setTimeout(res, 1500));
 		}
 
@@ -265,44 +269,52 @@ export default class HackCommand extends Command {
 		const HackCreditCard =
 			creditCards[Math.floor(Math.random() * creditCards.length)];
 
-		const components = new Container()
-			.addComponents(
-				new TextDisplay()
-					.setContent(`# **${target.globalName ?? target.username}'s** Hacked Data\n\n🔓 **Mission Complete!** Successfully infiltrated all systems.`),
-				
-				new Separator(),
-				
-				new TextDisplay()
-					.setContent(`**🔐 Device Password:**\n\`${HackDevicePassword}\``),
-					
-				new TextDisplay()
-					.setContent(`**🆔 System ID:**\n\`${HackId}\``),
-					
-				new TextDisplay()
-					.setContent(`**📶 WiFi Access:**\n**Network:** ${HackWifiName}\n**Password:** \`${HackWifiPassword}\``),
-					
-				new TextDisplay()
-					.setContent(`**📍 Location:**\n${HackLocation}`),
-					
-				new TextDisplay()
-					.setContent(`**👤 Identity:**\n**Name:** ${target.globalName ?? target.username}\n**Username:** ${target.username}`),
-					
-				new TextDisplay()
-					.setContent(`**🔑 Stored Passwords:**\n\`\`\`\n${HackPasswords}\n\`\`\``),
-					
-				new TextDisplay()
-					.setContent(`**📋 Personal Information:**\n**Name:** ${target.globalName ?? target.username}\n**Username:** ${target.username}\n**Email:** ${HackEmail}\n**DOB:** ${HackDob}`),
-					
-				new TextDisplay()
-					.setContent(`**💳 Credit Card:**\n\`${HackCreditCard}\``),
-					
-				new Separator(),
-				
-				new TextDisplay()
-					.setContent(`-# Hacked by ${ctx.author.tag}\n-# This is completely fake and for entertainment purposes only`)
-			);
+		const components = new Container().addComponents(
+			new TextDisplay().setContent(
+				`# **${target.globalName ?? target.username}'s** Hacked Data\n\n🔓 **Mission Complete!** Successfully infiltrated all systems.`,
+			),
+
+			new Separator(),
+
+			new TextDisplay().setContent(
+				`**🔐 Device Password:**\n\`${HackDevicePassword}\``,
+			),
+
+			new TextDisplay().setContent(`**🆔 System ID:**\n\`${HackId}\``),
+
+			new TextDisplay().setContent(
+				`**📶 WiFi Access:**\n**Network:** ${HackWifiName}\n**Password:** \`${HackWifiPassword}\``,
+			),
+
+			new TextDisplay().setContent(`**📍 Location:**\n${HackLocation}`),
+
+			new TextDisplay().setContent(
+				`**👤 Identity:**\n**Name:** ${target.globalName ?? target.username}\n**Username:** ${target.username}`,
+			),
+
+			new TextDisplay().setContent(
+				`**🔑 Stored Passwords:**\n\`\`\`\n${HackPasswords}\n\`\`\``,
+			),
+
+			new TextDisplay().setContent(
+				`**📋 Personal Information:**\n**Name:** ${target.globalName ?? target.username}\n**Username:** ${target.username}\n**Email:** ${HackEmail}\n**DOB:** ${HackDob}`,
+			),
+
+			new TextDisplay().setContent(
+				`**💳 Credit Card:**\n\`${HackCreditCard}\``,
+			),
+
+			new Separator(),
+
+			new TextDisplay().setContent(
+				`-# Hacked by ${ctx.author.tag}\n-# This is completely fake and for entertainment purposes only`,
+			),
+		);
 
 		await new Promise((res) => setTimeout(res, 1500));
-		await ctx.editOrReply({ components: [components], flags: MessageFlags.IsComponentsV2 });
+		await ctx.editOrReply({
+			components: [components],
+			flags: MessageFlags.IsComponentsV2,
+		});
 	}
 }

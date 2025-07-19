@@ -3,12 +3,12 @@
 	// This file contains snippets for the Soundy, which is used in the Stelle Music project.
 	// The snippets are designed to help developers quickly create commands, components, and subcommands.
 
-	"Create a new Soundy command.": {
-		"prefix": "@soundy:command",
+	"Create a new Alya command.": {
+		"prefix": "@alya:command",
 		"scope": "typescript",
 		"body": [
 			"import { Declare, Command } from \"seyfert\";",
-			"import { SoundyOptions } from \"#soundy/decorators\";",
+			"import { AlyaOptions } from \"#alya/decorators\";",
 			"",
 			"@Declare({",
 			"    name: \"${1:example}\",",
@@ -20,10 +20,10 @@
 			"export default class ${3:Example}Command extends Command {}",
 			""
 		],
-		"description": "Create a new Soundy command."
+		"description": "Create a new Alya command."
 	},
-	"Create a new Soundy component.": {
-		"prefix": "@soundy:component",
+	"Create a new Alya component.": {
+		"prefix": "@alya:component",
 		"scope": "typescript",
 		"body": [
 			"import { ComponentCommand, type ComponentContext } from \"seyfert\";",
@@ -38,10 +38,10 @@
 			"    async run(ctx: ComponentContext<typeof this.componentType>): Promise<void> {}",
 			"}"
 		],
-		"description": "Create a new Soundy component."
+		"description": "Create a new Alya component."
 	},
-	"Create a new Soundy subcommand.": {
-		"prefix": "@soundy:subcommand",
+	"Create a new Alya subcommand.": {
+		"prefix": "@alya:subcommand",
 		"scope": "typescript",
 		"body": [
 			"import { Declare, type CommandContext, SubCommand } from \"seyfert\";",
@@ -54,6 +54,6 @@
 			"    async run(ctx: CommandContext): Promise<void> {}",
 			"}"
 		],
-		"description": "Create a new Soundy subcommand."
+		"description": "Create a new Alya subcommand."
 	}
 }

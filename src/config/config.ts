@@ -4,7 +4,7 @@ import { emoji } from "./emoji";
 const { TOKEN, DATABASE_URL, DATABASE_PASSWORD } = process.env;
 
 export const Configuration: AlyaConfiguration = {
-	defaultPrefix: "s!", // Default prefix for commands
+	defaultPrefix: "a!", // Default prefix for commands
 	defaultSearchPlatform: "spotify", // Default search platform for music commands
 	defaultVolume: 60, // Default volume level for music playback
 	defaultLocale: "en-US", // Default locale for the bot
@@ -45,7 +45,7 @@ export const Configuration: AlyaConfiguration = {
 	},
 	webhooks: {
 		nodeLog:
-			"https://discord.com/api/webhooks/1353572989010055230/a7HsUJAJXCQQv6MuAtHcQDdT0fTn_Cl6XisWcpat90QyzxiZvApbnJM-WDT6ZLWJfIzQ", // Node logs
+			"https://discord.com/api/webhooks/1325160873311993876/MGqy3SJNJg_ZQx63r7SSldWOSlLHoVOF0ojuxF7OcnO7OK-uPmuWJnlmlJDikfQuVn95", // Node logs
 		guildLog:
 			"https://discord.com/api/webhooks/1326531769385619517/PLS9JJy6l1TaSTCfpW061pGMGAtxwQFuNEWFvtaw8w-ULKK5uYMCBesmfcMT7hlwxF0j", // Guild logs
 		commandLog:
