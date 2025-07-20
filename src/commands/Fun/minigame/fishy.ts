@@ -10,6 +10,7 @@ import {
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -54,6 +55,20 @@ const playerData: {
 	[userId: string]: { balance: number; fishes: { [key: string]: number } };
 } = {};
 
+// Define fish type interface
+interface FishData {
+	emoji: string;
+	name: string;
+	price: number;
+	rarity: number;
+}
+
+// Define player interface
+interface PlayerData {
+	balance: number;
+	fishes: { [key: string]: number };
+}
+
 @Declare({
 	name: "fishy",
 	description: "Go fishing and manage your fish inventory!",
@@ -74,13 +89,20 @@ export default class FishyCommand extends SubCommand {
 			};
 		}
 
-		const player = playerData[author.id]!;
+		const player = playerData[author.id];
+		if (!player) {
+			playerData[author.id] = {
+				balance: 50,
+				fishes: { junk: 0, common: 0, uncommon: 0, rare: 0 },
+			};
+		}
+		const playerGameData = playerData[author.id] as PlayerData;
 		const fishingRodPrice = 10;
 
 		if (action === "fish") {
-			await this.handleFishing(ctx, player, fishingRodPrice);
+			await this.handleFishing(ctx, playerGameData, fishingRodPrice);
 		} else if (action === "inventory") {
-			await this.showInventory(ctx, player);
+			await this.showInventory(ctx, playerGameData);
 		} else if (action === "sell") {
 			if (!fishType) {
 				await ctx.editOrReply({
@@ -89,13 +111,13 @@ export default class FishyCommand extends SubCommand {
 				});
 				return;
 			}
-			await this.handleSelling(ctx, player, fishType, amount);
+			await this.handleSelling(ctx, playerGameData, fishType, amount);
 		}
 	}
 
 	private async handleFishing(
 		ctx: CommandContext<typeof options>,
-		player: any,
+		player: PlayerData,
 		rodPrice: number,
 	) {
 		if (player.balance < rodPrice) {
@@ -114,12 +136,12 @@ export default class FishyCommand extends SubCommand {
 
 		// Game state for fishing
 		let gamePhase: "fishing" | "caught" | "ended" = "fishing";
-		let caughtFish: { type: string; fish: any } | null = null;
+		let caughtFish: { type: string; fish: FishData } | null = null;
 		let fishingProgress = 0;
 		let fishingInterval: NodeJS.Timeout | null = null;
 
 		// Determine what fish was caught
-		const determineCatch = (): { type: string; fish: any } => {
+		const determineCatch = (): { type: string; fish: FishData } => {
 			const roll = Math.random() * 100;
 			let cumulative = 0;
 
@@ -215,7 +237,9 @@ export default class FishyCommand extends SubCommand {
 					// Deduct rod cost and catch fish
 					player.balance -= rodPrice;
 					caughtFish = determineCatch();
-					player.fishes[caughtFish.type]++;
+					player.fishes = player.fishes || {};
+					player.fishes[caughtFish.type] =
+						(player.fishes[caughtFish.type] || 0) + 1;
 					gamePhase = "caught";
 
 					try {
@@ -240,24 +264,24 @@ export default class FishyCommand extends SubCommand {
 		};
 
 		// Send initial message and start fishing
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getActionButtons()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		await startFishing();
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				i.user.id === ctx.author.id && i.customId.startsWith("fishy_"),
 			idle: 60000, // 1 minute
 		});
 
-		collector.run(/fishy_(.+)/, async (interaction: any) => {
+		collector.run(/fishy_(.+)/, async (interaction: ComponentInteraction) => {
 			const action = interaction.customId.split("_")[1];
 
 			if (action === "again") {
@@ -305,7 +329,7 @@ export default class FishyCommand extends SubCommand {
 
 	private async showInventory(
 		ctx: CommandContext<typeof options>,
-		player: any,
+		player: PlayerData,
 	) {
 		const fishList = Object.entries(fishTypes)
 			.map(([type, fish]) => {
@@ -339,7 +363,10 @@ export default class FishyCommand extends SubCommand {
 		});
 	}
 
-	private async showInventoryInModal(interaction: any, player: any) {
+	private async showInventoryInModal(
+		interaction: ComponentInteraction,
+		player: PlayerData,
+	) {
 		const fishList = Object.entries(fishTypes)
 			.map(([type, fish]) => {
 				const count = player.fishes[type] || 0;
@@ -364,7 +391,7 @@ export default class FishyCommand extends SubCommand {
 
 	private async handleSelling(
 		ctx: CommandContext<typeof options>,
-		player: any,
+		player: PlayerData,
 		fishType: string,
 		amount: number,
 	) {
@@ -390,7 +417,8 @@ export default class FishyCommand extends SubCommand {
 		const totalPrice = sellAmount * fish.price;
 
 		// Update player data
-		player.fishes[fishType] -= sellAmount;
+		player.fishes = player.fishes || {};
+		player.fishes[fishType] = (player.fishes[fishType] || 0) - sellAmount;
 		player.balance += totalPrice;
 
 		const components = new Container().addComponents(

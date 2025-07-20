@@ -7,6 +7,7 @@ import {
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -315,16 +316,14 @@ export default class WouldYouRatherCommand extends SubCommand {
 			return buttons;
 		};
 
-		// Send loading message first
-		const message = (await ctx.write(
+		// Send initial message
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getChoiceButtons()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
-
-		// Fetch question
+		); // Fetch question
 		const questionFetched = await fetchQuestion();
 
 		if (!questionFetched) {
@@ -335,7 +334,7 @@ export default class WouldYouRatherCommand extends SubCommand {
 					components: [],
 					flags: MessageFlags.IsComponentsV2, // Always include this flag
 				});
-			} catch (error: any) {
+			} catch (error: unknown) {
 				console.error("Error displaying load failure:", error);
 			}
 			return;
@@ -354,13 +353,14 @@ export default class WouldYouRatherCommand extends SubCommand {
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				i.user.id === author.id && i.customId.startsWith("wyr_"),
 			idle: 300000, // 5 minutes
 		});
 
-		collector.run(/wyr_(.+)/, async (interaction: any) => {
+		collector.run(/wyr_(.+)/, async (interaction: ComponentInteraction) => {
 			const action = interaction.customId.split("_")[1];
+			if (!action) return;
 
 			if (action === "new") {
 				// Reset game state
@@ -374,7 +374,7 @@ export default class WouldYouRatherCommand extends SubCommand {
 						components: [getComponents(), ...getChoiceButtons()],
 						flags: MessageFlags.IsComponentsV2,
 					});
-				} catch (error: any) {
+				} catch (error: unknown) {
 					console.error("Error updating interaction for new question:", error);
 				}
 
@@ -389,7 +389,7 @@ export default class WouldYouRatherCommand extends SubCommand {
 							components: [],
 							flags: MessageFlags.IsComponentsV2, // Always include this flag
 						});
-					} catch (error: any) {
+					} catch (error: unknown) {
 						console.error("Error displaying new question load failure:", error);
 					}
 					collector.stop("error");
@@ -403,10 +403,10 @@ export default class WouldYouRatherCommand extends SubCommand {
 						components: [getComponents(), ...getChoiceButtons()],
 						flags: MessageFlags.IsComponentsV2,
 					});
-				} catch (error: any) {
+				} catch (error: unknown) {
 					console.error("Error updating with new question:", error);
 					if (
-						typeof error.message === "string" &&
+						error instanceof Error &&
 						error.message.includes("Unknown Webhook")
 					) {
 						console.log("Webhook error suppressed, continuing game");
@@ -431,7 +431,7 @@ export default class WouldYouRatherCommand extends SubCommand {
 						components: [getComponents(), ...getChoiceButtons()],
 						flags: MessageFlags.IsComponentsV2,
 					});
-				} catch (error: any) {
+				} catch (error: unknown) {
 					console.error("Error updating choice selection:", error);
 				}
 			}
@@ -446,11 +446,11 @@ export default class WouldYouRatherCommand extends SubCommand {
 						components: [getComponents(true), ...getChoiceButtons(true)],
 						flags: MessageFlags.IsComponentsV2,
 					})
-					.catch((error: any) => {
+					.catch((error: unknown) => {
 						console.error("Error updating message on collector end:", error);
 						// Suppress webhook errors - they're usually due to expired messages
 						if (
-							typeof error.message === "string" &&
+							error instanceof Error &&
 							(error.message.includes("Unknown Webhook") ||
 								error.message.includes(
 									"MESSAGE_CANNOT_REMOVE_COMPONENTS_V2_FLAG",

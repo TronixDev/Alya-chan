@@ -7,6 +7,7 @@ import {
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -26,7 +27,7 @@ export default class SnakeCommand extends SubCommand {
 		const HEIGHT = 10;
 
 		// Game state
-		let snake: Position[] = [{ x: 5, y: 5 }];
+		const snake: Position[] = [{ x: 5, y: 5 }];
 		let food: Position = { x: 1, y: 1 };
 		let direction: "up" | "down" | "left" | "right" | null = null;
 		let score = 0;
@@ -94,7 +95,8 @@ export default class SnakeCommand extends SubCommand {
 		const moveSnake = (): boolean => {
 			if (!direction) return true; // No movement yet
 
-			const head = snake[0]!;
+			const head = snake[0];
+			if (!head) return false; // Snake is empty
 			let newHead: Position;
 
 			switch (direction) {
@@ -149,7 +151,7 @@ export default class SnakeCommand extends SubCommand {
 		};
 
 		const getComponents = () => {
-			let statusText;
+			let statusText: string;
 			if (gameOver) {
 				if (won) {
 					statusText = `🎉 **Perfect Game!** You filled the entire board!`;
@@ -221,22 +223,22 @@ export default class SnakeCommand extends SubCommand {
 		updateFoodLocation();
 
 		// Send initial message
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getControlButtons()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				i.user.id === author.id && i.customId.startsWith("snake_"),
 			idle: 120000, // 2 minutes
 		});
 
-		collector.run(/snake_(.+)/, async (interaction: any) => {
+		collector.run(/snake_(.+)/, async (interaction: ComponentInteraction) => {
 			const action = interaction.customId.split("_")[1];
 
 			if (action === "stop") {
@@ -249,7 +251,7 @@ export default class SnakeCommand extends SubCommand {
 				return;
 			}
 
-			if (["up", "down", "left", "right"].includes(action)) {
+			if (action && ["up", "down", "left", "right"].includes(action)) {
 				direction = action as "up" | "down" | "left" | "right";
 
 				// Move snake immediately

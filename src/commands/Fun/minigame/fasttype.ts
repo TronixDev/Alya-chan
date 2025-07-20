@@ -1,6 +1,6 @@
 import {
 	Declare,
-	CommandContext,
+	type CommandContext,
 	SubCommand,
 	Options,
 	createStringOption,
@@ -11,6 +11,8 @@ import {
 	Button,
 	TextInput,
 	Modal,
+	type ComponentInteraction,
+	type ModalSubmitInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags, TextInputStyle } from "seyfert/lib/types";
 
@@ -82,15 +84,15 @@ export default class FastTypeCommand extends SubCommand {
 		let userInput = "";
 		let startTime = 0;
 		let endTime = 0;
-		let timeLimit = 60000; // 60 seconds
+		const timeLimit = 60000; // 60 seconds
 		let countdownInterval: NodeJS.Timeout | null = null;
 		let gameTimeout: NodeJS.Timeout | null = null;
 		let countdown = 3;
 
 		// Initialize game
 		const sentenceList = sentences[difficulty as keyof typeof sentences];
-		targetSentence =
-			sentenceList[Math.floor(Math.random() * sentenceList.length)]!;
+		const randomIndex = Math.floor(Math.random() * sentenceList.length);
+		targetSentence = sentenceList[randomIndex] || "Default sentence";
 
 		// Helper functions
 		const calculateWPM = (text: string, timeInMs: number): number => {
@@ -260,20 +262,20 @@ export default class FastTypeCommand extends SubCommand {
 		};
 
 		// Send initial message
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getGameButtons()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Start countdown immediately
 		await startCountdown();
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				i.user.id === author.id && i.customId.startsWith("fasttype_"),
 			idle: 300000, // 5 minutes
 		});
@@ -281,82 +283,85 @@ export default class FastTypeCommand extends SubCommand {
 		// Message collector for typing - We'll handle this through the button collector instead
 		// Since Seyfert doesn't support message collectors the same way, we'll provide instructions
 
-		collector.run(/fasttype_(.+)/, async (interaction: any) => {
-			const action = interaction.customId.split("_")[1];
+		collector.run(
+			/fasttype_(.+)/,
+			async (interaction: ComponentInteraction) => {
+				const action = interaction.customId.split("_")[1];
 
-			if (action === "new") {
-				// Reset game with same difficulty
-				gamePhase = "countdown";
-				targetSentence =
-					sentenceList[Math.floor(Math.random() * sentenceList.length)]!;
-				userInput = "";
-				countdown = 3;
+				if (action === "new") {
+					// Reset game with same difficulty
+					gamePhase = "countdown";
+					const randomIndex = Math.floor(Math.random() * sentenceList.length);
+					targetSentence = sentenceList[randomIndex] || "Default sentence";
+					userInput = "";
+					countdown = 3;
 
-				// Clear existing timers
-				if (countdownInterval) clearInterval(countdownInterval);
-				if (gameTimeout) clearTimeout(gameTimeout);
+					// Clear existing timers
+					if (countdownInterval) clearInterval(countdownInterval);
+					if (gameTimeout) clearTimeout(gameTimeout);
 
-				await interaction.update({
-					components: [getComponents(), ...getGameButtons()],
-					flags: MessageFlags.IsComponentsV2,
-				});
-
-				// Start new countdown
-				await startCountdown();
-				return;
-			}
-
-			if (action === "difficulty") {
-				await interaction.write({
-					content:
-						"🎮 **Select a new difficulty:**\n\n**Easy:** Simple sentences\n**Medium:** Programming quotes\n**Hard:** Complex technical texts\n\nUse the command `/fasttype [difficulty]` to start a new game!",
-					flags: MessageFlags.Ephemeral,
-				});
-				return;
-			}
-
-			if (action === "stop") {
-				gamePhase = "ended";
-				endTime = Date.now();
-				if (countdownInterval) clearInterval(countdownInterval);
-				if (gameTimeout) clearTimeout(gameTimeout);
-
-				await interaction.update({
-					components: [getComponents(), ...getGameButtons()],
-					flags: MessageFlags.IsComponentsV2,
-				});
-				return;
-			}
-
-			if (action === "submit") {
-				// Create modal for typing input using Seyfert's Modal builder
-				const input = new TextInput()
-					.setCustomId("fasttype_modal_input")
-					.setLabel("Your Answer")
-					.setStyle(TextInputStyle.Paragraph)
-					.setPlaceholder("Type the sentence above here...")
-					.setRequired(true);
-
-				const row = new ActionRow<TextInput>().setComponents([input]);
-				const modal = new Modal()
-					.setCustomId("fasttype_modal")
-					.setTitle("Fast Type - Submit Your Answer")
-					.setComponents([row])
-					.run(async (i: any) => {
-						// Handle modal submit
-						const modalValue = i.getInputValue("fasttype_modal_input", true);
-						userInput = modalValue;
-						gamePhase = "ended";
-						endTime = Date.now();
-						await i.update({
-							components: [getComponents(), ...getGameButtons()],
-							flags: MessageFlags.IsComponentsV2,
-						});
+					await interaction.update({
+						components: [getComponents(), ...getGameButtons()],
+						flags: MessageFlags.IsComponentsV2,
 					});
 
-				await interaction.modal(modal);
-			}
-		});
+					// Start new countdown
+					await startCountdown();
+					return;
+				}
+
+				if (action === "difficulty") {
+					await interaction.write({
+						content:
+							"🎮 **Select a new difficulty:**\n\n**Easy:** Simple sentences\n**Medium:** Programming quotes\n**Hard:** Complex technical texts\n\nUse the command `/fasttype [difficulty]` to start a new game!",
+						flags: MessageFlags.Ephemeral,
+					});
+					return;
+				}
+
+				if (action === "stop") {
+					gamePhase = "ended";
+					endTime = Date.now();
+					if (countdownInterval) clearInterval(countdownInterval);
+					if (gameTimeout) clearTimeout(gameTimeout);
+
+					await interaction.update({
+						components: [getComponents(), ...getGameButtons()],
+						flags: MessageFlags.IsComponentsV2,
+					});
+					return;
+				}
+
+				if (action === "submit") {
+					// Create modal for typing input using Seyfert's Modal builder
+					const input = new TextInput()
+						.setCustomId("fasttype_modal_input")
+						.setLabel("Your Answer")
+						.setStyle(TextInputStyle.Paragraph)
+						.setPlaceholder("Type the sentence above here...")
+						.setRequired(true);
+
+					const row = new ActionRow<TextInput>().setComponents([input]);
+					const modal = new Modal()
+						.setCustomId("fasttype_modal")
+						.setTitle("Fast Type - Submit Your Answer")
+						.setComponents([row])
+						.run(async (i: ModalSubmitInteraction) => {
+							// Handle modal submit
+							const modalValue = i.getInputValue("fasttype_modal_input", true);
+							userInput = modalValue;
+							gamePhase = "ended";
+							endTime = Date.now();
+							await i.update({
+								components: [getComponents(), ...getGameButtons()],
+								flags: MessageFlags.IsComponentsV2,
+							});
+						});
+
+					await interaction.modal(modal);
+				}
+			},
+		);
 
 		// ...existing code...
 

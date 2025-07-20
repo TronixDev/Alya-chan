@@ -11,6 +11,8 @@ import {
 	Button,
 	TextInput,
 	Modal,
+	type ComponentInteraction,
+	type ModalSubmitInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags, TextInputStyle } from "seyfert/lib/types";
 
@@ -132,6 +134,42 @@ interface PokemonData {
 	hiddenSprite: string;
 }
 
+interface PokemonType {
+	type: {
+		name: string;
+	};
+}
+
+interface PokemonAbility {
+	ability: {
+		name: string;
+	};
+}
+
+interface PokemonApiData {
+	id: number;
+	name: string;
+	types: PokemonType[];
+	abilities: PokemonAbility[];
+	species: {
+		url: string;
+	};
+	sprites: {
+		front_default: string;
+		other?: {
+			"official-artwork"?: {
+				front_default: string;
+			};
+		};
+	};
+}
+
+interface PokemonSpeciesData {
+	generation: {
+		url: string;
+	};
+}
+
 @Declare({
 	name: "guesspokemon",
 	description: "Guess the Pokemon from its silhouette!",
@@ -160,24 +198,27 @@ export default class GuessPokemonCommand extends SubCommand {
 				);
 
 				if (response.ok) {
-					const data = await response.json();
+					const data = (await response.json()) as PokemonApiData;
 
 					// Get species data for generation info
 					const speciesResponse = await fetch(data.species.url);
-					const speciesData = await speciesResponse.json();
+					const speciesData =
+						(await speciesResponse.json()) as PokemonSpeciesData;
 
 					pokemonData = {
 						name: data.name.charAt(0).toUpperCase() + data.name.slice(1),
 						types: data.types.map(
-							(t: any) =>
+							(t: PokemonType) =>
 								t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1),
 						),
 						abilities: data.abilities.map(
-							(a: any) =>
+							(a: PokemonAbility) =>
 								a.ability.name.charAt(0).toUpperCase() +
 								a.ability.name.slice(1).replace("-", " "),
 						),
-						generation: speciesData.generation.url.split("/").slice(-2)[0],
+						generation: parseInt(
+							speciesData.generation.url.split("/").slice(-2)[0] || "1",
+						),
 						sprite:
 							data.sprites.other?.["official-artwork"]?.front_default ||
 							data.sprites.front_default,
@@ -187,6 +228,7 @@ export default class GuessPokemonCommand extends SubCommand {
 					// Filter by generation if specified
 					if (
 						generation !== "all" &&
+						pokemonData &&
 						pokemonData.generation !== parseInt(generation)
 					) {
 						throw new Error("Generation mismatch");
@@ -208,10 +250,11 @@ export default class GuessPokemonCommand extends SubCommand {
 			}
 
 			if (filteredPokemon.length > 0) {
+				const randomIndex = Math.floor(Math.random() * filteredPokemon.length);
 				pokemonData =
-					filteredPokemon[Math.floor(Math.random() * filteredPokemon.length)]!;
+					filteredPokemon[randomIndex] || fallbackPokemon[0] || null;
 				isAPIData = false;
-				return true;
+				return pokemonData !== null;
 			}
 
 			return false;
@@ -326,13 +369,13 @@ export default class GuessPokemonCommand extends SubCommand {
 		};
 
 		// Send loading message first
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getGameButtons()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Fetch Pokemon data
 		const pokemonFetched = await fetchPokemon();
@@ -361,13 +404,14 @@ export default class GuessPokemonCommand extends SubCommand {
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				i.user.id === author.id && i.customId.startsWith("pokemon_"),
 			idle: 120000, // 2 minutes
 		});
 
-		collector.run(/pokemon_(.+)/, async (interaction: any) => {
+		collector.run(/pokemon_(.+)/, async (interaction: ComponentInteraction) => {
 			const action = interaction.customId.split("_")[1];
+			if (!action) return;
 
 			if (action === "new") {
 				// Reset game
@@ -462,7 +506,7 @@ export default class GuessPokemonCommand extends SubCommand {
 					.setCustomId("pokemon_modal")
 					.setTitle("Guess the Pokemon")
 					.setComponents([row])
-					.run(async (i: any) => {
+					.run(async (i: ModalSubmitInteraction) => {
 						// Handle modal submit
 						const guessValue = i.getInputValue("pokemon_modal_input", true);
 						userGuess = guessValue;

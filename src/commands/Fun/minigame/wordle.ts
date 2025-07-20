@@ -9,6 +9,7 @@ import {
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -109,18 +110,24 @@ export default class WordleCommand extends SubCommand {
 		let targetWord = "";
 		let guesses: string[] = [];
 		let currentGuess = "";
-		let maxGuesses = 6;
+		const maxGuesses = 6;
 		let gameResult: "win" | "lose" | null = null;
 
 		// Initialize game
 		const wordList = wordLists[difficulty as keyof typeof wordLists];
-		targetWord = wordList[Math.floor(Math.random() * wordList.length)]!;
+		const randomIndex = Math.floor(Math.random() * wordList.length);
+		const selectedWord = wordList[randomIndex];
+		if (!selectedWord) {
+			return ctx.editOrReply({
+				content: "❌ Failed to select a word for the game!",
+			});
+		}
+		targetWord = selectedWord;
 
 		// Helper functions
 		const getLetterStatus = (
 			letter: string,
 			position: number,
-			word: string,
 		): "correct" | "wrong-position" | "wrong" => {
 			if (targetWord[position] === letter) {
 				return "correct";
@@ -135,7 +142,7 @@ export default class WordleCommand extends SubCommand {
 			return guess
 				.split("")
 				.map((letter, index) => {
-					const status = getLetterStatus(letter, index, guess);
+					const status = getLetterStatus(letter, index);
 					switch (status) {
 						case "correct":
 							return `🟩${letter}`;
@@ -153,7 +160,10 @@ export default class WordleCommand extends SubCommand {
 
 			// Show completed guesses
 			for (let i = 0; i < guesses.length; i++) {
-				display += `**${i + 1}.** ${formatGuessDisplay(guesses[i]!)}\n`;
+				const guess = guesses[i];
+				if (guess) {
+					display += `**${i + 1}.** ${formatGuessDisplay(guess)}\n`;
+				}
 			}
 
 			// Show current guess being typed
@@ -240,7 +250,9 @@ export default class WordleCommand extends SubCommand {
 				const row3 = new ActionRow<Button>();
 
 				for (let i = 0; i < alphabet.length; i++) {
-					const letter = alphabet[i]!;
+					const letter = alphabet[i];
+					if (!letter) continue;
+
 					const button = new Button()
 						.setCustomId(`wordle_letter_${letter}`)
 						.setLabel(letter)
@@ -258,31 +270,35 @@ export default class WordleCommand extends SubCommand {
 		};
 
 		// Send initial message
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getGameButtons()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				i.user.id === author.id && i.customId.startsWith("wordle_"),
 			idle: 300000, // 5 minutes
 		});
 
 		// ...existing code...
 
-		collector.run(/wordle_(.+)/, async (interaction: any) => {
+		collector.run(/wordle_(.+)/, async (interaction: ComponentInteraction) => {
 			const actionParts = interaction.customId.split("_");
 			const action = actionParts[1];
 
 			if (action === "new") {
 				// Reset game
 				gamePhase = "playing";
-				targetWord = wordList[Math.floor(Math.random() * wordList.length)]!;
+				const newRandomIndex = Math.floor(Math.random() * wordList.length);
+				const newSelectedWord = wordList[newRandomIndex];
+				if (newSelectedWord) {
+					targetWord = newSelectedWord;
+				}
 				guesses = [];
 				currentGuess = "";
 				gameResult = null;

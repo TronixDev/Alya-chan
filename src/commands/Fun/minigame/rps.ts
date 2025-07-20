@@ -9,6 +9,7 @@ import {
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -89,7 +90,7 @@ export default class RockPaperScissorsCommand extends SubCommand {
 		};
 
 		const getComponents = () => {
-			let statusText;
+			let statusText: string;
 			let choicesDisplay = "";
 
 			if (gamePhase === "waiting") {
@@ -108,6 +109,8 @@ export default class RockPaperScissorsCommand extends SubCommand {
 				} else {
 					statusText = `🎉 **${winner} wins!**`;
 				}
+			} else {
+				statusText = "🎮 **Game in progress...**";
 			}
 
 			return new Container().addComponents(
@@ -183,24 +186,25 @@ export default class RockPaperScissorsCommand extends SubCommand {
 		};
 
 		// Send initial message
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getGameButtons()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				(i.user.id === author.id || i.user.id === opponent.id) &&
 				i.customId.startsWith("rps_"),
 			idle: 180000, // 3 minutes
 		});
 
-		collector.run(/rps_(.+)/, async (interaction: any) => {
+		collector.run(/rps_(.+)/, async (interaction: ComponentInteraction) => {
 			const action = interaction.customId.split("_")[1];
+			if (!action) return;
 
 			if (action === "accept") {
 				if (interaction.user.id !== opponent.id) {

@@ -15,7 +15,14 @@ import {
 import { MessageFlags } from "seyfert/lib/types";
 import { AlyaCategory } from "#alya/types";
 import { AlyaOptions } from "#alya/utils";
-import { createCanvas, loadImage } from "@napi-rs/canvas";
+import { createCanvas, loadImage, GlobalFonts } from "@napi-rs/canvas";
+import { join } from "node:path";
+
+// Register the Norwester font
+GlobalFonts.registerFromPath(
+	join(process.cwd(), "src/utils/Font/norwester.otf"),
+	"Norwester",
+);
 
 const options = {
 	user: createUserOption({
@@ -44,10 +51,8 @@ export default class ShipCommand extends Command {
 		const member = ctx.options.member;
 
 		try {
-			// Defer the reply to give us time to generate the image
 			await ctx.deferReply();
 
-			// Generate random love percentage based on user IDs for consistency
 			const combined = user.id + member.id;
 			const hash = [...combined].reduce((a, b) => {
 				a = (a << 5) - a + b.charCodeAt(0);
@@ -55,89 +60,21 @@ export default class ShipCommand extends Command {
 			}, 0);
 			const lovePercentage = Math.abs(hash) % 101;
 
-			// Create ship name by combining usernames
 			const name1 = user.username.slice(0, Math.ceil(user.username.length / 2));
 			const name2 = member.username.slice(
 				Math.floor(member.username.length / 2),
 			);
 			const shipName = name1 + name2;
 
-			// Create canvas with padding for border
-			const canvas = createCanvas(700, 350);
+			const canvas = createCanvas(1280, 720);
 			const c_ctx = canvas.getContext("2d");
 
-			// Function to draw rounded rectangle
-			function roundRect(
-				x: number,
-				y: number,
-				width: number,
-				height: number,
-				radius: number,
-			) {
-				c_ctx.beginPath();
-				c_ctx.moveTo(x + radius, y);
-				c_ctx.lineTo(x + width - radius, y);
-				c_ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-				c_ctx.lineTo(x + width, y + height - radius);
-				c_ctx.quadraticCurveTo(
-					x + width,
-					y + height,
-					x + width - radius,
-					y + height,
-				);
-				c_ctx.lineTo(x + radius, y + height);
-				c_ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-				c_ctx.lineTo(x, y + radius);
-				c_ctx.quadraticCurveTo(x, y, x + radius, y);
-				c_ctx.closePath();
-			}
-
-			// Add shadow effect
-			c_ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
-			c_ctx.shadowBlur = 15;
-			c_ctx.shadowOffsetX = 0;
-			c_ctx.shadowOffsetY = 5;
-
-			// Draw outer white border (rounded rectangle)
-			c_ctx.fillStyle = "#ffffff";
-			roundRect(0, 0, canvas.width, canvas.height, 20);
-			c_ctx.fill();
-
-			// Reset shadow for inner elements
-			c_ctx.shadowColor = "transparent";
-			c_ctx.shadowBlur = 0;
-			c_ctx.shadowOffsetX = 0;
-			c_ctx.shadowOffsetY = 0;
-
-			// Draw inner pink border (rounded rectangle)
-			c_ctx.fillStyle = "#ffd1dc";
-			roundRect(10, 10, canvas.width - 20, canvas.height - 20, 15);
-			c_ctx.fill();
-
-			// Draw gray background (rounded rectangle)
-			c_ctx.fillStyle = "#4a4a4a";
-			roundRect(20, 20, canvas.width - 40, canvas.height - 40, 10);
-			c_ctx.fill();
-
 			try {
-				// Load and draw background image
 				const backgroundImage = await loadImage(
-					"https://i.ibb.co.com/zfVwXCC/red-love-heart-element-particle-flowing-on-pink-background-romantic-cg-abstract-glitter-for-valentin.jpg",
+					"https://i.postimg.cc/655CqYWT/4-20250720-072352-0001.png",
 				);
-				c_ctx.drawImage(
-					backgroundImage,
-					20,
-					20,
-					canvas.width - 40,
-					canvas.height - 40,
-				);
-
-				// Add dark overlay to make content more visible
-				c_ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-				roundRect(20, 20, canvas.width - 40, canvas.height - 40, 10);
-				c_ctx.fill();
-			} catch (bgError) {
-				// If background image fails to load, use gradient fallback
+				c_ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+			} catch {
 				const gradient = c_ctx.createLinearGradient(
 					0,
 					0,
@@ -147,11 +84,9 @@ export default class ShipCommand extends Command {
 				gradient.addColorStop(0, "#ff6b8a");
 				gradient.addColorStop(1, "#d946ef");
 				c_ctx.fillStyle = gradient;
-				roundRect(20, 20, canvas.width - 40, canvas.height - 40, 10);
-				c_ctx.fill();
+				c_ctx.fillRect(0, 0, canvas.width, canvas.height);
 			}
 
-			// Get avatar URLs
 			const avatar1URL =
 				user.avatarURL({ extension: "png", size: 256 }) ??
 				user.defaultAvatarURL;
@@ -159,137 +94,105 @@ export default class ShipCommand extends Command {
 				member.avatarURL({ extension: "png", size: 256 }) ??
 				member.defaultAvatarURL;
 
-			// Load avatars
 			const avatar1 = await loadImage(avatar1URL);
 			const avatar2 = await loadImage(avatar2URL);
 
-			// Draw circular avatars with shadow
-			const avatarSize = 150;
+			const avatar1Width = 97.2;
+			const avatar1Height = 97.2;
+			const avatar1X = 619.4;
+			const avatar1Y = 205.1;
 
-			// Add shadow for avatars
-			c_ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
-			c_ctx.shadowBlur = 10;
-			c_ctx.shadowOffsetX = 0;
-			c_ctx.shadowOffsetY = 3;
+			const avatar2Width = 97.2;
+			const avatar2Height = 97.2;
+			const avatar2X = 151;
+			const avatar2Y = 433.7;
 
-			// First avatar
-			c_ctx.save();
-			c_ctx.beginPath();
-			c_ctx.arc(150, canvas.height / 2, avatarSize / 2, 0, Math.PI * 2);
-			c_ctx.closePath();
-			c_ctx.clip();
-			c_ctx.drawImage(
-				avatar1,
-				150 - avatarSize / 2,
-				canvas.height / 2 - avatarSize / 2,
-				avatarSize,
-				avatarSize,
-			);
-			c_ctx.restore();
-
-			// Second avatar
 			c_ctx.save();
 			c_ctx.beginPath();
 			c_ctx.arc(
-				canvas.width - 150,
-				canvas.height / 2,
-				avatarSize / 2,
+				avatar1X + avatar1Width / 2,
+				avatar1Y + avatar1Height / 2,
+				avatar1Width / 2,
 				0,
 				Math.PI * 2,
 			);
 			c_ctx.closePath();
 			c_ctx.clip();
-			c_ctx.drawImage(
-				avatar2,
-				canvas.width - 150 - avatarSize / 2,
-				canvas.height / 2 - avatarSize / 2,
-				avatarSize,
-				avatarSize,
-			);
+			c_ctx.drawImage(avatar1, avatar1X, avatar1Y, avatar1Width, avatar1Height);
 			c_ctx.restore();
 
-			// Reset shadow for heart and text
-			c_ctx.shadowColor = "transparent";
-			c_ctx.shadowBlur = 0;
-			c_ctx.shadowOffsetX = 0;
-			c_ctx.shadowOffsetY = 0;
+			c_ctx.save();
+			c_ctx.beginPath();
+			c_ctx.arc(
+				avatar2X + avatar2Width / 2,
+				avatar2Y + avatar2Height / 2,
+				avatar2Width / 2,
+				0,
+				Math.PI * 2,
+			);
+			c_ctx.closePath();
+			c_ctx.clip();
+			c_ctx.drawImage(avatar2, avatar2X, avatar2Y, avatar2Width, avatar2Height);
+			c_ctx.restore();
 
-			try {
-				// Load and draw heart image
-				const heartImage = await loadImage(
-					"https://images2.imgbox.com/2a/0e/caYn6lf1_o.png",
-				);
-				const heartSize = 140;
-				const heartX = canvas.width / 2 - heartSize / 2;
-				const heartY = canvas.height / 2 - heartSize / 2;
+			// Format and draw username 1 (left aligned) with Norwester font
+			const username1 = user.username.toUpperCase().replace(/[^A-Z0-9]/g, "");
 
-				// Add shadow for heart
-				c_ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
-				c_ctx.shadowBlur = 10;
-				c_ctx.shadowOffsetX = 0;
-				c_ctx.shadowOffsetY = 3;
-
-				// Draw heart image
-				c_ctx.drawImage(heartImage, heartX, heartY, heartSize, heartSize);
-			} catch (heartError) {
-				// If heart image fails to load, draw a simple heart shape
-				const heartSize = 120;
-				const heartX = canvas.width / 2;
-				const heartY = canvas.height / 2;
-
-				c_ctx.fillStyle = "#ff1744";
-				c_ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
-				c_ctx.shadowBlur = 10;
-				c_ctx.shadowOffsetX = 0;
-				c_ctx.shadowOffsetY = 3;
-
-				// Draw simple heart shape
-				c_ctx.save();
-				c_ctx.translate(heartX, heartY);
-				c_ctx.beginPath();
-				c_ctx.arc(
-					-heartSize / 4,
-					-heartSize / 4,
-					heartSize / 4,
-					0,
-					Math.PI * 2,
-				);
-				c_ctx.arc(heartSize / 4, -heartSize / 4, heartSize / 4, 0, Math.PI * 2);
-				c_ctx.moveTo(0, heartSize / 4);
-				c_ctx.lineTo(-heartSize / 2, -heartSize / 8);
-				c_ctx.lineTo(heartSize / 2, -heartSize / 8);
-				c_ctx.closePath();
-				c_ctx.fill();
-				c_ctx.restore();
-			}
-
-			// Add percentage text
-			c_ctx.font = "bold 45px Arial";
+			c_ctx.font = "bold 40px Norwester";
 			c_ctx.fillStyle = "#ffffff";
 			c_ctx.textAlign = "center";
 			c_ctx.textBaseline = "middle";
-			c_ctx.strokeStyle = "rgba(0, 0, 0, 0.8)";
-			c_ctx.lineWidth = 3;
-			c_ctx.strokeText(
-				`${lovePercentage}%`,
-				canvas.width / 2,
-				canvas.height / 2,
+
+			const maxWidth1 = 373.7;
+			const defaultFontSize1 = 40;
+			const measuredWidth1 = c_ctx.measureText(username1).width;
+
+			let fontSize1 = defaultFontSize1;
+			if (username1.length > 10 && measuredWidth1 > maxWidth1) {
+				fontSize1 = Math.floor(defaultFontSize1 * (maxWidth1 / measuredWidth1));
+				c_ctx.font = `bold ${fontSize1}px Norwester`;
+			}
+
+			c_ctx.fillText(
+				username1,
+				415, // x position
+				254.3, // y position
 			);
-			c_ctx.fillText(`${lovePercentage}%`, canvas.width / 2, canvas.height / 2);
 
-			// Reset shadow
-			c_ctx.shadowColor = "transparent";
-			c_ctx.shadowBlur = 0;
-			c_ctx.shadowOffsetX = 0;
-			c_ctx.shadowOffsetY = 0;
+			// Format and draw username 2 (right aligned) with Norwester font
+			const username2 = member.username.toUpperCase().replace(/[^A-Z0-9]/g, "");
 
-			// Create attachment
+			c_ctx.font = "bold 40px Norwester";
+			c_ctx.textAlign = "center";
+			c_ctx.textBaseline = "middle";
+
+			const maxWidth2 = 373.7;
+			const defaultFontSize2 = 40;
+			const measuredWidth2 = c_ctx.measureText(username2).width;
+
+			let fontSize2 = defaultFontSize2;
+			if (username2.length > 10 && measuredWidth2 > maxWidth2) {
+				fontSize2 = Math.floor(defaultFontSize2 * (maxWidth2 / measuredWidth2));
+				c_ctx.font = `bold ${fontSize2}px Norwester`;
+			}
+
+			c_ctx.fillText(
+				username2,
+				464.7, // x position
+				481, // y position
+			);
+
+			// Draw love percentage text
+			c_ctx.font = "bold 24px Arial";
+			c_ctx.fillStyle = "#ffffff";
+			c_ctx.textBaseline = "middle";
+			c_ctx.fillText(`${lovePercentage}`, 455, 363.5);
+
 			const buffer = await canvas.encode("png");
 			const attachment = new AttachmentBuilder()
 				.setName("ship.png")
 				.setFile("buffer", buffer);
 
-			// Determine love message based on percentage
 			let loveMessage = "";
 			let emoji = "💕";
 
@@ -337,19 +240,15 @@ export default class ShipCommand extends Command {
 
 			const components = new Container().addComponents(
 				new TextDisplay().setContent(`# ${emoji} Love Calculator`),
-
 				new MediaGallery().addItems(
 					new MediaGalleryItem()
 						.setMedia("attachment://ship.png")
 						.setDescription(`${shipName} Ship Results`),
 				),
-
 				new TextDisplay().setContent(
 					`## **${shipName}** Ship Results\n\n👥 **${user.globalName}** ❤️ **${member.globalName}**\n\n### Love Percentage: **${lovePercentage}%**\n\n${loveMessage}`,
 				),
-
 				new Separator(),
-
 				new TextDisplay().setContent(
 					`💡 **Fun Fact:** Ship names are created by combining parts of both usernames!\n\n-# Requested by ${ctx.author.username}`,
 				),

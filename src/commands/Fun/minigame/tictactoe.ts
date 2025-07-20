@@ -1,14 +1,15 @@
 import {
 	Declare,
-	type CommandContext,
-	SubCommand,
 	Options,
 	createUserOption,
+	type CommandContext,
+	SubCommand,
 	Container,
 	TextDisplay,
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -58,7 +59,7 @@ export default class TicTacToeCommand extends SubCommand {
 
 		// Game state
 		let gamePhase: "waiting" | "playing" | "ended" = "waiting";
-		let gameBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // 0 = empty, 1 = X (author), 2 = O (opponent)
+		const gameBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // 0 = empty, 1 = X (author), 2 = O (opponent)
 		let player1Turn = true; // true = author's turn, false = opponent's turn
 		let gameResult: "win" | "tie" | null = null;
 		let winner: string | null = null;
@@ -168,7 +169,8 @@ export default class TicTacToeCommand extends SubCommand {
 					const buttonRow = new ActionRow<Button>();
 					for (let col = 0; col < 3; col++) {
 						const index = row * 3 + col;
-						const cellValue = gameBoard[index]!;
+						const cellValue = gameBoard[index];
+						if (cellValue === undefined) continue;
 
 						buttonRow.addComponents(
 							new Button()
@@ -188,23 +190,23 @@ export default class TicTacToeCommand extends SubCommand {
 		};
 
 		// Send initial message
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getGameButtons()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				(i.user.id === author.id || i.user.id === opponent.id) &&
 				i.customId.startsWith("ttt_"),
 			idle: 300000, // 5 minutes
 		});
 
-		collector.run(/ttt_(.+)/, async (interaction: any) => {
+		collector.run(/ttt_(.+)/, async (interaction: ComponentInteraction) => {
 			const action = interaction.customId.split("_")[1];
 
 			if (action === "accept") {
@@ -244,6 +246,9 @@ export default class TicTacToeCommand extends SubCommand {
 
 			// Handle game moves
 			if (gamePhase === "playing") {
+				const action = interaction.customId.split("_")[1];
+				if (!action) return;
+
 				const cellIndex = parseInt(action);
 
 				// Check if it's the correct player's turn

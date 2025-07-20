@@ -7,6 +7,7 @@ import {
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -27,7 +28,10 @@ export default class FindEmojiCommand extends SubCommand {
 			.map(() =>
 				Array(boardSize)
 					.fill(null)
-					.map(() => emojis[Math.floor(Math.random() * emojis.length)]!),
+					.map(() => {
+						const randomIndex = Math.floor(Math.random() * emojis.length);
+						return emojis[randomIndex] || "🍉";
+					}),
 			);
 
 		// Select target emoji and ensure it exists on the board
@@ -36,7 +40,8 @@ export default class FindEmojiCommand extends SubCommand {
 
 		// Keep generating target until we find one that exists on board
 		do {
-			targetEmoji = emojis[Math.floor(Math.random() * emojis.length)]!;
+			const randomIndex = Math.floor(Math.random() * emojis.length);
+			targetEmoji = emojis[randomIndex] || "🍉";
 			targetFound = board.some((row) =>
 				row.some((cell) => cell === targetEmoji),
 			);
@@ -55,7 +60,7 @@ export default class FindEmojiCommand extends SubCommand {
 				.map((row, rowIndex) =>
 					row
 						.map((cell, colIndex) => {
-							if (showAll || revealed[rowIndex]![colIndex]) {
+							if (showAll || revealed[rowIndex]?.[colIndex]) {
 								return cell;
 							}
 							return "🔲";
@@ -66,8 +71,8 @@ export default class FindEmojiCommand extends SubCommand {
 		};
 
 		const getComponents = () => {
-			let statusText;
-			let boardToShow;
+			let statusText: string;
+			let boardToShow: string;
 
 			if (gamePhase === "memorization") {
 				statusText = `🧠 **Memorization Phase**\n\nStudy the board! Find all ${targetEmoji} emojis.\nThe board will be hidden in a few seconds...`;
@@ -101,8 +106,10 @@ export default class FindEmojiCommand extends SubCommand {
 			for (let row = 0; row < boardSize; row++) {
 				const buttonRow = new ActionRow<Button>();
 				for (let col = 0; col < boardSize; col++) {
-					const isRevealed = revealed[row]![col];
-					const buttonEmoji = isRevealed ? (board[row]![col] ?? "🔲") : "🔲";
+					const revealedRow = revealed[row];
+					const boardRow = board[row];
+					const isRevealed = revealedRow?.[col] || false;
+					const buttonEmoji = isRevealed ? (boardRow?.[col] ?? "🔲") : "🔲";
 
 					buttonRow.addComponents(
 						new Button()
@@ -121,13 +128,13 @@ export default class FindEmojiCommand extends SubCommand {
 		};
 
 		// Send initial message
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getTileButtons(true)],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Wait 5 seconds for memorization
 		setTimeout(async () => {
@@ -142,53 +149,69 @@ export default class FindEmojiCommand extends SubCommand {
 
 		// Collector for tile clicks
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				i.user.id === author.id && i.customId.startsWith("tile_"),
 			idle: 120000, // 2 minutes
 		});
 
-		collector.run(/tile_(\d)_(\d)/, async (interaction: any) => {
-			if (gamePhase !== "playing" || gameEnded) return;
+		collector.run(
+			/tile_(\d)_(\d)/,
+			async (interaction: ComponentInteraction) => {
+				if (gamePhase !== "playing" || gameEnded) return;
 
-			const row = parseInt(interaction.customId.split("_")[1]!);
-			const col = parseInt(interaction.customId.split("_")[2]!);
+				const rowStr = interaction.customId.split("_")[1];
+				const colStr = interaction.customId.split("_")[2];
+				if (!rowStr || !colStr) return;
 
-			// Reveal the tile
-			revealed[row]![col] = true;
-			const clickedEmoji = board[row]![col];
+				const row = parseInt(rowStr);
+				const col = parseInt(colStr);
 
-			// Check if clicked emoji is the target
-			if (clickedEmoji === targetEmoji) {
-				// Check if all target emojis are found
-				let allTargetsFound = true;
-				for (let r = 0; r < boardSize; r++) {
-					for (let c = 0; c < boardSize; c++) {
-						if (board[r]![c] === targetEmoji && !revealed[r]![c]) {
-							allTargetsFound = false;
-							break;
+				// Reveal the tile
+				const revealedRow = revealed[row];
+				const boardRow = board[row];
+				if (revealedRow && boardRow) {
+					revealedRow[col] = true;
+					const clickedEmoji = boardRow[col];
+
+					// Check if clicked emoji is the target
+					if (clickedEmoji === targetEmoji) {
+						// Check if all target emojis are found
+						let allTargetsFound = true;
+						for (let r = 0; r < boardSize; r++) {
+							for (let c = 0; c < boardSize; c++) {
+								const boardRowCheck = board[r];
+								const revealedRowCheck = revealed[r];
+								if (
+									boardRowCheck?.[c] === targetEmoji &&
+									!revealedRowCheck?.[c]
+								) {
+									allTargetsFound = false;
+									break;
+								}
+							}
+							if (!allTargetsFound) break;
 						}
+
+						if (allTargetsFound) {
+							gameWon = true;
+							gameEnded = true;
+							gamePhase = "ended";
+							collector.stop("won");
+						}
+					} else {
+						// Wrong emoji clicked - game over
+						gameEnded = true;
+						gamePhase = "ended";
+						collector.stop("lost");
 					}
-					if (!allTargetsFound) break;
-				}
 
-				if (allTargetsFound) {
-					gameWon = true;
-					gameEnded = true;
-					gamePhase = "ended";
-					collector.stop("won");
+					await interaction.update({
+						components: [getComponents(), ...getTileButtons(gameEnded)],
+						flags: MessageFlags.IsComponentsV2,
+					});
 				}
-			} else {
-				// Wrong emoji clicked - game over
-				gameEnded = true;
-				gamePhase = "ended";
-				collector.stop("lost");
-			}
-
-			await interaction.update({
-				components: [getComponents(), ...getTileButtons(gameEnded)],
-				flags: MessageFlags.IsComponentsV2,
-			});
-		});
+			},
+		);
 
 		// Collector end: disable buttons
 		collector.stop = async (reason: string) => {

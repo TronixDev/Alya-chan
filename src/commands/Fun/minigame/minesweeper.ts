@@ -7,6 +7,7 @@ import {
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -46,7 +47,10 @@ export default class MinesweeperCommand extends SubCommand {
 			const visited = new Set<string>();
 
 			while (toReveal.length > 0) {
-				const { x, y } = toReveal.pop()!;
+				const current = toReveal.pop();
+				if (!current) continue;
+
+				const { x, y } = current;
 				const key = `${x},${y}`;
 
 				if (
@@ -59,8 +63,10 @@ export default class MinesweeperCommand extends SubCommand {
 					continue;
 				visited.add(key);
 
-				const cell = board[y]![x]!;
-				if (cell.isMine || cell.isRevealed || cell.isFlagged) continue;
+				const row = board[y];
+				if (!row) continue;
+				const cell = row[x];
+				if (!cell || cell.isMine || cell.isRevealed || cell.isFlagged) continue;
 
 				cell.isRevealed = true;
 				blocksRevealed++;
@@ -80,7 +86,11 @@ export default class MinesweeperCommand extends SubCommand {
 			let safeSquares = 0;
 			for (let y = 0; y < boardSize; y++) {
 				for (let x = 0; x < boardSize; x++) {
-					const cell = board[y]![x]!;
+					const row = board[y];
+					if (!row) continue;
+					const cell = row[x];
+					if (!cell) continue;
+
 					if (!cell.isMine && !cell.isRevealed) {
 						return false;
 					}
@@ -93,7 +103,7 @@ export default class MinesweeperCommand extends SubCommand {
 		};
 
 		const getComponents = () => {
-			let statusText;
+			let statusText: string;
 			if (gameOver) {
 				if (won) {
 					statusText = `🎉 **You won!** You successfully avoided all mines and revealed ${blocksRevealed} blocks.`;
@@ -121,7 +131,11 @@ export default class MinesweeperCommand extends SubCommand {
 			for (let y = 0; y < boardSize; y++) {
 				const buttonRow = new ActionRow<Button>();
 				for (let x = 0; x < boardSize; x++) {
-					const cell = board[y]![x]!;
+					const row = board[y];
+					if (!row) continue;
+					const cell = row[x];
+					if (!cell) continue;
+
 					let emoji = "🔲";
 					let style = ButtonStyle.Secondary;
 
@@ -157,13 +171,22 @@ export default class MinesweeperCommand extends SubCommand {
 
 		// Ensure first click is safe by moving mine if necessary
 		const makeFirstClickSafe = (clickX: number, clickY: number) => {
-			const clickedCell = board[clickY]![clickX]!;
+			const clickRow = board[clickY];
+			if (!clickRow) return;
+			const clickedCell = clickRow[clickX];
+			if (!clickedCell) return;
+
 			if (clickedCell.isMine) {
 				// Find a safe spot to move this mine
 				for (let y = 0; y < boardSize; y++) {
 					for (let x = 0; x < boardSize; x++) {
-						if (!board[y]![x]!.isMine && (x !== clickX || y !== clickY)) {
-							board[y]![x]!.isMine = true;
+						const row = board[y];
+						if (!row) continue;
+						const cell = row[x];
+						if (!cell) continue;
+
+						if (!cell.isMine && (x !== clickX || y !== clickY)) {
+							cell.isMine = true;
 							clickedCell.isMine = false;
 							// Recalculate neighbor counts
 							board = this.calculateNeighborCounts(board, boardSize);
@@ -175,60 +198,70 @@ export default class MinesweeperCommand extends SubCommand {
 		};
 
 		// Send initial message
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getTileButtons()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Collector for tile clicks
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				i.user.id === author.id && i.customId.startsWith("mine_"),
 			idle: 300000, // 5 minutes
 		});
 
-		collector.run(/mine_(\d)_(\d)/, async (interaction: any) => {
-			if (gameOver) return;
+		collector.run(
+			/mine_(\d)_(\d)/,
+			async (interaction: ComponentInteraction) => {
+				if (gameOver) return;
 
-			const x = parseInt(interaction.customId.split("_")[1]!);
-			const y = parseInt(interaction.customId.split("_")[2]!);
-			const cell = board[y]![x]!;
+				const xStr = interaction.customId.split("_")[1];
+				const yStr = interaction.customId.split("_")[2];
+				if (!xStr || !yStr) return;
 
-			if (cell.isRevealed || cell.isFlagged) return;
+				const x = parseInt(xStr);
+				const y = parseInt(yStr);
+				const row = board[y];
+				if (!row) return;
+				const cell = row[x];
+				if (!cell) return;
 
-			// Make first click safe
-			if (firstClick) {
-				makeFirstClickSafe(x, y);
-				firstClick = false;
-			}
+				if (cell.isRevealed || cell.isFlagged) return;
 
-			if (cell.isMine) {
-				// Game over - hit a mine
-				gameOver = true;
-				won = false;
-			} else {
-				// Reveal the safe area
-				revealSafeArea(x, y);
-
-				// Check for win
-				if (checkWin()) {
-					gameOver = true;
-					won = true;
+				// Make first click safe
+				if (firstClick) {
+					makeFirstClickSafe(x, y);
+					firstClick = false;
 				}
-			}
 
-			await interaction.update({
-				components: [getComponents(), ...getTileButtons(gameOver, gameOver)],
-				flags: MessageFlags.IsComponentsV2,
-			});
+				if (cell.isMine) {
+					// Game over - hit a mine
+					gameOver = true;
+					won = false;
+				} else {
+					// Reveal the safe area
+					revealSafeArea(x, y);
 
-			if (gameOver) {
-				collector.stop("gameover");
-			}
-		});
+					// Check for win
+					if (checkWin()) {
+						gameOver = true;
+						won = true;
+					}
+				}
+
+				await interaction.update({
+					components: [getComponents(), ...getTileButtons(gameOver, gameOver)],
+					flags: MessageFlags.IsComponentsV2,
+				});
+
+				if (gameOver) {
+					collector.stop("gameover");
+				}
+			},
+		);
 
 		// Collector end: disable buttons
 		collector.stop = async (reason: string) => {
@@ -265,9 +298,13 @@ export default class MinesweeperCommand extends SubCommand {
 			const row = Math.floor(Math.random() * size);
 			const col = Math.floor(Math.random() * size);
 
-			if (!board[row]![col]!.isMine) {
-				board[row]![col]!.isMine = true;
-				minesPlaced++;
+			const boardRow = board[row];
+			if (boardRow) {
+				const cell = boardRow[col];
+				if (cell && !cell.isMine) {
+					cell.isMine = true;
+					minesPlaced++;
+				}
 			}
 		}
 
@@ -281,25 +318,26 @@ export default class MinesweeperCommand extends SubCommand {
 		// Calculate neighbor mine counts
 		for (let i = 0; i < size; i++) {
 			for (let j = 0; j < size; j++) {
-				if (!board[i]![j]!.isMine) {
-					let count = 0;
-					for (let di = -1; di <= 1; di++) {
-						for (let dj = -1; dj <= 1; dj++) {
-							const ni = i + di;
-							const nj = j + dj;
-							if (
-								ni >= 0 &&
-								ni < size &&
-								nj >= 0 &&
-								nj < size &&
-								board[ni]![nj]!.isMine
-							) {
+				const row = board[i];
+				if (!row) continue;
+				const cell = row[j];
+				if (!cell || cell.isMine) continue;
+
+				let count = 0;
+				for (let di = -1; di <= 1; di++) {
+					for (let dj = -1; dj <= 1; dj++) {
+						const ni = i + di;
+						const nj = j + dj;
+						if (ni >= 0 && ni < size && nj >= 0 && nj < size) {
+							const neighborRow = board[ni];
+							const neighborCell = neighborRow?.[nj];
+							if (neighborCell?.isMine) {
 								count++;
 							}
 						}
 					}
-					board[i]![j]!.neighborMines = count;
 				}
+				cell.neighborMines = count;
 			}
 		}
 		return board;

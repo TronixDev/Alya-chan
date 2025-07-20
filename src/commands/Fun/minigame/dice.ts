@@ -56,12 +56,12 @@ export default class DiceCommand extends SubCommand {
 		);
 
 		// Send initial message
-		(await ctx.editOrReply(
+		await ctx.editOrReply(
 			{
 				components: [components],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 	}
 }

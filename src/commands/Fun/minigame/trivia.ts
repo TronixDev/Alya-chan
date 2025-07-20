@@ -9,6 +9,7 @@ import {
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -314,8 +315,9 @@ export default class TriviaCommand extends SubCommand {
 			const letters = ["A", "B", "C", "D"];
 
 			for (let i = 0; i < answers.length; i++) {
-				const answer = answers[i]!;
-				const letter = letters[i]!;
+				const answer = answers[i];
+				const letter = letters[i];
+				if (!answer || !letter) continue;
 
 				buttonRows.push(
 					new ActionRow<Button>().addComponents(
@@ -369,13 +371,13 @@ export default class TriviaCommand extends SubCommand {
 		};
 
 		// Send loading message first
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getAnswerButtons()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Fetch question
 		const questionFetched = await fetchQuestion();
@@ -401,12 +403,12 @@ export default class TriviaCommand extends SubCommand {
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				i.user.id === author.id && i.customId.startsWith("trivia_"),
 			idle: 60000, // 1 minute
 		});
 
-		collector.run(/trivia_(.+)/, async (interaction: any) => {
+		collector.run(/trivia_(.+)/, async (interaction: ComponentInteraction) => {
 			const action = interaction.customId.split("_")[1];
 
 			if (action === "new") {
@@ -451,10 +453,13 @@ export default class TriviaCommand extends SubCommand {
 
 			// Handle answer selection
 			if (gamePhase === "playing") {
+				const action = interaction.customId.split("_")[1];
+				if (!action) return;
+
 				const answerIndex = parseInt(action);
 
 				if (
-					isNaN(answerIndex) ||
+					Number.isNaN(answerIndex) ||
 					answerIndex < 0 ||
 					answerIndex >= answers.length
 				) {
@@ -462,7 +467,10 @@ export default class TriviaCommand extends SubCommand {
 				}
 
 				gamePhase = "ended";
-				playerAnswer = answers[answerIndex]!;
+				const selectedAnswer = answers[answerIndex];
+				if (selectedAnswer) {
+					playerAnswer = selectedAnswer;
+				}
 				if (timer) clearInterval(timer);
 
 				await interaction.update({

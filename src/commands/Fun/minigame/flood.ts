@@ -7,6 +7,7 @@ import {
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -23,12 +24,15 @@ export default class FloodCommand extends SubCommand {
 		let currentTurns = 0;
 
 		// Generate random board
-		let board: string[][] = Array(boardSize)
+		const board: string[][] = Array(boardSize)
 			.fill(0)
 			.map(() =>
 				Array(boardSize)
 					.fill(0)
-					.map(() => colors[Math.floor(Math.random() * colors.length)]!),
+					.map(() => {
+						const randomIndex = Math.floor(Math.random() * colors.length);
+						return colors[randomIndex] || "🟥";
+					}),
 			);
 
 		// Helper functions
@@ -47,7 +51,10 @@ export default class FloodCommand extends SubCommand {
 			const visited = new Set<string>();
 
 			while (queue.length > 0) {
-				const { x, y } = queue.shift()!;
+				const current = queue.shift();
+				if (!current) continue;
+
+				const { x, y } = current;
 				const key = `${x},${y}`;
 
 				if (
@@ -61,7 +68,10 @@ export default class FloodCommand extends SubCommand {
 				if (board[y]?.[x] !== originalColor) continue;
 
 				visited.add(key);
-				board[y]![x] = targetColor;
+				const row = board[y];
+				if (row) {
+					row[x] = targetColor;
+				}
 
 				queue.push(
 					{ x: x + 1, y },
@@ -99,24 +109,28 @@ export default class FloodCommand extends SubCommand {
 		};
 
 		// Send initial message
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), getButtonRow()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				i.user.id === author.id && i.customId.startsWith("flood_"),
 			idle: 120000, // 2 minutes
 		});
 
-		collector.run(/flood_(\d)/, async (interaction: any) => {
-			const colorIndex = parseInt(interaction.customId.split("_")[1]!);
-			const selectedColor = colors[colorIndex]!;
+		collector.run(/flood_(\d)/, async (interaction: ComponentInteraction) => {
+			const colorIndexStr = interaction.customId.split("_")[1];
+			if (!colorIndexStr) return;
+
+			const colorIndex = parseInt(colorIndexStr);
+			const selectedColor = colors[colorIndex];
+			if (!selectedColor) return;
 
 			// Perform flood fill
 			floodFill(selectedColor);

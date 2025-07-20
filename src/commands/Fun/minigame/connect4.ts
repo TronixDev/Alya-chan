@@ -9,6 +9,7 @@ import {
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -59,7 +60,7 @@ export default class Connect4Command extends SubCommand {
 		// Game state
 		const ROWS = 6;
 		const COLS = 7;
-		let board: string[][] = Array(ROWS)
+		const board: string[][] = Array(ROWS)
 			.fill(0)
 			.map(() => Array(COLS).fill("⚪"));
 		let currentPlayer = 1; // 1 for author, 2 for opponent
@@ -75,8 +76,11 @@ export default class Connect4Command extends SubCommand {
 
 		const dropPiece = (col: number): boolean => {
 			for (let row = ROWS - 1; row >= 0; row--) {
-				if (board[row]![col] === "⚪") {
-					board[row]![col] = currentPlayer === 1 ? "🔴" : "🟡";
+				if (board[row]?.[col] === "⚪") {
+					const rowData = board[row];
+					if (rowData) {
+						rowData[col] = currentPlayer === 1 ? "🔴" : "🟡";
+					}
 					return true;
 				}
 			}
@@ -89,11 +93,12 @@ export default class Connect4Command extends SubCommand {
 			// Check horizontal
 			for (let row = 0; row < ROWS; row++) {
 				for (let col = 0; col < COLS - 3; col++) {
+					const currentRow = board[row];
 					if (
-						board[row]![col] === piece &&
-						board[row]![col + 1] === piece &&
-						board[row]![col + 2] === piece &&
-						board[row]![col + 3] === piece
+						currentRow?.[col] === piece &&
+						currentRow?.[col + 1] === piece &&
+						currentRow?.[col + 2] === piece &&
+						currentRow?.[col + 3] === piece
 					) {
 						return true;
 					}
@@ -104,10 +109,10 @@ export default class Connect4Command extends SubCommand {
 			for (let row = 0; row < ROWS - 3; row++) {
 				for (let col = 0; col < COLS; col++) {
 					if (
-						board[row]![col] === piece &&
-						board[row + 1]![col] === piece &&
-						board[row + 2]![col] === piece &&
-						board[row + 3]![col] === piece
+						board[row]?.[col] === piece &&
+						board[row + 1]?.[col] === piece &&
+						board[row + 2]?.[col] === piece &&
+						board[row + 3]?.[col] === piece
 					) {
 						return true;
 					}
@@ -118,10 +123,10 @@ export default class Connect4Command extends SubCommand {
 			for (let row = 3; row < ROWS; row++) {
 				for (let col = 0; col < COLS - 3; col++) {
 					if (
-						board[row]![col] === piece &&
-						board[row - 1]![col + 1] === piece &&
-						board[row - 2]![col + 2] === piece &&
-						board[row - 3]![col + 3] === piece
+						board[row]?.[col] === piece &&
+						board[row - 1]?.[col + 1] === piece &&
+						board[row - 2]?.[col + 2] === piece &&
+						board[row - 3]?.[col + 3] === piece
 					) {
 						return true;
 					}
@@ -132,10 +137,10 @@ export default class Connect4Command extends SubCommand {
 			for (let row = 0; row < ROWS - 3; row++) {
 				for (let col = 0; col < COLS - 3; col++) {
 					if (
-						board[row]![col] === piece &&
-						board[row + 1]![col + 1] === piece &&
-						board[row + 2]![col + 2] === piece &&
-						board[row + 3]![col + 3] === piece
+						board[row]?.[col] === piece &&
+						board[row + 1]?.[col + 1] === piece &&
+						board[row + 2]?.[col + 2] === piece &&
+						board[row + 3]?.[col + 3] === piece
 					) {
 						return true;
 					}
@@ -146,14 +151,15 @@ export default class Connect4Command extends SubCommand {
 		};
 
 		const isBoardFull = (): boolean => {
-			return board[0]!.every((cell) => cell !== "⚪");
+			const topRow = board[0];
+			return topRow ? topRow.every((cell) => cell !== "⚪") : false;
 		};
 
 		const getCurrentPlayerName = () =>
 			currentPlayer === 1 ? author.username : opponent.username;
 
 		const getComponents = () => {
-			let statusText;
+			let statusText: string;
 			if (gameOver) {
 				if (winner) {
 					statusText = `🎉 **${winner} wins!**`;
@@ -219,66 +225,71 @@ export default class Connect4Command extends SubCommand {
 		};
 
 		// Send initial message
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getButtonRows()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				(i.user.id === author.id || i.user.id === opponent.id) &&
 				i.customId.startsWith("connect4_"),
 			idle: 180000, // 3 minutes
 		});
 
-		collector.run(/connect4_(\d)/, async (interaction: any) => {
-			// Check if it's the correct player's turn
-			const expectedPlayer = currentPlayer === 1 ? author : opponent;
-			if (interaction.user.id !== expectedPlayer.id) {
-				await interaction.write({
-					content: "❌ It's not your turn!",
-					flags: MessageFlags.Ephemeral,
+		collector.run(
+			/connect4_(\d)/,
+			async (interaction: ComponentInteraction) => {
+				// Check if it's the correct player's turn
+				const expectedPlayer = currentPlayer === 1 ? author : opponent;
+				if (interaction.user.id !== expectedPlayer.id) {
+					await interaction.write({
+						content: "❌ It's not your turn!",
+						flags: MessageFlags.Ephemeral,
+					});
+					return;
+				}
+
+				if (gameOver) return;
+
+				const columnStr = interaction.customId.split("_")[1];
+				if (!columnStr) return;
+				const column = parseInt(columnStr) - 1;
+
+				// Try to drop piece
+				if (!dropPiece(column)) {
+					await interaction.write({
+						content: "❌ That column is full!",
+						flags: MessageFlags.Ephemeral,
+					});
+					return;
+				}
+
+				// Check for win
+				if (checkWin()) {
+					gameOver = true;
+					winner = getCurrentPlayerName();
+				} else if (isBoardFull()) {
+					gameOver = true;
+					winner = null; // Tie
+				} else {
+					currentPlayer = currentPlayer === 1 ? 2 : 1; // Switch players
+				}
+
+				await interaction.update({
+					components: [getComponents(), ...getButtonRows(gameOver)],
+					flags: MessageFlags.IsComponentsV2,
 				});
-				return;
-			}
 
-			if (gameOver) return;
-
-			const column = parseInt(interaction.customId.split("_")[1]!) - 1;
-
-			// Try to drop piece
-			if (!dropPiece(column)) {
-				await interaction.write({
-					content: "❌ That column is full!",
-					flags: MessageFlags.Ephemeral,
-				});
-				return;
-			}
-
-			// Check for win
-			if (checkWin()) {
-				gameOver = true;
-				winner = getCurrentPlayerName();
-			} else if (isBoardFull()) {
-				gameOver = true;
-				winner = null; // Tie
-			} else {
-				currentPlayer = currentPlayer === 1 ? 2 : 1; // Switch players
-			}
-
-			await interaction.update({
-				components: [getComponents(), ...getButtonRows(gameOver)],
-				flags: MessageFlags.IsComponentsV2,
-			});
-
-			if (gameOver) {
-				collector.stop("gameover");
-			}
-		});
+				if (gameOver) {
+					collector.stop("gameover");
+				}
+			},
+		);
 
 		// Collector end: disable buttons
 		collector.stop = async (reason: string) => {

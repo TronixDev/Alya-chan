@@ -7,6 +7,7 @@ import {
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -63,13 +64,14 @@ export default class HangmanCommand extends SubCommand {
 		};
 
 		const themes = Object.keys(words) as (keyof typeof words)[];
-		const selectedTheme = themes[Math.floor(Math.random() * themes.length)]!;
+		const randomThemeIndex = Math.floor(Math.random() * themes.length);
+		const selectedTheme = themes[randomThemeIndex] || "programming";
 		const themeWords = words[selectedTheme];
-		const targetWord =
-			themeWords[Math.floor(Math.random() * themeWords.length)]!;
+		const randomWordIndex = Math.floor(Math.random() * themeWords.length);
+		const targetWord = themeWords[randomWordIndex] || "JAVASCRIPT";
 
 		// Game state
-		let guessedLetters: string[] = [];
+		const guessedLetters: string[] = [];
 		let wrongGuesses = 0;
 		const maxWrongGuesses = 6;
 		let gameOver = false;
@@ -112,7 +114,7 @@ export default class HangmanCommand extends SubCommand {
 		};
 
 		const getComponents = () => {
-			let statusText;
+			let statusText: string;
 			if (gameOver) {
 				if (won) {
 					statusText = `🎉 **You won!** The word was **${targetWord}**.`;
@@ -150,7 +152,8 @@ export default class HangmanCommand extends SubCommand {
 					for (let col = 0; col < 4; col++) {
 						const letterIndex = row * 4 + col;
 						if (letterIndex < 12) {
-							const letter = alphabet[letterIndex]!;
+							const letter = alphabet[letterIndex];
+							if (!letter) continue;
 							const isGuessed = guessedLetters.includes(letter);
 
 							buttonRow.addComponents(
@@ -171,7 +174,8 @@ export default class HangmanCommand extends SubCommand {
 					for (let col = 0; col < 4; col++) {
 						const letterIndex = 12 + row * 4 + col;
 						if (letterIndex < 26) {
-							const letter = alphabet[letterIndex]!;
+							const letter = alphabet[letterIndex];
+							if (!letter) continue;
 							const isGuessed = guessedLetters.includes(letter);
 
 							buttonRow.addComponents(
@@ -210,23 +214,24 @@ export default class HangmanCommand extends SubCommand {
 		};
 
 		// Send initial message
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getLetterButtons()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				i.user.id === author.id && i.customId.startsWith("hangman_"),
 			idle: 180000, // 3 minutes
 		});
 
-		collector.run(/hangman_(.+)/, async (interaction: any) => {
+		collector.run(/hangman_(.+)/, async (interaction: ComponentInteraction) => {
 			const action = interaction.customId.split("_")[1];
+			if (!action) return;
 
 			if (action === "stop") {
 				gameOver = true;
@@ -235,7 +240,10 @@ export default class HangmanCommand extends SubCommand {
 			}
 
 			if (action === "page") {
-				currentPage = parseInt(interaction.customId.split("_")[2]!);
+				const pageStr = interaction.customId.split("_")[2];
+				if (pageStr) {
+					currentPage = parseInt(pageStr);
+				}
 				await interaction.update({
 					components: [getComponents(), ...getLetterButtons()],
 					flags: MessageFlags.IsComponentsV2,

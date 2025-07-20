@@ -7,6 +7,7 @@ import {
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -79,7 +80,7 @@ export default class SlotsCommand extends SubCommand {
 		};
 
 		const getComponents = () => {
-			let statusText;
+			let statusText: string;
 			if (gameOver) {
 				if (hasWon) {
 					const winEmoji = slotEmojis[slot1];
@@ -124,22 +125,22 @@ export default class SlotsCommand extends SubCommand {
 		};
 
 		// Send initial message
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), ...getSpinButton()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				i.user.id === author.id && i.customId.startsWith("slots_"),
 			idle: 300000, // 5 minutes
 		});
 
-		collector.run(/slots_(.+)/, async (interaction: any) => {
+		collector.run(/slots_(.+)/, async (interaction: ComponentInteraction) => {
 			const action = interaction.customId.split("_")[1];
 
 			if (action === "stop") {
@@ -182,11 +183,13 @@ export default class SlotsCommand extends SubCommand {
 
 				// Show result for 2 seconds then allow new spin
 				setTimeout(async () => {
-					if (!collector.ended) {
+					try {
 						gameOver = false;
 						await ctx.editResponse({
 							components: [getComponents(), ...getSpinButton()],
 						});
+					} catch {
+						// Collector might have ended
 					}
 				}, 3000);
 			}

@@ -7,6 +7,7 @@ import {
 	Separator,
 	ActionRow,
 	Button,
+	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -19,7 +20,7 @@ export default class TwoZeroFourEightCommand extends SubCommand {
 		const { author } = ctx;
 		const size = 4;
 		let score = 0;
-		let board: number[][] = Array(size)
+		const board: number[][] = Array(size)
 			.fill(0)
 			.map(() => Array(size).fill(0));
 
@@ -80,51 +81,66 @@ export default class TwoZeroFourEightCommand extends SubCommand {
 		};
 
 		// Send initial message
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				components: [getComponents(), getButtonRow()],
 				flags: MessageFlags.IsComponentsV2,
 			},
 			true,
-		)) as any;
+		);
 
 		// Collector for button interactions
 		const collector = message.createComponentCollector({
-			filter: (i: any) =>
+			filter: (i: ComponentInteraction) =>
 				i.user.id === author.id && i.customId.startsWith("2048_"),
 			idle: 6000, // 2 minutes
 		});
 
-		collector.run(/2048_(up|down|left|right)/, async (interaction: any) => {
-			// Movement logic
-			const direction = interaction.customId.split("_")[1];
-			let moved = false;
-			if (direction === "up")
-				moved = this.shiftVertical(board, "up", (v) => (score += v));
-			if (direction === "down")
-				moved = this.shiftVertical(board, "down", (v) => (score += v));
-			if (direction === "left")
-				moved = this.shiftHorizontal(board, "left", (v) => (score += v));
-			if (direction === "right")
-				moved = this.shiftHorizontal(board, "right", (v) => (score += v));
+		collector.run(
+			/2048_(up|down|left|right)/,
+			async (interaction: ComponentInteraction) => {
+				// Movement logic
+				const direction = interaction.customId.split("_")[1];
+				let moved = false;
+				if (direction === "up") {
+					moved = this.shiftVertical(board, "up", (v) => {
+						score += v;
+					});
+				}
+				if (direction === "down") {
+					moved = this.shiftVertical(board, "down", (v) => {
+						score += v;
+					});
+				}
+				if (direction === "left") {
+					moved = this.shiftHorizontal(board, "left", (v) => {
+						score += v;
+					});
+				}
+				if (direction === "right") {
+					moved = this.shiftHorizontal(board, "right", (v) => {
+						score += v;
+					});
+				}
 
-			if (moved) this.addRandomTile(board);
+				if (moved) this.addRandomTile(board);
 
-			// Check for game over
-			if (this.isGameOver(board)) {
+				// Check for game over
+				if (this.isGameOver(board)) {
+					await interaction.update({
+						components: [getComponents(true), getButtonRow(true)],
+						flags: MessageFlags.IsComponentsV2,
+					});
+					collector.stop("gameover");
+					return;
+				}
+
 				await interaction.update({
-					components: [getComponents(true), getButtonRow(true)],
+					components: [getComponents(), getButtonRow()],
 					flags: MessageFlags.IsComponentsV2,
 				});
-				collector.stop("gameover");
-				return;
-			}
-
-			await interaction.update({
-				components: [getComponents(), getButtonRow()],
-				flags: MessageFlags.IsComponentsV2,
-			});
-		});
+			},
+		);
 
 		// Collector end: disable buttons
 		collector.stop = async (reason: string) => {
@@ -184,14 +200,17 @@ export default class TwoZeroFourEightCommand extends SubCommand {
 	): boolean {
 		let moved = false;
 		for (let col = 0; col < grid.length; col++) {
-			let arr: number[] = [];
+			const arr: number[] = [];
 			for (let row = 0; row < grid.length; row++) {
 				arr.push(grid[row]?.[col] ?? 0);
 			}
-			let res = this.shiftArray(arr, dir === "up", addScore);
+			const res = this.shiftArray(arr, dir === "up", addScore);
 			for (let row = 0; row < grid.length; row++) {
 				grid[row] = grid[row] ?? Array(grid.length).fill(0);
-				grid[row]![col] = res[row] ?? 0;
+				const gridRow = grid[row];
+				if (gridRow) {
+					gridRow[col] = res[row] ?? 0;
+				}
 			}
 			if (arr.join() !== res.join()) moved = true;
 		}
@@ -204,8 +223,8 @@ export default class TwoZeroFourEightCommand extends SubCommand {
 	): boolean {
 		let moved = false;
 		for (let row = 0; row < grid.length; row++) {
-			let arr: number[] = (grid[row] ?? []).slice();
-			let res = this.shiftArray(arr, dir === "left", addScore);
+			const arr: number[] = (grid[row] ?? []).slice();
+			const res = this.shiftArray(arr, dir === "left", addScore);
 			grid[row] = res.map((v) => v ?? 0);
 			if (arr.join() !== res.join()) moved = true;
 		}
