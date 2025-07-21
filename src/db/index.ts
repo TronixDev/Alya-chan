@@ -2,7 +2,7 @@ import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "./schema";
 import { Configuration, Environment } from "#alya/config";
-import { eq, and, desc, gt } from "drizzle-orm";
+import { eq, and, desc, gt, isNotNull } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 
 const client = createClient({
@@ -114,21 +114,21 @@ export class AlyaDatabase {
 	 * Get the setup data for a guild
 	 * @param guildId The guild ID
 	 */
-	// public async getSetup(guildId: string): Promise<ISetup | null> {
-	// 	const data = await this.db
-	// 		.select()
-	// 		.from(schema.guild)
-	// 		.where(eq(schema.guild.id, guildId))
-	// 		.get();
-	// 	return data?.setupChannelId
-	// 		? {
-	// 				id: data.id,
-	// 				guildId: data.id,
-	// 				channelId: data.setupChannelId,
-	// 				createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
-	// 			}
-	// 		: null;
-	// }
+	public async getChatbotSetup(guildId: string): Promise<ISetup | null> {
+		const data = await this.db
+			.select()
+			.from(schema.guild)
+			.where(eq(schema.guild.id, guildId))
+			.get();
+		return data?.chatbotChannelId
+			? {
+					id: data.id,
+					guildId: data.id,
+					channelId: data.chatbotChannelId,
+					createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
+				}
+			: null;
+	}
 
 	/**
 	 * Create a new setup for a guild
@@ -136,16 +136,19 @@ export class AlyaDatabase {
 	 * @param channelId The channel ID
 	 * @param messageId The message ID
 	 */
-	public async createSetup(guildId: string, channelId: string): Promise<void> {
+	public async createChatbotSetup(
+		guildId: string,
+		channelId: string,
+	): Promise<void> {
 		await this.db
 			.insert(schema.guild)
 			.values({
 				id: guildId,
-				setupChannelId: channelId,
+				chatbotChannelId: channelId,
 			})
 			.onConflictDoUpdate({
 				target: schema.guild.id,
-				set: { setupChannelId: channelId },
+				set: { chatbotChannelId: channelId },
 			});
 	}
 
@@ -153,12 +156,99 @@ export class AlyaDatabase {
 	 * Delete a setup for a guild
 	 * @param guildId The guild ID
 	 */
-	public async deleteSetup(guildId: string): Promise<void> {
+	public async deleteChatbotSetup(guildId: string): Promise<void> {
 		await this.db
 			.update(schema.guild)
-			.set({ setupChannelId: null })
+			.set({ chatbotChannelId: null })
 			.where(eq(schema.guild.id, guildId))
 			.catch(() => null); // Ignore if not found
+	}
+
+	/**
+	 * Get all guilds with a global chat channel set
+	 * @returns Array of objects containing guild id and globalChannelId
+	 * @param none
+	 */
+	public async getAllGlobalChat(): Promise<
+		Array<{
+			id: string;
+			globalChannelId: string;
+			webhookId?: string;
+			webhookToken?: string;
+		}>
+	> {
+		const rows = await this.db
+			.select()
+			.from(schema.guild)
+			.where(isNotNull(schema.guild.globalChannelId));
+		return rows
+			.filter((row) => typeof row.globalChannelId === "string")
+			.map((row) => ({
+				id: row.id,
+				globalChannelId: row.globalChannelId as string,
+				webhookId: row.globalWebhookId || undefined,
+				webhookToken: row.globalWebhookToken || undefined,
+			}));
+	}
+
+	/**
+	 * Get the global chat channel for a guild
+	 * @param guildId The guild ID
+	 */
+	public async getGlobalChatChannel(guildId: string): Promise<string | null> {
+		const data = await this.db
+			.select()
+			.from(schema.guild)
+			.where(eq(schema.guild.id, guildId))
+			.get();
+		return data?.globalChannelId ?? null;
+	}
+
+	/**
+	 * Create the global chat channel for a guild
+	 * @param guildId The guild ID
+	 * @param channelId The channel ID
+	 * @param webhookId Optional webhook ID
+	 * @param webhookToken Optional webhook token
+	 */
+	public async createGlobalChatChannel(
+		guildId: string,
+		channelId: string,
+		webhookId?: string,
+		webhookToken?: string,
+	): Promise<void> {
+		await this.db
+			.insert(schema.guild)
+			.values({
+				id: guildId,
+				globalChannelId: channelId,
+				globalWebhookId: webhookId,
+				globalWebhookToken: webhookToken,
+			})
+			.onConflictDoUpdate({
+				target: schema.guild.id,
+				set: {
+					globalChannelId: channelId,
+					globalWebhookId: webhookId,
+					globalWebhookToken: webhookToken,
+				},
+			});
+	}
+
+	/**
+	 * Delete the global chat channel for a guild
+	 * @param guildId The guild ID
+	 */
+	public async deleteGlobalChatChannel(guildId: string): Promise<void> {
+		await this.db
+			.update(schema.guild)
+			.set({
+				globalChannelId: null,
+				globalWebhookId: null,
+				globalWebhookToken: null,
+			})
+			.where(eq(schema.guild.id, guildId))
+			.catch(() => null);
 	}
 
 	/**

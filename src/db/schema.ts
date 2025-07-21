@@ -13,7 +13,12 @@ export const guild = sqliteTable("guild", {
 	// Prefix settings
 	prefix: text("prefix"),
 	// Setup settings
-	setupChannelId: text("setup_channel_id"),
+	chatbotChannelId: text("chatbot_channel_id"),
+	// Global chat channel settings
+	globalChannelId: text("global_channel_id"),
+	// Global chat webhook settings
+	globalWebhookId: text("global_webhook_id"),
+	globalWebhookToken: text("global_webhook_token"),
 	// Timestamps
 	createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),

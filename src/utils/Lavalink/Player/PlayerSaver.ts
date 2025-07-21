@@ -16,7 +16,7 @@ import {
 	PlayerDataManager,
 	NowPlayingManager,
 	LyricsManager,
-} from "../PlayerSaver";
+} from "#alya/utils";
 export class PlayerSaver {
 	private db: Low<DatabaseSchema>;
 	private isReady = false;

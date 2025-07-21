@@ -10,13 +10,10 @@ import {
 	type StringSelectMenuInteraction,
 	type WebhookMessage,
 } from "seyfert";
-import {
-	type APIButtonComponentWithCustomId,
-	ButtonStyle,
-	MessageFlags,
-} from "seyfert/lib/types";
+import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import type {
 	APIActionRowComponent,
+	APIButtonComponentWithCustomId,
 	APIMessageActionRowComponent,
 } from "seyfert/lib/types";
 

@@ -8,6 +8,8 @@ export * from "./Common/Recommend";
 export * from "./Common/Format";
 export * from "./Common/CommandLogs";
 export * from "./Common/Mention";
+export * from "./Common/ChatbotHandler";
+export * from "./Common/GlobalChatHandler";
 
 // Context
 export * from "./Context/AlyaContext";
@@ -28,6 +30,7 @@ export * from "./Lavalink/Events/LavalinkHandler";
 export * from "./Lavalink/Events/NodeLog";
 export * from "./Lavalink/Player/PlayerSaver";
 export * from "./Lavalink/Player/Autoplay";
+export * from "./Lavalink/PlayerSaver";
 
 // UI utilities
 export * from "./UI/Paginator";
