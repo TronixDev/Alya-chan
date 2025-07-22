@@ -76,7 +76,7 @@ export default class DeleteSubcommand extends SubCommand {
 		collector.run(
 			/delete_(chatbot|globalchat|both)/,
 			async (interaction: ComponentInteraction) => {
-				let deleted: string[] = [];
+				const deleted: string[] = [];
 				let success = false;
 				if (interaction.customId === "delete_chatbot") {
 					await client.database.deleteChatbotSetup(guildId);

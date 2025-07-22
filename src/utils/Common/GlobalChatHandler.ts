@@ -1,6 +1,13 @@
-import { Container, TextDisplay, Separator, Section, Thumbnail } from "seyfert";
+import {
+	Container,
+	Section,
+	Separator,
+	TextDisplay,
+	Thumbnail,
+	type Message,
+	type UsingClient,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import type { UsingClient, Message } from "seyfert";
 
 export interface GlobalChatGuild {
 	id: string;
@@ -13,7 +20,7 @@ export async function handleGlobalChatMessage(
 	message: Message,
 	client: UsingClient,
 ): Promise<void> {
-	if (message.author.bot || message.content.length < 1) return;
+	if (message.author.bot) return;
 	const guild = await message.guild();
 	if (!guild) return;
 
@@ -32,41 +39,36 @@ export async function handleGlobalChatMessage(
 	const username = `${message.author.globalName || message.author.username} • ${guild.name}`;
 	const avatarURL = message.author.avatarURL();
 
-	// Create Components V2 container for webhook
-	const container = new Container().addComponents(
-		new Section()
-			.setAccessory(
-				new Thumbnail()
-					.setMedia(avatarURL)
-					.setDescription(`${message.author.globalName || message.author.username} • ${guild.name}`),
-			)
-			.addComponents(
-				new TextDisplay().setContent(
-					`**${message.author.globalName || message.author.username}** from **${guild.name}**:\n\n${content}`,
-				),
-			),
-		new Separator(),
-		new TextDisplay().setContent(
-			`-# From ${guild.name} • Powered by Tronix Development`,
-		),
-	);
+	// Collect all image attachments
+	let imageEmbeds: Array<{ image: { url: string } }> = [];
+	if (message.attachments && message.attachments.length > 0) {
+		imageEmbeds = message.attachments
+			.filter((a) => a.contentType?.startsWith("image/") && a.url)
+			.map((a) => ({ image: { url: a.url } }));
+	}
 
 	// Relay message to all other global chat channels using webhooks
 	for (const targetGuild of otherGuilds) {
 		try {
 			if (targetGuild.webhookId && targetGuild.webhookToken) {
-				// Try sending Components V2 via webhook
+				// Send plain text message via webhook, support image if present
+				const webhookBody: {
+					content: string;
+					username: string;
+					avatar_url: string;
+					embeds?: Array<{ image: { url: string } }>;
+				} = {
+					content: `${content}\n\n-# From ${guild.name}\n-# Powered by Tronix Development`,
+					username: username,
+					avatar_url: avatarURL,
+				};
+				if (imageEmbeds.length > 0) {
+					webhookBody.embeds = imageEmbeds;
+				}
 				await client.webhooks.writeMessage(
 					targetGuild.webhookId,
 					targetGuild.webhookToken,
-					{
-						body: {
-							username: username,
-							avatar_url: avatarURL,
-							components: [container],
-							flags: MessageFlags.IsComponentsV2,
-						},
-					},
+					{ body: webhookBody },
 				);
 			} else {
 				// No webhook exists, create one and save to database
@@ -74,8 +76,8 @@ export async function handleGlobalChatMessage(
 					const webhook = await client.webhooks.create(
 						targetGuild.globalChannelId,
 						{
-							name: "Alya Global Chat",
-							avatar: client.me.avatarURL(),
+							name: message.author.globalName || message.author.username,
+							avatar: avatarURL,
 						},
 					);
 
@@ -87,18 +89,24 @@ export async function handleGlobalChatMessage(
 						webhook.token,
 					);
 
-					// Send message using the new webhook with Components V2
+					// Send plain text message via newly created webhook, support image if present
+					const webhookBody: {
+						content: string;
+						username: string;
+						avatar_url: string;
+						embeds?: Array<{ image: { url: string } }>;
+					} = {
+						content: `${content}\n\n-# From ${guild.name}\n-# Powered by Tronix Development`,
+						username: username,
+						avatar_url: avatarURL,
+					};
+					if (imageEmbeds.length > 0) {
+						webhookBody.embeds = imageEmbeds;
+					}
 					await client.webhooks.writeMessage(
 						webhook.id,
 						webhook.token as string,
-						{
-							body: {
-								username: username,
-								avatar_url: avatarURL,
-								components: [container],
-								flags: MessageFlags.IsComponentsV2,
-							},
-						},
+						{ body: webhookBody },
 					);
 				} catch (webhookError) {
 					console.error(
