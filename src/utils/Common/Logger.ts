@@ -73,7 +73,7 @@ export function getWatermark(): void {
 ${logo}
                                                            
         
-           ${italic(`→   ${getRandomText()}`)}
+                    ${italic(`→   ${getRandomText()}`)}
     `),
 	);
 }
@@ -85,37 +85,36 @@ ${logo}
  */
 function getRandomText(): string {
 	const texts = [
-		"Let the music play~",
-		"Alya's melody magic!",
-		"Rhythm and beats with Alya!",
-		"Your musical companion!",
-		"Dropping beats with style!",
-		"Alya's harmony helper!",
-		"Music to your ears!",
-		"Alya's sound sanctuary!",
-		"Vibing with Alya!",
-		"Your DJ assistant!",
-		"Alya's musical magic!",
-		"Bringing the beats!",
-		"Alya's sound waves!",
-		"Music made easy!",
-		"Harmony with Alya!",
-		"Beats from the heart!",
-		"Alya's rhythm realm!",
-		"Musical help, Alya way!",
-		"Express your sound!",
-		"Alya's musical aid!",
-		"Melodies for everyone!",
-		"Alya's smooth tunes!",
-		"Musical support, Alya style!",
-		"Discord's best DJ!",
-		"Musical aid from Alya!",
-		"Rhythm express!",
-		"Alya's musical care!",
-		"Support with a beat!",
-		"Alya's playlist power!",
-		"Musical help, Alya touch!",
-		"Help from the beats!",
+		"Alisa Mikhailovna Kujou, always elegant!",
+		"Alya's cool beauty shines through!",
+		"From Russia with love, Alya style!",
+		"Senpai, did you need something?",
+		"Alya's tsundere charm at your service!",
+		"Don't misunderstand, it's not like I like you or anything!",
+		"Grace and wit, Alya's specialty!",
+		"Alya's icy gaze, warm heart!",
+		"Helping you, just because I want to!",
+		"Senpai, pay attention!",
+		"Alya's Russian pride!",
+		"Cool on the outside, caring inside!",
+		"Senpai, you're hopeless!",
+		"Alya's secret kindness!",
+		"Elegant, smart, and a little shy!",
+		"Senpai, don't get the wrong idea!",
+		"Alya's gentle support!",
+		"Tsundere mode: activated!",
+		"Senpai, I'll help you... just this once!",
+		"Alya's mysterious smile!",
+		"Russian beauty, Japanese school life!",
+		"Senpai, are you listening?",
+		"Alya's quiet encouragement!",
+		"Don't make me repeat myself, senpai!",
+		"Alya's graceful assistance!",
+		"Senpai, you're so troublesome!",
+		"Alya's heartfelt help!",
+		"Cool beauty, warm support!",
+		"Senpai, I'll be watching you!",
+		"Alya's caring side revealed!",
 	];
 
 	return texts[Math.floor(Math.random() * texts.length)] ?? "";

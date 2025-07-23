@@ -213,7 +213,7 @@ export async function handleGlobalChatMessage(
 	const content = message.content;
 	const username = message.author.globalName || message.author.username;
 	const avatarURL = message.author.avatarURL();
-	const globalFooter = "-# Powered by Tronix Development";
+	const globalFooter = "-# Powered by Yuki x Alya";
 
 	let replyInfo: ReplyInfo | null = null;
 	if (message.referencedMessage) {
