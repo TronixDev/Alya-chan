@@ -95,6 +95,16 @@ export interface AlyaConfiguration {
 	 */
 	developersIds: string[];
 	/**
+	 * The global chat configuration.
+	 * @type {GlobalChatConfig}
+	 */
+	globalChat: GlobalChatConfig;
+	/**
+	 * The chatbot configuration.
+	 * @type {ChatbotConfig}
+	 */
+	chatbot: ChatbotConfig;
+	/**
 	 * The permissions configuration.
 	 * @type {PermissionsConfig}
 	 */
@@ -228,4 +238,30 @@ export interface AlyaEnvironment {
 	 * @type {string}
 	 */
 	DatabasePassword?: string;
+}
+
+export interface GlobalChatConfig {
+	/**
+	 * Whether the global chat feature is enabled.
+	 * @type {boolean}
+	 */
+	enabled: boolean;
+	/**
+	 * The URL of the global chat API.
+	 * @type {string}
+	 */
+	apiUrl: string;
+	/**
+	 * The name of the webhook for global chat.
+	 * @type {string}
+	 */
+	webhookName: string;
+}
+
+export interface ChatbotConfig {
+	/**
+	 * Whether the chatbot feature is enabled.
+	 * @type {boolean}
+	 */
+	enabled: boolean;
 }

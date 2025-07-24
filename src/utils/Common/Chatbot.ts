@@ -43,6 +43,8 @@ export async function handleChatbotMessage(
 	message: Message,
 	client: UsingClient,
 ) {
+	if (!client.config.chatbot?.enabled) return;
+
 	if (message.author.bot) return;
 	if (message.content.length < 3) return;
 

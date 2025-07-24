@@ -31,6 +31,14 @@ export const Configuration: AlyaConfiguration = {
 		size: 5, // Size of the cache
 	},
 	developersIds: ["885731228874051624", "169711695932030976"], // Replace with actual developer IDs
+	globalChat: {
+		enabled: true, // Enable or disable global chat feature
+		apiUrl: "http://localhost:2000", // URL of the global chat API
+		webhookName: "Alya Global Chat", // Name of the webhook for global chat
+	},
+	chatbot: {
+		enabled: true, // Enable or disable chatbot feature
+	},
 	permissions: {
 		stagePermissions: ["MuteMembers"],
 		voicePermissions: ["ViewChannel", "Connect", "Speak"],

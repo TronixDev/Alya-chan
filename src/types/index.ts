@@ -17,3 +17,4 @@ export * from "./lavalink/PlayerSaver";
 
 // API/Options types
 export * from "./api/Options";
+export * from "./api/GlobalChat";

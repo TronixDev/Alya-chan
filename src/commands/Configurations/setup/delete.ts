@@ -83,13 +83,90 @@ export default class DeleteSubcommand extends SubCommand {
 					deleted.push("Chatbot");
 				}
 				if (interaction.customId === "delete_globalchat") {
+					try {
+						const response = await fetch(
+							`${client.config.globalChat.apiUrl}/remove/${guildId}`,
+							{
+								method: "DELETE",
+								headers: {
+									"Content-Type": "application/json",
+								},
+							},
+						);
+
+						const result = await response.json();
+
+						if (response.ok && result.status === "ok") {
+							deleted.push("Global Chat");
+							client.logger.info(
+								`Guild ${guildId} removed from global chat via API`,
+							);
+						} else {
+							client.logger.warn(
+								`Failed to remove guild from global chat API: ${result.error || "Unknown error"}`,
+							);
+							// Still mark as deleted for UI purposes if it's a "not found" error
+							if (result.code === "GUILD_NOT_FOUND") {
+								deleted.push("Global Chat (was not registered)");
+							}
+						}
+					} catch (error) {
+						client.logger.error("Error calling global chat remove API:", error);
+					}
+
+					// Also remove from local database as fallback
 					await client.database.deleteGlobalChatChannel(guildId);
-					deleted.push("Global Chat");
+					if (
+						!deleted.includes("Global Chat") &&
+						!deleted.includes("Global Chat (was not registered)")
+					) {
+						deleted.push("Global Chat");
+					}
 				}
 				if (interaction.customId === "delete_both") {
 					await client.database.deleteChatbotSetup(guildId);
+					deleted.push("Chatbot");
+
+					// Handle global chat deletion via API
+					try {
+						const response = await fetch(
+							`${client.config.globalChat.apiUrl}/remove/${guildId}`,
+							{
+								method: "DELETE",
+								headers: {
+									"Content-Type": "application/json",
+								},
+							},
+						);
+
+						const result = await response.json();
+
+						if (response.ok && result.status === "ok") {
+							deleted.push("Global Chat");
+							client.logger.info(
+								`Guild ${guildId} removed from global chat via API`,
+							);
+						} else {
+							client.logger.warn(
+								`Failed to remove guild from global chat API: ${result.error || "Unknown error"}`,
+							);
+							// Still mark as deleted for UI purposes if it's a "not found" error
+							if (result.code === "GUILD_NOT_FOUND") {
+								deleted.push("Global Chat (was not registered)");
+							}
+						}
+					} catch (error) {
+						client.logger.error("Error calling global chat remove API:", error);
+					}
+
+					// Also remove from local database as fallback
 					await client.database.deleteGlobalChatChannel(guildId);
-					deleted.push("Chatbot", "Global Chat");
+					if (
+						!deleted.includes("Global Chat") &&
+						!deleted.includes("Global Chat (was not registered)")
+					) {
+						deleted.push("Global Chat");
+					}
 				}
 				success = deleted.length > 0;
 				await interaction.update({

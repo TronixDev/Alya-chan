@@ -23,7 +23,7 @@ const option = {
 };
 
 @Declare({
-	name: "globalchat-v2",
+	name: "globalchat",
 	description: "Setup global chat channel for cross-server interaction",
 	integrationTypes: ["GuildInstall"],
 	contexts: ["Guild"],
@@ -40,10 +40,12 @@ export default class GlobalChatSetupCommand extends SubCommand {
 
 		// Check existing setup from API
 		try {
-			const response = await fetch("http://localhost:2000/guilds");
+			const response = await fetch(`${client.config.globalChat.apiUrl}/list`);
 			const data = await response.json();
-			const existingGuild = data.guilds?.find((g: { id: string; globalChannelId: string }) => g.id === guildId);
-			
+			const existingGuild = data.guilds?.find(
+				(g: { id: string; globalChannelId: string }) => g.id === guildId,
+			);
+
 			if (existingGuild) {
 				await ctx.editOrReply({
 					embeds: [
@@ -79,15 +81,15 @@ export default class GlobalChatSetupCommand extends SubCommand {
 				avatar: client.me.avatarURL(),
 			});
 			// Kirim data ke API
-			await fetch("http://localhost:2000/add-guild", {
+			await fetch(`${client.config.globalChat.apiUrl}/add`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					guildId: guildId,
 					globalChannelId: channelId,
 					webhookId: webhook.id,
-					webhookToken: webhook.token
-				})
+					webhookToken: webhook.token,
+				}),
 			});
 		} else {
 			const guild = await ctx.guild();
@@ -153,15 +155,15 @@ export default class GlobalChatSetupCommand extends SubCommand {
 			});
 
 			// Kirim data ke API
-			await fetch("http://localhost:2000/add-guild", {
+			await fetch(`${client.config.globalChat.apiUrl}/add`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					guildId: guildId,
 					globalChannelId: channelId,
 					webhookId: webhook.id,
-					webhookToken: webhook.token
-				})
+					webhookToken: webhook.token,
+				}),
 			});
 		}
 
