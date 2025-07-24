@@ -77,7 +77,7 @@ export default class GlobalChatSetupCommand extends SubCommand {
 			channelId = options.channel.id;
 			// If user provided a channel, create webhook for it
 			const webhook = await client.webhooks.create(channelId, {
-				name: "Alya Global Chat",
+				name: client.config.globalChat.webhookName,
 				avatar: client.me.avatarURL(),
 			});
 			// Kirim data ke API
@@ -108,7 +108,7 @@ export default class GlobalChatSetupCommand extends SubCommand {
 			const channel = await guild.channels.create({
 				name: "🌏・global-chat",
 				type: ChannelType.GuildText,
-				topic: "Alya Global Chat - Interact with users from other servers!",
+				topic: `${client.config.globalChat.webhookName} - Interact with users from other servers!`,
 				permission_overwrites: [
 					{
 						id: client.me.id,
@@ -136,7 +136,7 @@ export default class GlobalChatSetupCommand extends SubCommand {
 
 			// Create webhook for global chat
 			const webhook = await client.webhooks.create(channel.id, {
-				name: "Alya Global Chat",
+				name: client.config.globalChat.webhookName,
 				avatar: client.me.avatarURL(),
 			});
 

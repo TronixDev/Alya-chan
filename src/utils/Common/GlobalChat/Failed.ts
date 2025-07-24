@@ -29,7 +29,7 @@ export async function handleFailedGuilds(
 
 			// Try to create a new webhook
 			const webhook = await client.webhooks.create(guildInfo.globalChannelId, {
-				name: "Alya Global Chat",
+				name: client.config.globalChat.webhookName,
 				avatar: client.me.avatarURL(),
 			});
 
