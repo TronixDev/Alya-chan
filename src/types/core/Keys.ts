@@ -3,4 +3,5 @@ export enum AlyaKeys {
 	Locale = "guild:locale",
 	Prefix = "guild:prefix",
 	VoiceStatus = "guild:voice_status",
+	DevMode = "global:devmode",
 }

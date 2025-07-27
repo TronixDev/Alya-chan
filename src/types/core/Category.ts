@@ -8,4 +8,5 @@ export enum AlyaCategory {
 	Reports = 6,
 	Fun = 7,
 	Developers = 8,
+	Moderations = 9,
 }

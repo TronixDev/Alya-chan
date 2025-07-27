@@ -12,6 +12,7 @@ import {
 	sendCommandLog,
 } from "#alya/utils";
 import { AlyaDatabase } from "#alya/db";
+import { AlyaCache } from "#alya/utils";
 import { AlyaManager } from "./modules/Manager";
 import { HandleCommand } from "seyfert/lib/commands/handle";
 import { Yuna } from "yunaforseyfert";
@@ -51,12 +52,18 @@ export default class Alya extends Client<true> {
 	public readonly database: AlyaDatabase;
 
 	/**
+	 * Alya cache instance.
+	 */
+	public readonly alyaCache: AlyaCache;
+
+	/**
 	 * Create a new Alya instance.
 	 */
 	constructor() {
 		super({
-			context: AlyaContext, // FIX: use custom context so getLocale is available everywhere
+			context: AlyaContext,
 			globalMiddlewares: [
+				"checkDevMode",
 				"checkCooldown",
 				"checkVerifications",
 				"checkPremium",
@@ -142,6 +149,7 @@ export default class Alya extends Client<true> {
 		});
 		this.manager = new AlyaManager(this);
 		this.database = new AlyaDatabase();
+		this.alyaCache = new AlyaCache();
 		this.run();
 	}
 

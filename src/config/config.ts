@@ -33,7 +33,7 @@ export const Configuration: AlyaConfiguration = {
 	developersIds: ["885731228874051624", "169711695932030976"], // Replace with actual developer IDs
 	globalChat: {
 		enabled: true, // Enable or disable global chat feature
-		apiUrl: "http://localhost:2000", // URL of the global chat API
+		apiUrl: "http://38.102.125.137:17076", // URL of the global chat API
 		webhookName: "Alya Global Chat", // Name of the webhook for global chat
 	},
 	chatbot: {

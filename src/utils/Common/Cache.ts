@@ -7,6 +7,7 @@ interface Cache {
 	[AlyaKeys.Locale]: typeof guild.$inferSelect;
 	[AlyaKeys.Player]: typeof guild.$inferSelect;
 	[AlyaKeys.Prefix]: typeof guild.$inferSelect;
+	[AlyaKeys.DevMode]: boolean;
 }
 
 /**
@@ -76,5 +77,21 @@ export class AlyaCache {
 		const collection = new LimitedCollection<AlyaKeys, unknown>();
 		collection.set(key, data);
 		this.internal.set(guildId, collection);
+	}
+
+	/**
+	 * Set global devmode state.
+	 * @param enabled Whether devmode is enabled.
+	 */
+	public setDevMode(enabled: boolean): void {
+		this.set("global", AlyaKeys.DevMode, enabled);
+	}
+
+	/**
+	 * Check if devmode is enabled globally.
+	 * @returns Whether devmode is enabled.
+	 */
+	public isDevModeEnabled(): boolean {
+		return this.get("global", AlyaKeys.DevMode) ?? false;
 	}
 }

@@ -1,4 +1,5 @@
 import { checkCooldown } from "./commands/cooldown";
+import { checkDevMode } from "./commands/devmode";
 import {
 	checkNodes,
 	checkPlayer,
@@ -18,6 +19,7 @@ export const AlyaMiddlewares = {
 	checkCooldown,
 	checkVerifications,
 	checkPremium,
+	checkDevMode,
 
 	// Voice middlewares
 	checkBotVoiceChannel,
