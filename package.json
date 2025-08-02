@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "soundy",
+  "version": "2.0.0",
+  "description": "A powerful music bot built with Seyfert and lavalink-client to play high quality music in your Discord server for free.",
+  "author": "iaMJ",
+  "license": "AGPL-3.0",
+  "homepage": "https://github.com/idMJA/Alya-chan",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/idMJA/Alya-chan"
+  },
+  "bugs": {
+    "url": "https://github.com/idMJA/Alya-chan/issues"
+  },
+  "type": "module",
+  "main": "src/index.ts",
+  "engines": {
+    "bun": ">=1.2.0"
+  },
+  "scripts": {
+    "start": "tsup && dotenvx run -- bun run src/index.ts",
+    "dev": "dotenvx run -- bun run --watch src/index.ts",
+    "build": "tsup",
+    "build:exe": "bun build src/index.ts --compile --outfile=alya-chan",
+    "build:exe-linux": "bun build src/index.ts --compile --target=bun-linux-x64 --outfile=alya-chan-linux",
+    "build:exe-windows": "bun build src/index.ts --compile --target=bun-windows-x64 --outfile=alya-chan.exe",
+    "build:exe-macos": "bun build src/index.ts --compile --target=bun-darwin-x64 --outfile=alya-chan-macos",
+    "build:exe-all": "bun scripts/build.ts",
+    "format": "biome format --write ./src",
+    "lint": "biome lint ./src",
+    "lint:fix": "biome lint --write ./src",
+    "type-check": "tsc --noEmit",
+    "db:generate": "dotenvx run -- drizzle-kit generate",
+    "db:migrate": "dotenvx run -- drizzle-kit migrate",
+    "db:studio": "dotenvx run -- drizzle-kit studio",
+    "db:push": "dotenvx run -- drizzle-kit push"
+  },
+  "lint-staged": {
+    "*.ts": ["bun format"]
+  },
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.48.0",
+    "@elysiajs/cors": "^1.3.3",
+    "@elysiajs/jwt": "^1.3.2",
+    "@elysiajs/swagger": "^1.3.1",
+    "@libsql/client": "^0.15.10",
+    "@napi-rs/canvas": "^0.1.74",
+    "@top-gg/sdk": "^3.1.6",
+    "axios": "^1.10.0",
+    "canvacord": "^6.0.2",
+    "drizzle-orm": "^0.44.3",
+    "elysia": "^1.3.5",
+    "genius-lyrics": "^4.4.7",
+    "jsonwebtoken": "^9.0.2",
+    "lavalink-client": "^2.5.7",
+    "lowdb": "^7.0.1",
+    "openai": "^5.10.1",
+    "seyfert": "^3.2.5-dev-16476410534.0",
+    "yunaforseyfert": "^1.1.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.1.2",
+    "@types/bun": "^1.2.18",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.0.14",
+    "drizzle-kit": "^0.31.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "esbuild"
+  ],
+  "keywords": [
+    "discord",
+    "bot",
+    "music",
+    "lavalink",
+    "seyfert",
+    "typescript",
+    "discord-bot",
+    "music-bot"
+  ]
+}
