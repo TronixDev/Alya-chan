@@ -1,14 +1,14 @@
 export const emoji = {
 	// EMOJIS //
-	yes: "<:yes:1286420561341186129>",
-	no: "<:no:1286420485885657098>",
-	link: "<:link:1302910872821436426>",
-	party: "<:party:1302910888986284032>",
+	yes: "<:yes:1401244343129604260>",
+	no: "<:no:1401244330601218131>",
+	link: "<:link:1273914828020387960>",
+	party: "<:party:1273909957988712510>",
 	artist: "<:artist:1286590660887056394>",
-	clock: "<:cooldown:1286420559269199916>",
-	user: "<:user:1286590662652723250>",
-	play: "<:play:1286420469431406703>",
-	pause: "<:pause:1286420474372423765>",
+	clock: "<:clock:1273914816125472789>",
+	user: "<:user:1273908906007072780>",
+	play: "<:play:1300845442044657797>",
+	pause: "<:pause:1300845454719975484>",
 	loop: "<:loop:1286420450569879585>",
 	shuffle: "<:shuffle:1286420452612374528>",
 	previous: "<:previous:1286420463010058270>",
@@ -16,33 +16,33 @@ export const emoji = {
 	forward: "<:forward:1286420460585619547>",
 	skip: "<:skip:1286420464817668160>",
 	stop: "<:stop:1286582760491716619>",
-	trash: "<:trash:1302914693882445874>",
+	trash: "<:trash:1274311828188692511>",
 	volUp: "<:volup:1286420454793543721>",
 	volDown: "<:voldown:1286420456781381768>",
 	list: "<:list:1302921828188295222>",
-	info: "<:info:1286420443905134612>",
-	music: "<:music:1286420441769971894>",
-	warn: "<:warn:1286420483482583221>",
-	home: "<:home:1305038165391704177>",
-	globe: "<:globe:1305038163315654666>",
-	slash: "<:slash:1305038167660826714>",
-	ping: "<:ping:1305038170294845460>",
-	question: "<:question:1305038160962785352>",
-	pencil: "<:pencil:1286420448174669915>",
+	info: "<:info:1273909949151449170>",
+	music: "<:music:1273908919323983962>",
+	warn: "<:warn:1274285534138601474>",
+	home: "<:home:1273914783720149023>",
+	globe: "<:globe:1273914775281074258>",
+	slash: "<:slash:1273914793690005556>",
+	ping: "<:ping:1273914804293206127>",
+	question: "<:question:1273914765650952212>",
+	pencil: "<:pencil:1273997442106261605>",
 	think: "<a:think:1383156714404188260>",
 	heart: "<:heart:1390394352416723045>",
-	folder: "<:folder:1395450957227229204>",
+	folder: "<:folder:1274002519609311367>",
 
 	// NODE EMOJIS //
-	nodeOn: "<:g_:1286428522084306955>",
-	nodeOff: "<:r_:1286428524051304528>",
+	nodeOn: "<:g_:1273675155805044736>",
+	nodeOff: "<:r_:1273675144589475964>",
 } as const;
 
 export type EmojiConfig = typeof emoji;
 export type Emoji = keyof EmojiConfig;
 
 /*
- * Alya - A powerful music bot built with Seyfert and lavalink-client to play high quality music in your Discord server for free.
+ * Alya-chan - The versatile bot with everything you need!
  
  * Credits:
  * - Contributed by: iaMJ
