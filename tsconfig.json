@@ -48,7 +48,8 @@
       "#alya/utils": ["./src/utils/index.ts"],
       "#alya/api": ["./src/api/server.ts"],
       "#alya/db": ["./src/db/index.ts"],
-      "#alya/middlewares": ["./src/middlewares/index.ts"]
+      "#alya/middlewares": ["./src/middlewares/index.ts"],
+      "#alya/models": ["./src/models/index.ts"]
     }
   },
   

@@ -530,6 +530,38 @@ export class AlyaDatabase {
 	}
 
 	/**
+	 * Get the chatbot locale for a guild from the database, or return default if not found.
+	 * @param guildId Guild ID
+	 * @returns chatbot locale string
+	 */
+	public async getChatbotLocale(guildId: string): Promise<string> {
+		const data = await this.db
+			.select()
+			.from(schema.guild)
+			.where(eq(schema.guild.id, guildId))
+			.get();
+		return data?.chatbotLocale ?? "id"; // Default to Indonesian
+	}
+
+	/**
+	 * Set the guild chatbot locale to the database.
+	 * @param guildId The guild id.
+	 * @param locale The chatbot locale.
+	 */
+	public async setChatbotLocale(
+		guildId: string,
+		locale: string,
+	): Promise<void> {
+		await this.db
+			.insert(schema.guild)
+			.values({ id: guildId, chatbotLocale: locale })
+			.onConflictDoUpdate({
+				target: schema.guild.id,
+				set: { chatbotLocale: locale },
+			});
+	}
+
+	/**
 	 * Set the guild prefix to the database.
 	 * @param guildId The guild id.
 	 * @param prefix The prefix.

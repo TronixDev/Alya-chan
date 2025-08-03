@@ -10,6 +10,8 @@ export const guild = sqliteTable("guild", {
 	id: text("id").primaryKey(),
 	// Locale settings
 	locale: text("locale"),
+	// Chatbot locale settings
+	chatbotLocale: text("chatbot_locale"),
 	// Prefix settings
 	prefix: text("prefix"),
 	// Setup settings

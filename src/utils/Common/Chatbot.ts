@@ -1,7 +1,6 @@
 import type { UsingClient, Message } from "seyfert";
 import OpenAI from "openai";
-import fs from "node:fs/promises";
-import path from "node:path";
+import { loadLanguageModel, DEFAULT_LANGUAGE } from "#alya/models";
 
 function splitMessage(text: string, maxLength = 2000) {
 	const result: string[] = [];
@@ -22,16 +21,44 @@ const openai = new OpenAI({
 	},
 });
 
-export async function handleChatbot(messageContent: string) {
-	// Baca persona Alya dari TXT
-	const personaPath = path.resolve(process.cwd(), "models/alya-id.txt");
-	const personaRaw = await fs.readFile(personaPath, "utf8");
+export async function handleChatbot(
+	messageContent: string,
+	locale: string = DEFAULT_LANGUAGE,
+) {
+	// Load persona content based on locale
+	const personaContent = await loadLanguageModel(locale);
+
+	if (!personaContent) {
+		console.error(`Failed to load persona for locale: ${locale}`);
+		// Fallback to default language
+		const fallbackContent = await loadLanguageModel(DEFAULT_LANGUAGE);
+		if (!fallbackContent) {
+			throw new Error("Failed to load any persona content");
+		}
+		// Use fallback content
+		const completion = await openai.chat.completions.create({
+			model: "meta-llama/llama-3.1-8b-instruct",
+			messages: [
+				{
+					role: "system",
+					content: fallbackContent,
+				},
+				{
+					role: "user",
+					content: [{ type: "text", text: messageContent }],
+				},
+			],
+		});
+		const reply = completion.choices[0]?.message?.content;
+		return reply ? splitMessage(reply) : null;
+	}
+
 	const completion = await openai.chat.completions.create({
 		model: "meta-llama/llama-3.1-8b-instruct",
 		messages: [
 			{
 				role: "system",
-				content: personaRaw,
+				content: personaContent,
 			},
 			{
 				role: "user",
@@ -71,34 +98,42 @@ export async function handleChatbotMessage(
 	} catch {}
 
 	try {
-		const reply = await handleChatbot(message.content);
+		// Get chatbot locale for this guild
+		const chatbotLocale = await client.database.getChatbotLocale(guild.id);
+		const reply = await handleChatbot(message.content, chatbotLocale);
 		if (reply) {
-			console.log(`[LOG] Bot will respond:`, {
-				to: message.author?.tag || message.author?.username,
-				channelId: message.channelId,
-				guildId: message.guildId,
-				content: reply.join("\n"),
-			});
+			// console.log(`[LOG] Bot will respond:`, {
+			// 	to: message.author?.tag || message.author?.username,
+			// 	channelId: message.channelId,
+			// 	guildId: message.guildId,
+			// 	content: reply.join("\n"),
+			// });
 			for (const msg of reply) {
 				await client.channels.typing(message.channelId);
 				await message.reply({ content: msg });
 			}
-			console.log(`[LOG] Bot responded:`, {
-				to: message.author?.tag || message.author?.username,
-				channelId: message.channelId,
-				guildId: message.guildId,
-				content: reply.join("\n"),
-			});
+			// console.log(`[LOG] Bot responded:`, {
+			// 	to: message.author?.tag || message.author?.username,
+			// 	channelId: message.channelId,
+			// 	guildId: message.guildId,
+			// 	content: reply.join("\n"),
+			// });
 		}
 	} catch (error) {
 		console.error("Error handling chatbot message:", error);
 		await client.channels.typing(message.channelId);
-		await message.reply({ content: "Maaf, chatbot error." });
+
+		// Get chatbot locale for error message
+		const chatbotLocale = await client.database.getChatbotLocale(guild.id);
+		const errorMessage =
+			chatbotLocale === "en" ? "Sorry, chatbot error." : "Maaf, chatbot error.";
+
+		await message.reply({ content: errorMessage });
 		console.log(`[LOG] Bot responded with error message to:`, {
 			to: message.author?.tag || message.author?.username,
 			channelId: message.channelId,
 			guildId: message.guildId,
-			content: "Maaf, chatbot error.",
+			content: errorMessage,
 		});
 	}
 }
