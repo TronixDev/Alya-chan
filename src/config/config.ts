@@ -11,11 +11,11 @@ export const Configuration: AlyaConfiguration = {
 	lyricsLines: 11, // Number of lyrics lines to display
 	serverPort: 4000, // Port for the API server
 	info: {
-		banner: "https://i.ibb.co.com/z8c0SQK/bannersoundy-FHD.png", // Replace with actual banner URL
+		banner: "https://i.ibb.co.com/hrpKCdy/e1da98e96fdfc12635909f99725d971e.png", // Replace with actual banner URL
 		inviteLink:
-			"https://discord.com/oauth2/authorize?client_id=1168385371294420992",
+			"https://discord.com/oauth2/authorize?client_id=1260252174861074442",
 		supportServer: "https://discord.gg/pTbFUFdppU",
-		voteLink: "https://top.gg/bot/1168385371294420992/vote",
+		voteLink: "https://top.gg/bot/1260252174861074442/vote",
 	},
 	topgg: {
 		enabled: false,
@@ -53,17 +53,17 @@ export const Configuration: AlyaConfiguration = {
 	},
 	webhooks: {
 		nodeLog:
-			"https://discord.com/api/webhooks/1325160873311993876/MGqy3SJNJg_ZQx63r7SSldWOSlLHoVOF0ojuxF7OcnO7OK-uPmuWJnlmlJDikfQuVn95", // Node logs
+			"https://discord.com/api/webhooks/1401512597584613468/EdVyjbAMxzY-qrEglcc3HEPCrueEWZrjYMQcrm5KvHbs39fVJ__lTEOdDt5-2E_HahXK", // Node logs
 		guildLog:
-			"https://discord.com/api/webhooks/1326531769385619517/PLS9JJy6l1TaSTCfpW061pGMGAtxwQFuNEWFvtaw8w-ULKK5uYMCBesmfcMT7hlwxF0j", // Guild logs
+			"https://discord.com/api/webhooks/1401512718334300261/taXpaSJKGR5eA4rCdJMPqWw3ZI0Rw5jIWSe_d3ulGDLtOYaIt9re-7PH7croa4xQQnRd", // Guild logs
 		commandLog:
-			"https://discord.com/api/webhooks/1325160679497400465/uthdw1T-R4DgsWY5jDpcfrdRQMkVSon4_heaGOb3uYh9kH5JNpNCFSWp604h-2xQimlU", // Command logs
+			"https://discord.com/api/webhooks/1401512867143880814/9VewQZT0fCO3dzuaotEgUi33mNJpduS6aj4mdO_7Tw8plj_x92MScYybSw-Ml92054BF", // Command logs
 		voteLog:
 			"https://discord.com/api/webhooks/1260482354535989259/LE4VUln4eUaaE_pTzU8IkU1lFQS_mn24f2C8OpBosCVkWETTO1oFiDyIgfWnJ8BqTD4s", // Vote logs
 		errorLog:
-			"https://discord.com/api/webhooks/1325125857525629009/Y7CpDtdtj-u8IJUtY4uZQ4Gn0ORqDyWaqYBBtenVx9r6c1hBsWflYHPoA_EEsFEwgw-k", // Error logs
+			"https://discord.com/api/webhooks/1325337504114540616/nHrtD-_-JDyPlQm_LRdAaC2p6-gM_38yvU2WjicBwz06vYAcPNfjS0ujGvOmLjuyLdpk", // Error logs
 		report:
-			"https://discord.com/api/webhooks/1351961646985379850/uUrrZm8bjhkT_g25qYCED_LPbTTlZBqj9wjYNhR1M9yGlNRlcNzizwtFbuN97GdFaZnj", // Bug or suggestion reports
+			"https://discord.com/api/webhooks/1401513297131601973/qlM-Z_LcS1UN1McvhtYUR-MSBN0dBeLn_JOAYW84v5JJISvN6Gxwnqv_oWDhJpjiKYNC", // Bug or suggestion reports
 	},
 
 	emoji,

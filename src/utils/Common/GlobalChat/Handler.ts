@@ -77,9 +77,9 @@ export async function handleGlobalChat(
 				break;
 
 			case "skipped":
-				client.logger.info(
-					`Message skipped: ${result.data?.reason || "Already processed"}`,
-				);
+				// client.logger.info(
+				// 	`Message skipped: ${result.data?.reason || "Already processed"}`,
+				// );
 				break;
 
 			case "partial":

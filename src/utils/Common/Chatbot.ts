@@ -14,8 +14,12 @@ function splitMessage(text: string, maxLength = 2000) {
 }
 
 const openai = new OpenAI({
-	baseURL: "https://router.huggingface.co/v1",
-	apiKey: "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",
+	baseURL: "https://openrouter.ai/api/v1",
+	apiKey: Bun.env.OPENROUTER_API_KEY,
+	defaultHeaders: {
+		"HTTP-Referer": "https://alya.tronix.my.id",
+		"X-Title": "Alya-chan",
+	},
 });
 
 export async function handleChatbot(messageContent: string) {
@@ -23,7 +27,7 @@ export async function handleChatbot(messageContent: string) {
 	const personaPath = path.resolve(process.cwd(), "models/alya-id.txt");
 	const personaRaw = await fs.readFile(personaPath, "utf8");
 	const completion = await openai.chat.completions.create({
-		model: "meta-llama/Llama-4-Maverick-17B-128E-Instruct:fireworks-ai",
+		model: "meta-llama/llama-3.1-8b-instruct",
 		messages: [
 			{
 				role: "system",
