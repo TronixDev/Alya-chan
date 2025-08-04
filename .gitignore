@@ -4,8 +4,6 @@ drizzle
 node_modules
 commands.json
 pnpm-lock.yaml
-bun.lock
-bun.lockb
 package-lock.json
 .env
 .env.keys

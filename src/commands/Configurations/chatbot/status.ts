@@ -51,7 +51,11 @@ export default class ChatbotStatusCommand extends SubCommand {
 							{
 								name: "🌐 Current Language",
 								value: langInfo
-									? `${langInfo.flag} **${langInfo.name}** (\`${langInfo.code}\`)`
+									? `${langInfo.flag} **${langInfo.name}** (\`${langInfo.code}\`)\n${
+											currentLocale === "auto"
+												? "🌐 *Auto-detects user language*"
+												: ""
+										}`
 									: `❌ Unknown language code: \`${currentLocale}\``,
 								inline: true,
 							},
@@ -85,7 +89,7 @@ export default class ChatbotStatusCommand extends SubCommand {
 							{
 								name: "📝 How to Change Language",
 								value:
-									"Use `/setchatbotlocale` to change the chatbot language for this server.",
+									"Use `/chatbot locale` to change the chatbot language for this server.\n\n**Available Options:**\n• `id` - Indonesian\n• `en` - English\n• `auto` - Multi-language (auto-detect)",
 								inline: false,
 							},
 						],

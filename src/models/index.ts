@@ -28,12 +28,18 @@ export const AVAILABLE_LANGUAGES: LanguageModel[] = [
 		flag: "🇺🇸",
 		filename: "alya-en.txt",
 	},
+	{
+		code: "auto",
+		name: "Auto (Multi-language)",
+		flag: "🌐",
+		filename: "alya-multilang.txt",
+	},
 ];
 
 /**
  * Default language code
  */
-export const DEFAULT_LANGUAGE = "en";
+export const DEFAULT_LANGUAGE = "auto";
 
 /**
  * Language model cache to avoid reading files repeatedly

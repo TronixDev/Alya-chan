@@ -9,20 +9,18 @@ import { AlyaOptions } from "#alya/utils";
 import { MessageFlags } from "seyfert/lib/types";
 import { AlyaCategory } from "#alya/types";
 import {
-	getAvailableLanguages,
 	isValidLanguage,
 	getLanguageInfo,
+	AVAILABLE_LANGUAGES,
 } from "#alya/models";
-
-const availableLanguages = getAvailableLanguages();
 
 const option = {
 	locale: createStringOption({
-		description: "Choose chatbot language",
+		description: "Choose chatbot language (use language code)",
 		required: true,
-		choices: availableLanguages.map((lang) => ({
-			name: lang.name,
-			value: lang.value,
+		choices: AVAILABLE_LANGUAGES.map((lang) => ({
+			name: `${lang.flag} ${lang.name} (${lang.code})`,
+			value: lang.code,
 		})),
 	}),
 };
@@ -63,10 +61,14 @@ export default class SetChatbotLocaleCommand extends SubCommand {
 			flags: MessageFlags.Ephemeral,
 			embeds: [
 				{
-					description: `${client.config.emoji.yes} Successfully set chatbot language to: **${langInfo.flag} ${langInfo.name}**\n\n${
+					description: `${client.config.emoji.yes} Successfully set chatbot language to: **${langInfo.flag} ${langInfo.name}** (${locale})\n\n${
 						locale === "id"
 							? "Alya sekarang akan merespons dalam bahasa Indonesia!"
-							: "Alya will now respond in English!"
+							: locale === "en"
+								? "Alya will now respond in English!"
+								: locale === "auto"
+									? "Alya will now automatically detect and respond in the same language you use! 🌐"
+									: `Alya will now use ${langInfo.name} language model!`
 					}`,
 					color: client.config.color.primary,
 				},

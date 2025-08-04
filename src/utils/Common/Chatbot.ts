@@ -21,37 +21,27 @@ const openai = new OpenAI({
 	},
 });
 
-export async function handleChatbot(
-	messageContent: string,
-	locale: string = DEFAULT_LANGUAGE,
-) {
-	// Load persona content based on locale
-	const personaContent = await loadLanguageModel(locale);
+export async function handleChatbot(messageContent: string, locale?: string) {
+	// Load persona based on locale
+	const chatbotLocale = locale || DEFAULT_LANGUAGE;
+	console.log(`[DEBUG] Loading persona for locale: ${chatbotLocale}`);
+
+	let personaContent = await loadLanguageModel(chatbotLocale);
 
 	if (!personaContent) {
-		console.error(`Failed to load persona for locale: ${locale}`);
+		console.error(
+			`Failed to load persona for locale: ${chatbotLocale}, falling back to default`,
+		);
 		// Fallback to default language
-		const fallbackContent = await loadLanguageModel(DEFAULT_LANGUAGE);
-		if (!fallbackContent) {
-			throw new Error("Failed to load any persona content");
+		personaContent = await loadLanguageModel(DEFAULT_LANGUAGE);
+		if (!personaContent) {
+			throw new Error("Failed to load default persona");
 		}
-		// Use fallback content
-		const completion = await openai.chat.completions.create({
-			model: "meta-llama/llama-3.1-8b-instruct",
-			messages: [
-				{
-					role: "system",
-					content: fallbackContent,
-				},
-				{
-					role: "user",
-					content: [{ type: "text", text: messageContent }],
-				},
-			],
-		});
-		const reply = completion.choices[0]?.message?.content;
-		return reply ? splitMessage(reply) : null;
 	}
+
+	console.log(
+		`[DEBUG] Loaded persona content for locale ${chatbotLocale}: ${personaContent ? "SUCCESS" : "FAILED"}`,
+	);
 
 	const completion = await openai.chat.completions.create({
 		model: "meta-llama/llama-3.1-8b-instruct",
@@ -93,47 +83,44 @@ export async function handleChatbotMessage(
 		if (!setupData || setupData.channelId !== message.channelId) return;
 	}
 
+	// Get chatbot locale for this guild
+	const chatbotLocale = await client.database.getChatbotLocale(guild.id);
+	console.log(`[DEBUG] Guild chatbot locale: ${chatbotLocale}`);
+
 	try {
 		await client.channels.typing(message.channelId);
 	} catch {}
 
 	try {
-		// Get chatbot locale for this guild
-		const chatbotLocale = await client.database.getChatbotLocale(guild.id);
+		console.log(`[DEBUG] handleChatbot called with locale: ${chatbotLocale}`);
 		const reply = await handleChatbot(message.content, chatbotLocale);
 		if (reply) {
-			// console.log(`[LOG] Bot will respond:`, {
-			// 	to: message.author?.tag || message.author?.username,
-			// 	channelId: message.channelId,
-			// 	guildId: message.guildId,
-			// 	content: reply.join("\n"),
-			// });
+			console.log(`[LOG] Bot will respond:`, {
+				to: message.author?.tag || message.author?.username,
+				channelId: message.channelId,
+				guildId: message.guildId,
+				content: reply.join("\n"),
+			});
 			for (const msg of reply) {
 				await client.channels.typing(message.channelId);
 				await message.reply({ content: msg });
 			}
-			// console.log(`[LOG] Bot responded:`, {
-			// 	to: message.author?.tag || message.author?.username,
-			// 	channelId: message.channelId,
-			// 	guildId: message.guildId,
-			// 	content: reply.join("\n"),
-			// });
+			console.log(`[LOG] Bot responded:`, {
+				to: message.author?.tag || message.author?.username,
+				channelId: message.channelId,
+				guildId: message.guildId,
+				content: reply.join("\n"),
+			});
 		}
 	} catch (error) {
 		console.error("Error handling chatbot message:", error);
 		await client.channels.typing(message.channelId);
-
-		// Get chatbot locale for error message
-		const chatbotLocale = await client.database.getChatbotLocale(guild.id);
-		const errorMessage =
-			chatbotLocale === "en" ? "Sorry, chatbot error." : "Maaf, chatbot error.";
-
-		await message.reply({ content: errorMessage });
+		await message.reply({ content: "Maaf, chatbot error." });
 		console.log(`[LOG] Bot responded with error message to:`, {
 			to: message.author?.tag || message.author?.username,
 			channelId: message.channelId,
 			guildId: message.guildId,
-			content: errorMessage,
+			content: "Maaf, chatbot error.",
 		});
 	}
 }

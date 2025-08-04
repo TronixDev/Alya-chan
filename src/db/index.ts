@@ -4,6 +4,7 @@ import * as schema from "./schema";
 import { Configuration, Environment } from "#alya/config";
 import { eq, and, desc, gt, isNotNull } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
+import { DEFAULT_LANGUAGE } from "#alya/models";
 
 const client = createClient({
 	url:
@@ -540,7 +541,7 @@ export class AlyaDatabase {
 			.from(schema.guild)
 			.where(eq(schema.guild.id, guildId))
 			.get();
-		return data?.chatbotLocale ?? "id"; // Default to Indonesian
+		return data?.chatbotLocale ?? DEFAULT_LANGUAGE; // Use default from models
 	}
 
 	/**
