@@ -1,5 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { Logger } from "seyfert";
+
+const logger = new Logger({
+	name: "[Models]",
+});
 
 /**
  * Interface for language model configuration
@@ -54,6 +59,41 @@ function getModelsDirectory(): string {
 }
 
 /**
+ * Validate that all model files declared in AVAILABLE_LANGUAGES exist on disk
+ */
+export async function validateModelFiles(): Promise<{
+	valid: boolean;
+	missing: string[];
+}> {
+	try {
+		logger.info("Validating language model files...");
+	} catch {}
+
+	const missing: string[] = [];
+	const modelsDir = getModelsDirectory();
+
+	for (const lang of AVAILABLE_LANGUAGES) {
+		const modelPath = path.join(modelsDir, lang.filename);
+		try {
+			await fs.access(modelPath);
+		} catch {
+			missing.push(`${lang.name} (${lang.filename})`);
+		}
+	}
+
+	if (missing.length > 0) {
+		try {
+			logger.warn("Some language model files are missing:", missing);
+			logger.warn(
+				"Bot will continue but some languages may not work properly.",
+			);
+		} catch {}
+	}
+
+	return { valid: missing.length === 0, missing };
+}
+
+/**
  * Check if a language code is valid
  */
 export function isValidLanguage(code: string): boolean {
@@ -93,7 +133,6 @@ export function getAvailableLanguages(): {
  * Load a specific language model content
  */
 export async function loadLanguageModel(code: string): Promise<string | null> {
-	// Check cache first
 	const cached = modelCache.get(code);
 	if (cached) {
 		return cached;
@@ -101,7 +140,7 @@ export async function loadLanguageModel(code: string): Promise<string | null> {
 
 	const langInfo = getLanguageInfo(code);
 	if (!langInfo) {
-		console.error(`Language model not found for code: ${code}`);
+		logger.error(`[Models] Language not found for code: ${code}`);
 		return null;
 	}
 
@@ -109,12 +148,11 @@ export async function loadLanguageModel(code: string): Promise<string | null> {
 		const modelPath = path.join(getModelsDirectory(), langInfo.filename);
 		const content = await fs.readFile(modelPath, "utf8");
 
-		// Cache the content
 		modelCache.set(code, content);
 
 		return content;
 	} catch (error) {
-		console.error(`Failed to load language model for ${code}:`, error);
+		logger.error(`[Models] Failed to load model for ${code}:`, error);
 		return null;
 	}
 }
@@ -123,20 +161,23 @@ export async function loadLanguageModel(code: string): Promise<string | null> {
  * Load all language models into cache
  */
 export async function preloadAllModels(): Promise<void> {
+	try {
+		logger.info("📚 Preloading language models...");
+	} catch {}
 	const loadPromises = AVAILABLE_LANGUAGES.map(async (lang) => {
 		try {
 			await loadLanguageModel(lang.code);
-			console.log(`✅ Loaded language model: ${lang.name} (${lang.code})`);
+			logger.info(`[Models] Loaded model: ${lang.name} (${lang.code})`);
 		} catch (error) {
-			console.error(
-				`❌ Failed to load language model: ${lang.name} (${lang.code})`,
+			logger.error(
+				`[Models] Failed to load model: ${lang.name} (${lang.code})`,
 				error,
 			);
 		}
 	});
 
 	await Promise.all(loadPromises);
-	console.log(`🚀 Preloaded ${modelCache.size} language models`);
+	logger.info(`[Models] Preloaded ${modelCache.size} models`);
 }
 
 /**
@@ -144,7 +185,7 @@ export async function preloadAllModels(): Promise<void> {
  */
 export function clearModelCache(): void {
 	modelCache.clear();
-	console.log("🧹 Language model cache cleared");
+	logger.info("[Models] Language model cache cleared");
 }
 
 /**
@@ -167,39 +208,12 @@ export async function reloadLanguageModel(
 	return await loadLanguageModel(code);
 }
 
-/**
- * Validate that all required model files exist
- */
-export async function validateModelFiles(): Promise<{
-	valid: boolean;
-	missing: string[];
-}> {
-	const missing: string[] = [];
-	const modelsDir = getModelsDirectory();
-
-	for (const lang of AVAILABLE_LANGUAGES) {
-		const modelPath = path.join(modelsDir, lang.filename);
-		try {
-			await fs.access(modelPath);
-		} catch {
-			missing.push(`${lang.name} (${lang.filename})`);
-		}
-	}
-
-	return {
-		valid: missing.length === 0,
-		missing,
-	};
-}
-
-// Export default functions for easier imports
 export default {
 	loadLanguageModel,
 	preloadAllModels,
 	clearModelCache,
 	getCacheStats,
 	reloadLanguageModel,
-	validateModelFiles,
 	isValidLanguage,
 	getLanguageInfo,
 	getAvailableLanguageCodes,

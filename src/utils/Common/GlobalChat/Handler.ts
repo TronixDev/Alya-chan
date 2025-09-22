@@ -12,7 +12,6 @@ export async function handleGlobalChat(
 	const guild = await message.guild();
 	if (!guild) return;
 
-	// Kirim data ke API chat
 	try {
 		const safeMessage = {
 			id: message.id,
@@ -58,7 +57,6 @@ export async function handleGlobalChat(
 
 		const result = await response.json();
 
-		// Handle different response statuses
 		switch (result.status) {
 			case "ok":
 				client.logger.info(
@@ -73,13 +71,10 @@ export async function handleGlobalChat(
 				client.logger.info(
 					`Message ignored: ${result.data?.reason || "Not from global chat channel"}`,
 				);
-				// Don't log this as error - it's expected behavior for non-global-chat messages
+
 				break;
 
 			case "skipped":
-				// client.logger.info(
-				// 	`Message skipped: ${result.data?.reason || "Already processed"}`,
-				// );
 				break;
 
 			case "partial":
@@ -92,7 +87,6 @@ export async function handleGlobalChat(
 						.join(", ");
 					client.logger.warn(`Failed guilds: ${failedGuildNames}`);
 
-					// Try to fix failed guilds by creating new webhooks
 					await handleFailedGuilds(result.data.failedGuilds, client);
 				}
 				break;
@@ -107,7 +101,6 @@ export async function handleGlobalChat(
 						.join("; ");
 					client.logger.error(`Failed guilds: ${failedGuildErrors}`);
 
-					// Try to fix failed guilds by creating new webhooks
 					await handleFailedGuilds(result.data.failedGuilds, client);
 				}
 				break;
@@ -117,12 +110,10 @@ export async function handleGlobalChat(
 				client.logger.info("Full response:", result);
 		}
 
-		// Log sender info only for successful broadcasts
 		if (result.status === "ok" || result.status === "partial") {
 			client.logger.info(`📤 From guild: ${guild.name} (${guild.id})`);
 		}
 	} catch (apiError) {
 		client.logger.error("Failed to send global chat to API:", apiError);
-		// Could implement retry logic here if needed
 	}
 }

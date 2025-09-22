@@ -42,7 +42,7 @@ export default class PingCommand extends Command {
 
 		embed
 			.setColor(client.config.color.primary)
-			.setTitle(`${client.config.emoji.ping} Connection Status`)
+			.setTitle(`${client.config.emoji.ping} ${cmd.ping.run.title}`)
 			.setDescription(
 				`${client.config.emoji.globe} **${cmd.ping.run.description[1]}:** \`${wsPing}ms\`\n` +
 					`${client.config.emoji.slash} **${cmd.ping.run.description[2]}:** \`${clientPing}ms\`\n` +

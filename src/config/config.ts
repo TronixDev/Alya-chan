@@ -1,7 +1,7 @@
 import type { AlyaConfiguration, AlyaEnvironment } from "#alya/types";
 import { emoji } from "./emoji";
 
-const { TOKEN, DATABASE_URL, DATABASE_PASSWORD } = process.env;
+const { TOKEN, DATABASE_URL, DATABASE_PASSWORD } = Bun.env;
 
 export const Configuration: AlyaConfiguration = {
 	defaultPrefix: "a!", // Default prefix for commands
@@ -33,7 +33,7 @@ export const Configuration: AlyaConfiguration = {
 	developersIds: ["885731228874051624", "169711695932030976"], // Replace with actual developer IDs
 	globalChat: {
 		enabled: true, // Enable or disable global chat feature
-		apiUrl: "http://38.102.125.137:17076", // URL of the global chat API
+		apiUrl: "http://45.142.114.113:20011", // URL of the global chat API
 		webhookName: "Alya Global Chat", // Name of the webhook for global chat
 	},
 	chatbot: {

@@ -19,7 +19,7 @@ export interface RecommendationResponse {
 export async function getTopTracksByCountry(
 	country: string,
 ): Promise<RecommendationTrack[]> {
-	const apiKeys = (process.env.LASTFM_API_KEY || "")
+	const apiKeys = (Bun.env.LASTFM_API_KEY || "")
 		.split(",")
 		.map((k) => k.trim())
 		.filter(Boolean);

@@ -36,7 +36,7 @@ export default class ChatbotStatusCommand extends SubCommand {
 			// Get cache statistics
 			const cacheStats = getCacheStats();
 
-			// Validate model files
+			// Validate model files using shared models module
 			const validation = await validateModelFiles();
 
 			// Check if chatbot is enabled globally

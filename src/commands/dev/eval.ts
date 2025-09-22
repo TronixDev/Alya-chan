@@ -117,8 +117,8 @@ export default class EvalCommand extends Command {
 				output = await eval(code ?? "");
 				typecode = typeof output;
 				output = getDepth(output, depth)
-					.replaceAll(process.env.TOKEN ?? "", "🌟")
-					.replace(process.env.DATABASE_URL ?? "", "🌟");
+					.replaceAll(Bun.env.TOKEN ?? "", "🌟")
+					.replace(Bun.env.DATABASE_URL ?? "", "🌟");
 			}
 
 			await ctx.editOrReply({

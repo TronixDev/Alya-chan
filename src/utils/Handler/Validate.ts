@@ -16,10 +16,10 @@ export function validateEnv() {
 	const createMessage = (variable: string) =>
 		`The variable: '${variable}' in the '.env' cannot be empty or undefined.`;
 
-	if (!process.env.TOKEN) throw new InvalidEnvValue(createMessage("TOKEN"));
-	if (!process.env.DATABASE_URL)
+	if (!Bun.env.TOKEN) throw new InvalidEnvValue(createMessage("TOKEN"));
+	if (!Bun.env.DATABASE_URL)
 		throw new InvalidEnvValue(createMessage("DATABASE_URL"));
-	if (!process.env.DATABASE_PASSWORD)
+	if (!Bun.env.DATABASE_PASSWORD)
 		throw new InvalidEnvValue(createMessage("DATABASE_PASSWORD"));
 
 	return logger.info("All required environment variables are present.");

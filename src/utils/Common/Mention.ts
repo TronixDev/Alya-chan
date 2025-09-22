@@ -47,17 +47,16 @@ export async function handleMention(
 					[
 						`${client.config.emoji.slash} Use \`${prefixes[0]}help\` or \`/help\` to discover all my amazing commands`,
 						`${client.config.emoji.home} Need help? Join our [Support Server](${client.config.info.supportServer}) for assistance`,
-						`${client.config.emoji.info} Want to get started? Just type \`${prefixes[0]}play\` or \`/play\` to begin your musical journey!`,
 						"",
 						`${client.config.emoji.party} **Features:**`,
 						`${client.config.emoji.music} High quality music streaming`,
-						`${client.config.emoji.list} Rich playlist management`,
-						`${client.config.emoji.globe} Support for multiple platforms`,
+						`${client.config.emoji.slash} Advanced auto-moderation`,
+						`${client.config.emoji.globe} Connect servers worldwide`,
 					].join("\n"),
 				)
 				.setThumbnail(client.me.avatarURL())
 				.setFooter({
-					text: "Play a high quality music in your Discord server for free.",
+					text: "The versatile bot with everything you need!",
 				}),
 			components: [
 				new ActionRow().addComponents(

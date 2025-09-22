@@ -4,8 +4,7 @@ import type { ClientUser } from "seyfert";
 
 const MAX_SAME_ARTIST_IN_ROW = 3;
 
-// Loadbalance Last.fm API keys from env, separated by comma
-const LASTFM_API_KEYS = (process.env.LASTFM_API_KEY || "")
+const LASTFM_API_KEYS = (Bun.env.LASTFM_API_KEY || "")
 	.split(",")
 	.map((k) => k.trim())
 	.filter(Boolean);
@@ -17,7 +16,6 @@ function getNextLastFmKey() {
 	return key;
 }
 
-// Types
 type ResolvableTrack = Track | UnresolvedTrack;
 
 interface LastFmTrack {
@@ -34,7 +32,6 @@ interface LastFmSimilarResponse {
 	error?: string;
 }
 
-// Helper Functions
 /**
  * Filter tracks that have already been played
  * @param player The player instance
@@ -83,7 +80,6 @@ const wouldExceedArtistLimit = (
 	);
 };
 
-// Main Export
 /**
  * Main autoplay function that handles track recommendations
  * @param player The player instance
@@ -109,7 +105,6 @@ export async function autoPlayFunction(
 	const me = player.get<ClientUser | undefined>("me");
 	if (!me) return;
 
-	// Use Last.fm if API key is available, otherwise fallback to Spotify
 	if (LASTFM_API_KEYS.length > 0) {
 		await handleLastFmRecommendations(player, lastTrack, me);
 	} else {
@@ -117,7 +112,6 @@ export async function autoPlayFunction(
 	}
 }
 
-// Recommendation Handlers
 /**
  * Handle Spotify-based recommendations
  * @param player The player instance
@@ -136,13 +130,11 @@ async function handleSpotifyRecommendations(
 	const res = await player.search({ query: searchQuery }, { requester: me });
 
 	if (res.tracks.length >= 4) {
-		// Filter tracks by artist limit
 		const eligibleTracks = res.tracks.filter(
 			(track) => !wouldExceedArtistLimit(player, track.info.author),
 		);
 		if (eligibleTracks.length === 0) return;
 
-		// Randomly choose between index 1 (2nd track) or 3 (4th track) from eligible tracks
 		const selectedIndex = Math.min(
 			Math.random() < 0.5 ? 1 : 3,
 			eligibleTracks.length - 1,
@@ -186,14 +178,12 @@ async function handleLastFmRecommendations(
 			!response.data?.similartracks?.track ||
 			response.data.similartracks.track.length === 0
 		) {
-			// Fallback to Spotify if Last.fm returns empty track array
 			await handleSpotifyRecommendations(player, lastTrack, me);
 			return;
 		}
 
-		// Process similar tracks from Last.fm
 		const tracks = response.data.similartracks.track;
-		// Filter out tracks that would exceed artist limit
+
 		const eligibleTracks = tracks.filter(
 			(track) => !wouldExceedArtistLimit(player, track.artist.name),
 		);
@@ -235,7 +225,7 @@ async function handleLastFmRecommendations(
 		} else {
 			console.error("[AUTO_PLAY] Error in Last.fm recommendations:", error);
 		}
-		// Fallback to Spotify recommendations if Last.fm fails
+
 		await handleSpotifyRecommendations(player, lastTrack, me);
 	}
 }

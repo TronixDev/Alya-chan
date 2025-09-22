@@ -11,7 +11,6 @@ export async function handleFailedGuilds(
 				`🔧 Attempting to fix webhook for guild ${failedGuild.guildName} (${failedGuild.guildId})`,
 			);
 
-			// Get guild information from API to get globalChannelId
 			const guildResponse = await fetch(
 				`${client.config.globalChat.apiUrl}/list`,
 			);
@@ -27,13 +26,11 @@ export async function handleFailedGuilds(
 				continue;
 			}
 
-			// Try to create a new webhook
 			const webhook = await client.webhooks.create(guildInfo.globalChannelId, {
 				name: client.config.globalChat.webhookName,
 				avatar: client.me.avatarURL(),
 			});
 
-			// Register/update the guild with new webhook info
 			const updateResponse = await fetch(
 				`${client.config.globalChat.apiUrl}/add`,
 				{
