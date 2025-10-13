@@ -55,7 +55,7 @@
     "jsonwebtoken": "^9.0.2",
     "lavalink-client": "^2.5.7",
     "lowdb": "^7.0.1",
-    "openai": "^5.10.1",
+    "openai": "^6.3.0",
     "seyfert": "^3.2.5-dev-16476410534.0",
     "yunaforseyfert": "^1.1.3"
   },
