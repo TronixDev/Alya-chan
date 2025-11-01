@@ -12,6 +12,12 @@ export async function handleGlobalChat(
 	const guild = await message.guild();
 	if (!guild) return;
 
+	// Prepare optional Authorization header for global chat API
+	const globalChatHeaders: Record<string, string> = {};
+	if (client.config.globalChat?.apiKey) {
+		globalChatHeaders.Authorization = `Bearer ${client.config.globalChat.apiKey}`;
+	}
+
 	try {
 		const safeMessage = {
 			id: message.id,
@@ -46,9 +52,10 @@ export async function handleGlobalChat(
 			})),
 		};
 
+		const postHeaders = { "Content-Type": "application/json", ...globalChatHeaders };
 		const response = await fetch(`${client.config.globalChat.apiUrl}/chat`, {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: postHeaders,
 			body: JSON.stringify({
 				message: safeMessage,
 				guildName: guild.name,

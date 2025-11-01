@@ -5,15 +5,21 @@ export async function handleFailedGuilds(
 	failedGuilds: FailedGuild[],
 	client: UsingClient,
 ): Promise<void> {
+
+	// Prepare optional Authorization header for global chat API
+	const globalChatHeaders: Record<string, string> = {};
+	if (client.config.globalChat?.apiKey) {
+		globalChatHeaders.Authorization = `Bearer ${client.config.globalChat.apiKey}`;
+	}
 	for (const failedGuild of failedGuilds) {
 		try {
 			client.logger.info(
 				`🔧 Attempting to fix webhook for guild ${failedGuild.guildName} (${failedGuild.guildId})`,
 			);
 
-			const guildResponse = await fetch(
-				`${client.config.globalChat.apiUrl}/list`,
-			);
+			const guildResponse = await fetch(`${client.config.globalChat.apiUrl}/list`, {
+				headers: globalChatHeaders,
+			});
 			const guildData = await guildResponse.json();
 			const guildInfo = guildData.data?.guilds?.find(
 				(g: { id: string }) => g.id === failedGuild.guildId,
@@ -31,19 +37,17 @@ export async function handleFailedGuilds(
 				avatar: client.me.avatarURL(),
 			});
 
-			const updateResponse = await fetch(
-				`${client.config.globalChat.apiUrl}/add`,
-				{
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						guildId: failedGuild.guildId,
-						globalChannelId: guildInfo.globalChannelId,
-						webhookId: webhook.id,
-						webhookToken: webhook.token,
-					}),
-				},
-			);
+			const postHeaders = { "Content-Type": "application/json", ...globalChatHeaders };
+			const updateResponse = await fetch(`${client.config.globalChat.apiUrl}/add`, {
+				method: "POST",
+				headers: postHeaders,
+				body: JSON.stringify({
+					guildId: failedGuild.guildId,
+					globalChannelId: guildInfo.globalChannelId,
+					webhookId: webhook.id,
+					webhookToken: webhook.token,
+				}),
+			});
 
 			const updateResult = await updateResponse.json();
 

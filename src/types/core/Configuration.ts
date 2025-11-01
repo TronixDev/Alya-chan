@@ -256,6 +256,11 @@ export interface GlobalChatConfig {
 	 * @type {string}
 	 */
 	webhookName: string;
+	/**
+	 * Optional API key to authenticate requests against the global chat API.
+	 * When present, code will send: Authorization: Bearer <apiKey>
+	 */
+	apiKey?: string;
 }
 
 export interface ChatbotConfig {

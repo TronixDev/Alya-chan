@@ -21,6 +21,12 @@ export default class DeleteSubcommand extends SubCommand {
 		const { client, guildId, author } = ctx;
 		if (!guildId) return;
 
+		// Prepare optional Authorization header for global chat API
+		const globalChatHeaders: Record<string, string> = {};
+		if (client.config.globalChat?.apiKey) {
+			globalChatHeaders.Authorization = `Bearer ${client.config.globalChat.apiKey}`;
+		}
+
 		// Check what setups exist
 		const chatbotSetup = await client.database.getChatbotSetup(guildId);
 		const globalChatSetup = await client.database.getGlobalChatChannel(guildId);
@@ -84,15 +90,10 @@ export default class DeleteSubcommand extends SubCommand {
 				}
 				if (interaction.customId === "delete_globalchat") {
 					try {
-						const response = await fetch(
-							`${client.config.globalChat.apiUrl}/remove/${guildId}`,
-							{
-								method: "DELETE",
-								headers: {
-									"Content-Type": "application/json",
-								},
-							},
-						);
+						const response = await fetch(`${client.config.globalChat.apiUrl}/remove/${guildId}`, {
+							method: "DELETE",
+							headers: { "Content-Type": "application/json", ...globalChatHeaders },
+						});
 
 						const result = await response.json();
 
@@ -129,15 +130,10 @@ export default class DeleteSubcommand extends SubCommand {
 
 					// Handle global chat deletion via API
 					try {
-						const response = await fetch(
-							`${client.config.globalChat.apiUrl}/remove/${guildId}`,
-							{
-								method: "DELETE",
-								headers: {
-									"Content-Type": "application/json",
-								},
-							},
-						);
+						const response = await fetch(`${client.config.globalChat.apiUrl}/remove/${guildId}`, {
+							method: "DELETE",
+							headers: { "Content-Type": "application/json", ...globalChatHeaders },
+						});
 
 						const result = await response.json();
 

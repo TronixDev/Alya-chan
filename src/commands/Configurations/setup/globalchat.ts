@@ -36,11 +36,19 @@ export default class GlobalChatSetupCommand extends SubCommand {
 		const { client, options, guildId } = ctx;
 		if (!guildId) return;
 
+		// Prepare headers for global chat API requests (include Authorization if apiKey present)
+		const globalChatHeaders: Record<string, string> = {};
+		if (client.config.globalChat?.apiKey) {
+			globalChatHeaders.Authorization = `Bearer ${client.config.globalChat.apiKey}`;
+		}
+
 		await ctx.deferReply();
 
 		// Check existing setup from API
 		try {
-			const response = await fetch(`${client.config.globalChat.apiUrl}/list`);
+			const response = await fetch(`${client.config.globalChat.apiUrl}/list`, {
+				headers: globalChatHeaders,
+			});
 			const data = await response.json();
 			const existingGuild = data.guilds?.find(
 				(g: { id: string; globalChannelId: string }) => g.id === guildId,
@@ -81,9 +89,10 @@ export default class GlobalChatSetupCommand extends SubCommand {
 				avatar: client.me.avatarURL(),
 			});
 			// Kirim data ke API
+			const postHeaders = { "Content-Type": "application/json", ...globalChatHeaders };
 			await fetch(`${client.config.globalChat.apiUrl}/add`, {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				headers: postHeaders,
 				body: JSON.stringify({
 					guildId: guildId,
 					globalChannelId: channelId,
@@ -155,9 +164,10 @@ export default class GlobalChatSetupCommand extends SubCommand {
 			});
 
 			// Kirim data ke API
+			const postHeaders = { "Content-Type": "application/json", ...globalChatHeaders };
 			await fetch(`${client.config.globalChat.apiUrl}/add`, {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				headers: postHeaders,
 				body: JSON.stringify({
 					guildId: guildId,
 					globalChannelId: channelId,

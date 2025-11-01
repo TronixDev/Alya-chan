@@ -35,6 +35,7 @@ export const Configuration: AlyaConfiguration = {
 		enabled: true, // Enable or disable global chat feature
 		apiUrl: "http://45.142.114.113:20011", // URL of the global chat API
 		webhookName: "Alya Global Chat", // Name of the webhook for global chat
+		apiKey: "your_api_key_here", // API key (will be sent as `Authorization: Bearer <apiKey>`)
 	},
 	chatbot: {
 		enabled: true, // Enable or disable chatbot feature
