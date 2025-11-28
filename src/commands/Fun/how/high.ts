@@ -1,11 +1,11 @@
 import {
-	Declare,
 	type CommandContext,
-	SubCommand,
-	Options,
-	createUserOption,
 	Container,
+	createUserOption,
+	Declare,
+	Options,
 	Separator,
+	SubCommand,
 	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";

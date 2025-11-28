@@ -5,8 +5,8 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 @Declare({
 	name: "pause",
@@ -28,7 +28,6 @@ export default class PauseCommand extends Command {
 		const player = client.manager.getPlayer(guildId);
 		if (!player) return;
 
-		// Check if already paused
 		if (player.paused) {
 			return await ctx.editOrReply({
 				embeds: [
@@ -40,7 +39,6 @@ export default class PauseCommand extends Command {
 			});
 		}
 
-		// Pause the player
 		await player.pause();
 
 		await ctx.editOrReply({

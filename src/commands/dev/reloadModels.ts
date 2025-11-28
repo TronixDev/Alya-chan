@@ -1,19 +1,19 @@
 import {
 	Command,
 	type CommandContext,
+	createStringOption,
 	Declare,
 	Options,
-	createStringOption,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { MessageFlags } from "seyfert/lib/types";
 import {
-	reloadLanguageModel,
-	preloadAllModels,
 	clearModelCache,
 	getAvailableLanguageCodes,
 	getCacheStats,
+	preloadAllModels,
+	reloadLanguageModel,
 } from "#alya/models";
+import { AlyaOptions } from "#alya/utils";
 
 const option = {
 	action: createStringOption({

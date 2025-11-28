@@ -1,10 +1,11 @@
 // src/lavalink/events.ts
+
+import { LavalinkEventTypes } from "#alya/types";
 import {
 	createLavalinkEvent,
-	PlayerSaver,
 	createNowPlayingEmbed,
+	PlayerSaver,
 } from "#alya/utils";
-import { LavalinkEventTypes } from "#alya/types";
 
 export default createLavalinkEvent({
 	name: "trackStart",

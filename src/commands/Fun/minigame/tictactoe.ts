@@ -1,15 +1,15 @@
 import {
-	Declare,
-	Options,
-	createUserOption,
-	type CommandContext,
-	SubCommand,
-	Container,
-	TextDisplay,
-	Separator,
 	ActionRow,
 	Button,
+	type CommandContext,
 	type ComponentInteraction,
+	Container,
+	createUserOption,
+	Declare,
+	Options,
+	Separator,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -249,7 +249,7 @@ export default class TicTacToeCommand extends SubCommand {
 				const action = interaction.customId.split("_")[1];
 				if (!action) return;
 
-				const cellIndex = parseInt(action);
+				const cellIndex = parseInt(action, 10);
 
 				// Check if it's the correct player's turn
 				const expectedPlayer = player1Turn ? author : opponent;

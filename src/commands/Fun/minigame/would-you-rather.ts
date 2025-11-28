@@ -1,13 +1,13 @@
 import {
-	Declare,
-	type CommandContext,
-	SubCommand,
-	Container,
-	TextDisplay,
-	Separator,
 	ActionRow,
 	Button,
+	type CommandContext,
 	type ComponentInteraction,
+	Container,
+	Declare,
+	Separator,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -417,7 +417,7 @@ export default class WouldYouRatherCommand extends SubCommand {
 
 			// Handle choice selection
 			if (gamePhase === "playing") {
-				const choice = parseInt(action);
+				const choice = parseInt(action, 10);
 
 				if (choice !== 1 && choice !== 2) {
 					return;

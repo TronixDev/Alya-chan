@@ -1,4 +1,4 @@
-import { ActionRow, Button, Embed, createEvent } from "seyfert";
+import { ActionRow, Button, createEvent, Embed } from "seyfert";
 import { ButtonStyle } from "seyfert/lib/types";
 
 export default createEvent({
@@ -6,20 +6,17 @@ export default createEvent({
 	run: async (guild, client) => {
 		if (guild.unavailable) return;
 
-		// Ensure we have a valid guild object
 		if (!("name" in guild)) return;
 
-		// Try to get full guild data from cache first
-		const cachedGuild = await client.cache.guilds?.get(guild.id);
+		const cachedGuild = client.cache.guilds?.get(guild.id);
 		const guildData = cachedGuild || guild;
 
 		const guildIcon = guildData.icon
 			? `https://cdn.discordapp.com/icons/${guildData.id}/${guildData.icon}.png`
 			: "";
 
-		// Get owner info from cache
 		const ownerId = guildData.ownerId;
-		const cachedOwner = await client.cache.users?.get(ownerId);
+		const cachedOwner = client.cache.users?.get(ownerId);
 
 		const embed = new Embed()
 			.setColor(client.config.color.yes)
@@ -54,7 +51,7 @@ export default createEvent({
 				},
 				{
 					name: "`🤖` Server Count",
-					value: `\`${await client.cache.guilds?.count?.()}\``,
+					value: `\`${client.cache.guilds?.count?.()}\``,
 					inline: false,
 				},
 			)
@@ -73,29 +70,26 @@ export default createEvent({
 			client.logger.error("Failed to send webhook message:", error),
 		);
 
-		// Try to send welcome message to the system channel
 		try {
 			const channels = await guildData.channels.list();
-			const textChannels = channels.filter((c) => c.type === 0); // 0 is GuildText in Seyfert
+			const textChannels = channels.filter((c) => c.type === 0);
 
-			// Try to find system channel first, then fall back to first text channel
 			const targetChannelId = guildData.systemChannelId
 				? guildData.systemChannelId
 				: textChannels[0]?.id;
 
 			if (targetChannelId) {
 				const welcomeEmbed = new Embed()
-					.setColor(client.config.color.yes)
+					.setColor(client.config.color.primary)
 					.setTitle(
 						`${client.config.emoji.party} Thanks for inviting ${client.me.username}!`,
 					)
 					.setDescription(
 						[
-							`Hi **${guildData.name}**! Thanks for adding me to your server!`,
+							`Hii **${guildData.name}**! Thanks for adding me to your server!`,
 							"",
 							`${client.config.emoji.info} Here's what you need to know:`,
 							`${client.config.emoji.slash} Use \`${client.config.defaultPrefix}help\` or \`/help\` to see all available commands`,
-							`${client.config.emoji.music} Start playing music with \`${client.config.defaultPrefix}play\` or \`/play\``,
 							"",
 							`${client.config.emoji.question} Need help? Join our [Support Server](${client.config.info.supportServer})`,
 							`${client.config.emoji.globe} Don't forget to vote for us if you enjoy using the bot!`,

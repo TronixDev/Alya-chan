@@ -5,8 +5,7 @@ import {
 	Middlewares,
 	type User,
 } from "seyfert";
-import { EmbedPaginator } from "#alya/utils";
-import { TimeFormat } from "#alya/utils";
+import { EmbedPaginator, TimeFormat } from "#alya/utils";
 
 @Middlewares([
 	"checkNodes",

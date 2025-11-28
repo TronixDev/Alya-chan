@@ -1,5 +1,5 @@
 import { LavalinkEventTypes } from "#alya/types";
-import { createLavalinkEvent, sendNodeLog, PlayerSaver } from "#alya/utils";
+import { createLavalinkEvent, PlayerSaver, sendNodeLog } from "#alya/utils";
 
 export default createLavalinkEvent({
 	name: "connect",

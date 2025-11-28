@@ -1,33 +1,32 @@
 import {
+	ActionRow,
+	Button,
 	type CommandContext,
+	type ComponentInteraction,
+	Container,
 	Declare,
 	LocalesT,
 	SubCommand,
-	Container,
 	TextDisplay,
-	ActionRow,
-	Button,
-	type ComponentInteraction,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
 @Declare({
 	name: "delete",
-	description: "Delete the music/global chat setup",
+	description: "Delete the setup",
 })
 @LocalesT("cmd.setup.sub.delete.name", "cmd.setup.sub.delete.description")
 export default class DeleteSubcommand extends SubCommand {
 	async run(ctx: CommandContext) {
 		const { client, guildId, author } = ctx;
+		const { cmd } = await ctx.getLocale();
 		if (!guildId) return;
 
-		// Prepare optional Authorization header for global chat API
 		const globalChatHeaders: Record<string, string> = {};
 		if (client.config.globalChat?.apiKey) {
 			globalChatHeaders.Authorization = `Bearer ${client.config.globalChat.apiKey}`;
 		}
 
-		// Check what setups exist
 		const chatbotSetup = await client.database.getChatbotSetup(guildId);
 		const globalChatSetup = await client.database.getGlobalChatChannel(guildId);
 
@@ -36,31 +35,30 @@ export default class DeleteSubcommand extends SubCommand {
 				embeds: [
 					{
 						color: client.config.color.no,
-						description: `${client.config.emoji.no} No setup found to delete.`,
+						description: `${client.config.emoji.no} ${cmd.setup.run.delete.none}`,
 					},
 				],
 			});
 			return;
 		}
 
-		// Prompt user for what to delete
 		const prompt = new Container().addComponents(
-			new TextDisplay().setContent(`Select which setup you want to delete:`),
+			new TextDisplay().setContent(cmd.setup.run.delete.prompt),
 		);
 		const buttons = new ActionRow<Button>().addComponents(
 			new Button()
 				.setCustomId("delete_chatbot")
-				.setLabel("Delete Chatbot")
+				.setLabel(cmd.setup.run.delete.buttons.chatbot)
 				.setStyle(ButtonStyle.Danger)
 				.setDisabled(!chatbotSetup),
 			new Button()
 				.setCustomId("delete_globalchat")
-				.setLabel("Delete Global Chat")
+				.setLabel(cmd.setup.run.delete.buttons.globalchat)
 				.setStyle(ButtonStyle.Danger)
 				.setDisabled(!globalChatSetup),
 			new Button()
 				.setCustomId("delete_both")
-				.setLabel("Delete Both")
+				.setLabel(cmd.setup.run.delete.buttons.both)
 				.setStyle(ButtonStyle.Danger)
 				.setDisabled(!(chatbotSetup && globalChatSetup)),
 		);
@@ -73,10 +71,9 @@ export default class DeleteSubcommand extends SubCommand {
 			true,
 		);
 
-		// Collector for button interactions
 		const collector = message.createComponentCollector({
 			filter: (i: ComponentInteraction) => i.user.id === author.id,
-			idle: 60000, // 1 minute
+			idle: 60000,
 		});
 
 		collector.run(
@@ -90,32 +87,29 @@ export default class DeleteSubcommand extends SubCommand {
 				}
 				if (interaction.customId === "delete_globalchat") {
 					try {
-						const response = await fetch(`${client.config.globalChat.apiUrl}/remove/${guildId}`, {
-							method: "DELETE",
-							headers: { "Content-Type": "application/json", ...globalChatHeaders },
-						});
+						const response = await fetch(
+							`${client.config.globalChat.apiUrl}/remove/${guildId}`,
+							{
+								method: "DELETE",
+								headers: {
+									"Content-Type": "application/json",
+									...globalChatHeaders,
+								},
+							},
+						);
 
 						const result = await response.json();
 
 						if (response.ok && result.status === "ok") {
 							deleted.push("Global Chat");
-							client.logger.info(
-								`Guild ${guildId} removed from global chat via API`,
-							);
 						} else {
-							client.logger.warn(
-								`Failed to remove guild from global chat API: ${result.error || "Unknown error"}`,
-							);
 							// Still mark as deleted for UI purposes if it's a "not found" error
 							if (result.code === "GUILD_NOT_FOUND") {
 								deleted.push("Global Chat (was not registered)");
 							}
 						}
-					} catch (error) {
-						client.logger.error("Error calling global chat remove API:", error);
-					}
+					} catch {}
 
-					// Also remove from local database as fallback
 					await client.database.deleteGlobalChatChannel(guildId);
 					if (
 						!deleted.includes("Global Chat") &&
@@ -128,34 +122,30 @@ export default class DeleteSubcommand extends SubCommand {
 					await client.database.deleteChatbotSetup(guildId);
 					deleted.push("Chatbot");
 
-					// Handle global chat deletion via API
 					try {
-						const response = await fetch(`${client.config.globalChat.apiUrl}/remove/${guildId}`, {
-							method: "DELETE",
-							headers: { "Content-Type": "application/json", ...globalChatHeaders },
-						});
+						const response = await fetch(
+							`${client.config.globalChat.apiUrl}/remove/${guildId}`,
+							{
+								method: "DELETE",
+								headers: {
+									"Content-Type": "application/json",
+									...globalChatHeaders,
+								},
+							},
+						);
 
 						const result = await response.json();
 
 						if (response.ok && result.status === "ok") {
 							deleted.push("Global Chat");
-							client.logger.info(
-								`Guild ${guildId} removed from global chat via API`,
-							);
 						} else {
-							client.logger.warn(
-								`Failed to remove guild from global chat API: ${result.error || "Unknown error"}`,
-							);
 							// Still mark as deleted for UI purposes if it's a "not found" error
 							if (result.code === "GUILD_NOT_FOUND") {
 								deleted.push("Global Chat (was not registered)");
 							}
 						}
-					} catch (error) {
-						client.logger.error("Error calling global chat remove API:", error);
-					}
+					} catch {}
 
-					// Also remove from local database as fallback
 					await client.database.deleteGlobalChatChannel(guildId);
 					if (
 						!deleted.includes("Global Chat") &&
@@ -170,8 +160,8 @@ export default class DeleteSubcommand extends SubCommand {
 						new Container().addComponents(
 							new TextDisplay().setContent(
 								success
-									? `${client.config.emoji.yes} Successfully deleted: ${deleted.join(", ")}`
-									: `${client.config.emoji.no} Failed to delete setup.`,
+									? `${client.config.emoji.yes} ${cmd.setup.run.delete.result.success({ list: deleted.join(", ") })}`
+									: `${client.config.emoji.no} ${cmd.setup.run.delete.result.fail}`,
 							),
 						),
 					],
@@ -181,7 +171,6 @@ export default class DeleteSubcommand extends SubCommand {
 			},
 		);
 
-		// Collector end: disable buttons if idle
 		collector.stop = async (reason: string) => {
 			if (reason === "idle") {
 				await message.edit({

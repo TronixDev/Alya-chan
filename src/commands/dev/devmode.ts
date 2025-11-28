@@ -1,12 +1,12 @@
 import {
 	Command,
 	type CommandContext,
+	createBooleanOption,
 	Declare,
 	Options,
-	createBooleanOption,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { MessageFlags } from "seyfert/lib/types";
+import { AlyaOptions } from "#alya/utils";
 
 const option = {
 	enable: createBooleanOption({

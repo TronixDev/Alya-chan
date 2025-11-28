@@ -1,13 +1,13 @@
 import {
-	Declare,
-	type CommandContext,
-	SubCommand,
-	Container,
-	TextDisplay,
-	Separator,
 	ActionRow,
 	Button,
+	type CommandContext,
 	type ComponentInteraction,
+	Container,
+	Declare,
+	Separator,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -163,8 +163,8 @@ export default class FindEmojiCommand extends SubCommand {
 				const colStr = interaction.customId.split("_")[2];
 				if (!rowStr || !colStr) return;
 
-				const row = parseInt(rowStr);
-				const col = parseInt(colStr);
+				const row = parseInt(rowStr, 10);
+				const col = parseInt(colStr, 10);
 
 				// Reveal the tile
 				const revealedRow = revealed[row];

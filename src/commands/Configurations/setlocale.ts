@@ -1,14 +1,14 @@
 import {
 	Command,
 	type CommandContext,
+	createStringOption,
 	Declare,
 	type DefaultLocale,
 	Options,
-	createStringOption,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { MessageFlags } from "seyfert/lib/types";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 const option = {
 	locale: createStringOption({

@@ -7,7 +7,7 @@ import {
 	type User,
 } from "seyfert";
 import { AlyaCategory } from "#alya/types";
-import { AlyaOptions, TimeFormat, getSourceIcon } from "#alya/utils";
+import { AlyaOptions, getSourceIcon, TimeFormat } from "#alya/utils";
 
 @Declare({
 	name: "nowplaying",

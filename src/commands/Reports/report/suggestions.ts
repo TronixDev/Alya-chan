@@ -4,13 +4,12 @@ import {
 	type CommandContext,
 	type ComponentInteraction,
 	Declare,
+	Embed,
 	LocalesT,
-	type Message,
 	Modal,
 	type ModalSubmitInteraction,
 	SubCommand,
 	TextInput,
-	Embed,
 } from "seyfert";
 import { Label } from "seyfert/lib/builders/Label";
 import { ButtonStyle, MessageFlags, TextInputStyle } from "seyfert/lib/types";
@@ -38,7 +37,7 @@ export default class BugReportCommand extends SubCommand {
 
 		const row = new ActionRow<Button>().addComponents(reportButton);
 
-		const message = (await ctx.write(
+		const message = await ctx.write(
 			{
 				embeds: [
 					{
@@ -50,7 +49,7 @@ export default class BugReportCommand extends SubCommand {
 				components: [row],
 			},
 			true,
-		)) as Message;
+		);
 
 		const descriptionInput = new TextInput()
 			.setCustomId("bug-description")

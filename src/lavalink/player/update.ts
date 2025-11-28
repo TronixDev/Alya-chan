@@ -1,6 +1,5 @@
-import { PlayerSaver } from "#alya/utils";
 import { LavalinkEventTypes } from "#alya/types";
-import { createLavalinkEvent } from "#alya/utils";
+import { createLavalinkEvent, PlayerSaver } from "#alya/utils";
 
 export default createLavalinkEvent({
 	name: "playerUpdate",

@@ -1,18 +1,19 @@
 import {
-	Declare,
-	type CommandContext,
-	SubCommand,
-	Options,
-	createStringOption,
-	Container,
-	TextDisplay,
-	Separator,
 	ActionRow,
 	Button,
-	TextInput,
-	Modal,
+	type CommandContext,
 	type ComponentInteraction,
+	Container,
+	createStringOption,
+	Declare,
+	Label,
+	Modal,
 	type ModalSubmitInteraction,
+	Options,
+	Separator,
+	SubCommand,
+	TextDisplay,
+	TextInput,
 } from "seyfert";
 import { ButtonStyle, MessageFlags, TextInputStyle } from "seyfert/lib/types";
 
@@ -218,6 +219,7 @@ export default class GuessPokemonCommand extends SubCommand {
 						),
 						generation: parseInt(
 							speciesData.generation.url.split("/").slice(-2)[0] || "1",
+							10,
 						),
 						sprite:
 							data.sprites.other?.["official-artwork"]?.front_default ||
@@ -229,7 +231,7 @@ export default class GuessPokemonCommand extends SubCommand {
 					if (
 						generation !== "all" &&
 						pokemonData &&
-						pokemonData.generation !== parseInt(generation)
+						pokemonData.generation !== parseInt(generation, 10)
 					) {
 						throw new Error("Generation mismatch");
 					}
@@ -245,7 +247,7 @@ export default class GuessPokemonCommand extends SubCommand {
 			let filteredPokemon = fallbackPokemon;
 			if (generation !== "all") {
 				filteredPokemon = fallbackPokemon.filter(
-					(p) => p.generation === parseInt(generation),
+					(p) => p.generation === parseInt(generation, 10),
 				);
 			}
 
@@ -496,20 +498,21 @@ export default class GuessPokemonCommand extends SubCommand {
 				// Show modal for user guess
 				const input = new TextInput()
 					.setCustomId("pokemon_modal_input")
-					.setLabel("Your Guess")
 					.setStyle(TextInputStyle.Short)
 					.setPlaceholder("Type the Pokemon name...")
 					.setRequired(true);
 
-				const row = new ActionRow<TextInput>().setComponents([input]);
+				const field = new Label().setLabel("Your Guess").setComponent(input);
 				const modal = new Modal()
 					.setCustomId("pokemon_modal")
 					.setTitle("Guess the Pokemon")
-					.setComponents([row])
+					.setComponents([field])
 					.run(async (i: ModalSubmitInteraction) => {
 						// Handle modal submit
 						const guessValue = i.getInputValue("pokemon_modal_input", true);
-						userGuess = guessValue;
+						userGuess = Array.isArray(guessValue)
+							? guessValue.join(" ")
+							: guessValue;
 						gamePhase = "ended";
 						if (timer) clearInterval(timer);
 						await i.update({

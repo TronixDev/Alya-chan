@@ -1,28 +1,28 @@
 import {
 	Command,
 	type CommandContext,
+	createIntegerOption,
+	createStringOption,
 	Declare,
 	Embed,
 	type Message,
 	Options,
 	type WebhookMessage,
-	createIntegerOption,
-	createStringOption,
 } from "seyfert";
 import { EmbedColors, Formatter } from "seyfert/lib/common";
-import {
-	AlyaOptions,
-	SECRETS_MESSAGES,
-	getDepth,
-	ms,
-	sliceText,
-} from "#alya/utils";
 import {
 	DeclareParserConfig,
 	ParserRecommendedConfig,
 	Watch,
 	Yuna,
 } from "yunaforseyfert";
+import {
+	AlyaOptions,
+	getDepth,
+	ms,
+	SECRETS_MESSAGES,
+	sliceText,
+} from "#alya/utils";
 
 const secretsRegex =
 	/\b(?:client\.(?:config)|config|env|process\.(?:env|exit)|eval|atob|btoa)\b/;

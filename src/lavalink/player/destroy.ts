@@ -1,7 +1,6 @@
-import { PlayerSaver } from "#alya/utils";
-import { LavalinkEventTypes } from "#alya/types";
-import { createLavalinkEvent } from "#alya/utils";
 import type { Player } from "lavalink-client";
+import { LavalinkEventTypes } from "#alya/types";
+import { createLavalinkEvent, PlayerSaver } from "#alya/utils";
 
 export default createLavalinkEvent({
 	name: "playerDestroy",

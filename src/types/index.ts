@@ -6,15 +6,13 @@ export type AutoplayMode = "enabled" | "disabled";
 export type PausedMode = "pause" | "resume";
 export type NonGlobalCommands = Command | ContextMenuCommand | SubCommand;
 
+export * from "./api/GlobalChat";
+// API/Options types
+export * from "./api/Options";
 // Core types
 export * from "./core/Category";
 export * from "./core/Configuration";
 export * from "./core/Keys";
-
 // Lavalink types
 export * from "./lavalink/Lavalink";
 export * from "./lavalink/PlayerSaver";
-
-// API/Options types
-export * from "./api/Options";
-export * from "./api/GlobalChat";

@@ -1,9 +1,9 @@
 import "@dotenvx/dotenvx/config";
-import Alya from "#alya/client";
 import { Logger } from "seyfert";
 import { APIServer } from "#alya/api";
-import { AlyaLogger, validateEnv } from "#alya/utils";
+import Alya from "#alya/client";
 import { preloadAllModels, validateModelFiles } from "#alya/models";
+import { AlyaLogger, validateEnv } from "#alya/utils";
 
 Logger.customize(AlyaLogger);
 

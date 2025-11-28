@@ -33,6 +33,80 @@ export default {
 				},
 			},
 		},
+		// Chatbot
+		chatbot: {
+			name: "Chatbot",
+			description: "Setup or remove a chatbot",
+			locale: {
+				name: "Chatbot Locale",
+				description: "Change chatbot language for this server",
+				errors: {
+					invalid: ({ locale }: { locale: string }) =>
+						`Invalid chatbot locale: ${locale}. Please select from available options.`,
+				},
+				responses: {
+					success_prefix: ({
+						flag,
+						name,
+						code,
+					}: {
+						flag: string;
+						name: string;
+						code: string;
+					}) =>
+						`Successfully set chatbot language to: **${flag} ${name}** (${code})`,
+					suffix: {
+						en: "Alya will now respond in English!",
+						id: "Alya will now respond in Bahasa Indonesia!",
+						auto: "Alya will now automatically detect and respond in the same language you use!",
+						generic: ({ name }: { name: string }) =>
+							`Alya will now use ${name} language model!`,
+					},
+				},
+			},
+			status: {
+				name: "Chatbot Status",
+				description: "Show chatbot language and status information",
+				title: ({ bot }: { bot: string }) => `Chatbot Status - ${bot}`,
+				fields: {
+					current_language: {
+						title: "Current Language",
+						auto_note: "*Auto-detects user language*",
+						unknown: ({ code }: { code: string }) =>
+							`Unknown language code: "${code}"`,
+					},
+					global_status: {
+						title: "Global Status",
+						enabled: "Enabled",
+						disabled: "Disabled",
+					},
+					channel_setup: {
+						title: "Channel Setup",
+						configured: ({ channelId }: { channelId: string }) =>
+							`<#${channelId}>`,
+						not_configured: "Not configured\n*Responds to mentions only*",
+					},
+					model_cache: {
+						title: "Model Cache",
+						loaded: ({ count }: { count: number }) =>
+							`**Loaded:** ${count} models`,
+						languages: ({ list }: { list: string }) => `**Languages:** ${list}`,
+					},
+					model_files: {
+						title: "Model Files",
+						valid: "All model files found",
+						missing: ({ list }: { list: string }) => `Missing files:\n${list}`,
+					},
+					how_to_change_language: {
+						title: "How to Change Language",
+						description:
+							"Use `/chatbot locale` to change the chatbot language for this server.\n\n**Available Options:**\n• `id` - Indonesian\n• `en` - English\n• `auto` - Multi-language (auto-detect)",
+					},
+				},
+				footer: "Language models are cached for better performance",
+				error: "Failed to get chatbot status. Please try again later.",
+			},
+		},
 		// Setup Commands
 		setup: {
 			name: "setup",
@@ -191,23 +265,21 @@ export default {
 				about_me: {
 					button: "About",
 					title: "About Me",
-					1: "I'm a feature-rich music bot designed to deliver high-quality music playback experience on Discord.",
-					2: "Key Features",
-					3: "- High quality music playback",
-					4: "- Support for multiple music sources",
-					5: "- Advanced queue management",
-					6: "- DJ role system",
-					7: "- Custom playlists",
-					8: "- And much more!",
-					9: "Links",
-					10: "Invite Me",
-					11: "Support Server",
-					12: "Vote for me",
-					13: "Credits",
-					14: ({ author }: { author: string }) => `- Contributed by: ${author}`,
-					15: ({ developer }: { developer: string }) =>
+					1: ({ bot }: { bot: string }) =>
+						`Hmph. Fine, pay attention. I am ${bot}, a highly proficient, multipurpose Discord bot. And no, I'm not doing this because I want to be here; I'm here because someone has to step up and ensure your server doesn't fall into chaos.`,
+					2: ({ character }: { character: string }) =>
+						`I was inspired by ${character}, so naturally, my capabilities are **top-tier**. I can handle your messy **moderation** needs, provide essential **utility** commands, and even manage some... childish **fun** activities. Don't think for a second that I enjoy this, but someone has to maintain **порядок** (order).`,
+					3: "And if you make a mistake running your server? I'll probably mumble **\"Ты дурак?\"** (Are you an idiot?) under my breath. But I'll fix it anyway.",
+					4: "Just use me correctly, **idiot**. It would be a **грех** (sin) to waste my potential. Now, what are you waiting for? Add me already.",
+					5: "Links",
+					6: "Invite Me",
+					7: "Support Server",
+					8: "Vote for me",
+					9: "Credits",
+					10: ({ author }: { author: string }) => `- Contributed by: ${author}`,
+					11: ({ developer }: { developer: string }) =>
 						`- Developed by: ${developer}`,
-					16: ({ country }: { country: string }) => `- Country: ${country}`,
+					12: ({ country }: { country: string }) => `- Country: ${country}`,
 				},
 				contributors: {
 					button: "Contributors",

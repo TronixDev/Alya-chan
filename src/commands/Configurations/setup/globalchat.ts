@@ -1,18 +1,19 @@
 import {
-	SubCommand,
 	type CommandContext,
-	Declare,
-	Options,
 	createChannelOption,
+	Declare,
+	LocalesT,
+	Options,
+	SubCommand,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
-import { AlyaCategory } from "#alya/types";
 import {
 	ChannelType,
 	MessageFlags,
-	PermissionFlagsBits,
 	OverwriteType,
+	PermissionFlagsBits,
 } from "seyfert/lib/types";
+import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 const option = {
 	channel: createChannelOption({
@@ -31,12 +32,16 @@ const option = {
 })
 @AlyaOptions({ cooldown: 10, category: AlyaCategory.Configurations })
 @Options(option)
+@LocalesT(
+	"cmd.setup.sub.globalchat.name",
+	"cmd.setup.sub.globalchat.description",
+)
 export default class GlobalChatSetupCommand extends SubCommand {
 	public override async run(ctx: CommandContext<typeof option>) {
 		const { client, options, guildId } = ctx;
+		const { cmd } = await ctx.getLocale();
 		if (!guildId) return;
 
-		// Prepare headers for global chat API requests (include Authorization if apiKey present)
 		const globalChatHeaders: Record<string, string> = {};
 		if (client.config.globalChat?.apiKey) {
 			globalChatHeaders.Authorization = `Bearer ${client.config.globalChat.apiKey}`;
@@ -44,7 +49,6 @@ export default class GlobalChatSetupCommand extends SubCommand {
 
 		await ctx.deferReply();
 
-		// Check existing setup from API
 		try {
 			const response = await fetch(`${client.config.globalChat.apiUrl}/list`, {
 				headers: globalChatHeaders,
@@ -59,7 +63,7 @@ export default class GlobalChatSetupCommand extends SubCommand {
 					embeds: [
 						{
 							color: client.config.color.no,
-							description: `${client.config.emoji.no} Global chat channel is already set: <#${existingGuild.globalChannelId}>`,
+							description: `${client.config.emoji.no} ${cmd.setup.sub.globalchat.run.already_set({ channelId: existingGuild.globalChannelId })}`,
 						},
 					],
 					flags: MessageFlags.Ephemeral,
@@ -72,7 +76,7 @@ export default class GlobalChatSetupCommand extends SubCommand {
 				embeds: [
 					{
 						color: client.config.color.no,
-						description: `${client.config.emoji.no} Unable to verify existing setup. Please try again later.`,
+						description: `${client.config.emoji.no} ${cmd.setup.sub.globalchat.run.api_check_failed}`,
 					},
 				],
 				flags: MessageFlags.Ephemeral,
@@ -83,13 +87,16 @@ export default class GlobalChatSetupCommand extends SubCommand {
 		let channelId: string | undefined;
 		if (options.channel) {
 			channelId = options.channel.id;
-			// If user provided a channel, create webhook for it
+
 			const webhook = await client.webhooks.create(channelId, {
 				name: client.config.globalChat.webhookName,
 				avatar: client.me.avatarURL(),
 			});
-			// Kirim data ke API
-			const postHeaders = { "Content-Type": "application/json", ...globalChatHeaders };
+
+			const postHeaders = {
+				"Content-Type": "application/json",
+				...globalChatHeaders,
+			};
 			await fetch(`${client.config.globalChat.apiUrl}/add`, {
 				method: "POST",
 				headers: postHeaders,
@@ -107,7 +114,7 @@ export default class GlobalChatSetupCommand extends SubCommand {
 					embeds: [
 						{
 							color: client.config.color.no,
-							description: `${client.config.emoji.no} Unable to fetch guild data. Please try again later.`,
+							description: `${client.config.emoji.no} ${cmd.setup.sub.globalchat.run.guild_fetch_failed}`,
 						},
 					],
 					flags: MessageFlags.Ephemeral,
@@ -115,9 +122,9 @@ export default class GlobalChatSetupCommand extends SubCommand {
 				return;
 			}
 			const channel = await guild.channels.create({
-				name: "🌏・global-chat",
+				name: `${client.config.emoji.globe}・global-chat`,
 				type: ChannelType.GuildText,
-				topic: `${client.config.globalChat.webhookName} - Interact with users from other servers!`,
+				topic: `${client.config.globalChat.webhookName} - ${cmd.setup.sub.globalchat.run.channel_topic}`,
 				permission_overwrites: [
 					{
 						id: client.me.id,
@@ -143,28 +150,27 @@ export default class GlobalChatSetupCommand extends SubCommand {
 			});
 			channelId = channel.id;
 
-			// Create webhook for global chat
 			const webhook = await client.webhooks.create(channel.id, {
 				name: client.config.globalChat.webhookName,
 				avatar: client.me.avatarURL(),
 			});
 
-			// Send setup message to the created channel
 			await client.messages.write(channel.id, {
 				embeds: [
 					{
-						title: `${client.config.emoji.globe} Global Chat Setup`,
-						description:
-							"This is your new global chat channel! Interact with users from other servers.",
-						// image: { url: client.config.info.banner },
+						title: `${client.config.emoji.globe} ${cmd.setup.sub.globalchat.run.embed_title}`,
+						description: cmd.setup.sub.globalchat.run.embed_desc,
+
 						color: client.config.color.primary,
 						timestamp: new Date().toISOString(),
 					},
 				],
 			});
 
-			// Kirim data ke API
-			const postHeaders = { "Content-Type": "application/json", ...globalChatHeaders };
+			const postHeaders = {
+				"Content-Type": "application/json",
+				...globalChatHeaders,
+			};
 			await fetch(`${client.config.globalChat.apiUrl}/add`, {
 				method: "POST",
 				headers: postHeaders,
@@ -181,7 +187,7 @@ export default class GlobalChatSetupCommand extends SubCommand {
 			embeds: [
 				{
 					color: client.config.color.yes,
-					description: `${client.config.emoji.yes} Global chat channel successfully set: <#${channelId}>`,
+					description: `${client.config.emoji.yes} ${cmd.setup.sub.globalchat.run.success({ channelId })}`,
 				},
 			],
 			flags: MessageFlags.Ephemeral,

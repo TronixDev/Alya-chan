@@ -1,13 +1,13 @@
 import {
 	Command,
 	type CommandContext,
+	createStringOption,
 	Declare,
 	LocalesT,
 	Options,
-	createStringOption,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 const option = {
 	prefix: createStringOption({

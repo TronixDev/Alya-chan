@@ -1,13 +1,13 @@
 import {
-	Declare,
-	type CommandContext,
-	SubCommand,
-	Container,
-	TextDisplay,
-	Separator,
 	ActionRow,
 	Button,
+	type CommandContext,
 	type ComponentInteraction,
+	Container,
+	Declare,
+	Separator,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -66,7 +66,7 @@ export default class SlotsCommand extends SubCommand {
 				board += `| : :   ${hasWon ? "WON " : "LOST"}   : : |`;
 			}
 
-			return board + "```";
+			return `${board}\`\`\``;
 		};
 
 		const checkWin = (): boolean => {

@@ -38,7 +38,6 @@ export default class ReplayCommand extends Command {
 		const currentTrack = player.queue.current;
 		if (!currentTrack) return;
 
-		// Replay the current track from the beginning
 		await player.play();
 
 		await ctx.editOrReply({

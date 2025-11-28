@@ -1,14 +1,14 @@
 import {
 	Command,
 	type CommandContext,
+	createIntegerOption,
 	Declare,
 	LocalesT,
 	Middlewares,
 	Options,
-	createIntegerOption,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 const option = {
 	volume: createIntegerOption({
@@ -62,7 +62,6 @@ export default class VolumeCommand extends Command {
 			],
 		});
 
-		// Resume player if it was paused and volume > 1
 		if (volume > 1 && player.paused) {
 			await player.resume();
 		}

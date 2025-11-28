@@ -1,15 +1,15 @@
 import {
 	type CommandContext,
-	Declare,
-	Options,
-	SubCommand,
 	createIntegerOption,
 	createStringOption,
 	createUserOption,
+	Declare,
+	Options,
+	SubCommand,
 } from "seyfert";
 import { EmbedColors } from "seyfert/lib/common";
-import { AlyaOptions } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 const option = {
 	user: createUserOption({

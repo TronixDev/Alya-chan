@@ -10,8 +10,8 @@ import {
 	StringSelectOption,
 } from "seyfert";
 import { EmbedColors } from "seyfert/lib/common";
-import { AlyaOptions, TimeFormat, formatBytes } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions, formatBytes, TimeFormat } from "#alya/utils";
 
 @Declare({
 	name: "nodes",

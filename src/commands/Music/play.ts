@@ -1,21 +1,21 @@
 import {
-	Declare,
 	Command,
 	type CommandContext,
 	createStringOption,
-	Options,
+	Declare,
 	Embed,
-	Middlewares,
 	LocalesT,
+	Middlewares,
+	Options,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { AlyaCategory } from "#alya/types";
 import {
 	AlyaOptions,
-	TimeFormat,
 	getAllTopTracks,
 	type RecommendationTrack,
+	TimeFormat,
 } from "#alya/utils";
-import { AlyaCategory } from "#alya/types";
 
 const option = {
 	query: createStringOption({
@@ -63,7 +63,7 @@ const option = {
 					}),
 				);
 				const flatTracks = allTracks.flat();
-				// Remove undefined tracks before shuffling
+
 				const filteredTracks = flatTracks.filter(
 					(t): t is Exclude<(typeof flatTracks)[number], undefined> =>
 						t !== undefined,

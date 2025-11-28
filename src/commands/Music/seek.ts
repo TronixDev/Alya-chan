@@ -1,16 +1,16 @@
 import {
 	Command,
 	type CommandContext,
+	createStringOption,
 	Declare,
 	LocalesT,
 	Middlewares,
 	type OKFunction,
 	Options,
-	createStringOption,
 } from "seyfert";
 import { EmbedColors } from "seyfert/lib/common";
-import { AlyaOptions, TimeFormat, ms } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions, ms, TimeFormat } from "#alya/utils";
 
 const option = {
 	time: createStringOption({

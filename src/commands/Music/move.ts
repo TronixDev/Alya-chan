@@ -1,15 +1,15 @@
 import {
 	Command,
 	type CommandContext,
+	createChannelOption,
 	Declare,
 	LocalesT,
 	Middlewares,
 	Options,
-	createChannelOption,
 } from "seyfert";
 import { ChannelType } from "seyfert/lib/types";
-import { AlyaOptions } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 const option = {
 	voice: createChannelOption({

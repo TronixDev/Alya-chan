@@ -1,18 +1,19 @@
 import {
-	SubCommand,
 	type CommandContext,
-	Declare,
-	Options,
 	createStringOption,
+	Declare,
+	LocalesT,
+	Options,
+	SubCommand,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { MessageFlags } from "seyfert/lib/types";
-import { AlyaCategory } from "#alya/types";
 import {
-	isValidLanguage,
-	getLanguageInfo,
 	AVAILABLE_LANGUAGES,
+	getLanguageInfo,
+	isValidLanguage,
 } from "#alya/models";
+import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 const option = {
 	locale: createStringOption({
@@ -35,9 +36,11 @@ const option = {
 })
 @AlyaOptions({ cooldown: 10, category: AlyaCategory.Configurations })
 @Options(option)
+@LocalesT("cmd.chatbot.locale.name", "cmd.chatbot.locale.description")
 export default class SetChatbotLocaleCommand extends SubCommand {
 	public override async run(ctx: CommandContext<typeof option>) {
 		const { client, options, guildId } = ctx;
+		const { cmd } = await ctx.getLocale();
 		const { locale } = options;
 
 		if (!guildId) return;
@@ -48,27 +51,28 @@ export default class SetChatbotLocaleCommand extends SubCommand {
 				flags: MessageFlags.Ephemeral,
 				embeds: [
 					{
-						description: `${client.config.emoji.no} Invalid chatbot locale: ${locale}. Please select from available options.`,
+						description: `${client.config.emoji.no} ${cmd.chatbot.locale.errors.invalid({ locale })}`,
 						color: client.config.color.no,
 					},
 				],
 			});
 
-		// Set chatbot locale to database
 		await client.database.setChatbotLocale(guildId, locale);
 
 		await ctx.editOrReply({
 			flags: MessageFlags.Ephemeral,
 			embeds: [
 				{
-					description: `${client.config.emoji.yes} Successfully set chatbot language to: **${langInfo.flag} ${langInfo.name}** (${locale})\n\n${
+					description: `${client.config.emoji.yes} ${cmd.chatbot.locale.responses.success_prefix({ flag: langInfo.flag, name: langInfo.name, code: locale })}\n\n${
 						locale === "id"
-							? "Alya sekarang akan merespons dalam bahasa Indonesia!"
+							? cmd.chatbot.locale.responses.suffix.id
 							: locale === "en"
-								? "Alya will now respond in English!"
+								? cmd.chatbot.locale.responses.suffix.en
 								: locale === "auto"
-									? "Alya will now automatically detect and respond in the same language you use! 🌐"
-									: `Alya will now use ${langInfo.name} language model!`
+									? cmd.chatbot.locale.responses.suffix.auto
+									: cmd.chatbot.locale.responses.suffix.generic({
+											name: langInfo.name,
+										})
 					}`,
 					color: client.config.color.primary,
 				},

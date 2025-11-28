@@ -76,5 +76,5 @@ export const Environment: AlyaEnvironment = {
 	DatabasePassword: DATABASE_PASSWORD,
 };
 
-export * from "./nodes";
 export * from "./emoji";
+export * from "./nodes";

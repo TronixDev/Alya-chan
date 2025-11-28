@@ -3,14 +3,14 @@ import {
 	Button,
 	type CommandContext,
 	type ComponentInteraction,
+	createStringOption,
 	Declare,
 	Options,
 	SubCommand,
-	createStringOption,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { AlyaOptions } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 const options = {
 	type: createStringOption({

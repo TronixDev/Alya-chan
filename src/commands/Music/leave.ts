@@ -5,8 +5,8 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 @Declare({
 	name: "leave",
@@ -30,7 +30,6 @@ export default class LeaveCommand extends Command {
 		const player = client.manager.getPlayer(guild.id);
 		if (!player) return;
 
-		// Destroy the player and disconnect from voice channel
 		await player.destroy();
 
 		await ctx.editOrReply({

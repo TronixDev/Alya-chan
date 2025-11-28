@@ -2,23 +2,22 @@ import { Client as Genius } from "genius-lyrics";
 import {
 	Command,
 	type CommandContext,
+	createStringOption,
 	Declare,
 	Embed,
 	LocalesT,
 	Middlewares,
 	Options,
-	createStringOption,
 } from "seyfert";
+import { AlyaCategory } from "#alya/types";
 import {
 	AlyaOptions,
 	getAllTopTracks,
-	TimeFormat,
 	type RecommendationTrack,
+	TimeFormat,
 } from "#alya/utils";
-import { AlyaCategory } from "#alya/types";
 
-// Initialize Genius client
-const geniusClient = new Genius();
+const genius = new Genius();
 
 const options = {
 	query: createStringOption({
@@ -139,7 +138,6 @@ export default class LyricsCommand extends Command {
 		const track = player?.queue.current;
 		const query = ctx.options.query;
 
-		// Handle different input scenarios
 		if (query) {
 			if (this.isValidUrl(query)) {
 				try {
@@ -183,8 +181,7 @@ export default class LyricsCommand extends Command {
 			return;
 		}
 
-		// Search for the song on Genius
-		const searches = await geniusClient.songs.search(searchQuery);
+		const searches = await genius.songs.search(searchQuery);
 
 		if (!searches.length || !searches[0]) {
 			await ctx.editOrReply({
@@ -199,14 +196,11 @@ export default class LyricsCommand extends Command {
 			return;
 		}
 
-		// Get the first result and lyrics
 		const song = searches[0];
 		const lyrics = await song.lyrics();
 
-		// Split lyrics into chunks if too long
 		const lyricsChunks = this.splitLyrics(lyrics);
 
-		// Send first chunk
 		const firstEmbed = new Embed()
 			.setColor(client.config.color.primary)
 			.setTitle(
@@ -222,7 +216,6 @@ export default class LyricsCommand extends Command {
 
 		await ctx.editOrReply({ embeds: [firstEmbed] });
 
-		// Send additional chunks if any
 		for (let i = 1; i < lyricsChunks.length; i++) {
 			const embed = new Embed()
 				.setColor(client.config.color.primary)

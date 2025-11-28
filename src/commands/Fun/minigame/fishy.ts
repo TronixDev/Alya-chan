@@ -1,16 +1,16 @@
 import {
-	Declare,
-	type CommandContext,
-	SubCommand,
-	Options,
-	createStringOption,
-	createIntegerOption,
-	Container,
-	TextDisplay,
-	Separator,
 	ActionRow,
 	Button,
+	type CommandContext,
 	type ComponentInteraction,
+	Container,
+	createIntegerOption,
+	createStringOption,
+	Declare,
+	Options,
+	Separator,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 

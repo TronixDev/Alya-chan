@@ -1,13 +1,13 @@
 import {
-	Declare,
-	type CommandContext,
-	SubCommand,
-	Container,
-	TextDisplay,
-	Separator,
 	ActionRow,
 	Button,
+	type CommandContext,
 	type ComponentInteraction,
+	Container,
+	Declare,
+	Separator,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -222,8 +222,8 @@ export default class MinesweeperCommand extends SubCommand {
 				const yStr = interaction.customId.split("_")[2];
 				if (!xStr || !yStr) return;
 
-				const x = parseInt(xStr);
-				const y = parseInt(yStr);
+				const x = parseInt(xStr, 10);
+				const y = parseInt(yStr, 10);
 				const row = board[y];
 				if (!row) return;
 				const cell = row[x];

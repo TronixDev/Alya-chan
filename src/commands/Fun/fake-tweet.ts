@@ -1,12 +1,12 @@
 import {
-	Declare,
 	Command,
 	type CommandContext,
 	createStringOption,
 	createUserOption,
-	Options,
+	Declare,
 	Embed,
 	Middlewares,
+	Options,
 } from "seyfert";
 import { AlyaCategory } from "#alya/types";
 import { AlyaOptions } from "#alya/utils";

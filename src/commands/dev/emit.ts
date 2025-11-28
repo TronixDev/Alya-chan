@@ -1,14 +1,13 @@
 import {
 	Command,
 	type CommandContext,
+	createStringOption,
 	Declare,
 	type Guild,
 	Options,
-	createStringOption,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
-
 import { MessageFlags } from "seyfert/lib/types";
+import { AlyaOptions } from "#alya/utils";
 
 const option = {
 	event: createStringOption({

@@ -1,9 +1,9 @@
-import type Alya from "#alya/client";
 import type { LavalinkManager } from "lavalink-client";
 import type { ParseClient, ParseLocales, ParseMiddlewares } from "seyfert";
+import type Alya from "#alya/client";
 import type { AlyaMiddlewares } from "#alya/middlewares";
-import type { AlyaContext } from "#alya/utils";
 import type { Options } from "#alya/types";
+import type { AlyaContext } from "#alya/utils";
 import type English from "./locales/en-US";
 
 declare module "seyfert" {

@@ -5,9 +5,8 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
-import { PlayerSaver } from "#alya/utils";
+import { AlyaOptions, PlayerSaver } from "#alya/utils";
 
 @Declare({
 	name: "autoplay",
@@ -53,7 +52,7 @@ export default class AutoplayCommand extends Command {
 			safeData.enabledAutoplay = isAutoplay;
 			await playerSaver.savePlayer(player.guildId, safeData);
 		} catch (e) {
-			client.logger?.error?.("Failed to save autoplay state to PlayerSaver", e);
+			client.logger.error?.("Failed to save autoplay state to PlayerSaver", e);
 		}
 
 		await ctx.editOrReply({

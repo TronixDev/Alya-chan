@@ -1,7 +1,7 @@
-import { createEvent } from "seyfert";
 import { join } from "node:path";
 import { cwd } from "node:process";
 import { Api } from "@top-gg/sdk";
+import { createEvent } from "seyfert";
 import { BOT_VERSION } from "#alya/utils";
 
 export default createEvent({
@@ -24,12 +24,9 @@ export default createEvent({
 		const clientName = `${user.username} v${BOT_VERSION}`;
 		client.logger.info(`Logged in as "${clientName}" on Shard ${shard}`);
 
-		// Enable auto posting if configured
 		if (client.config.topgg.enabled && client.config.topgg.token) {
-			// Post stats after 5 seconds
 			setTimeout(postStats, 5000);
 
-			// Set up auto posting every 30 minutes
 			setInterval(postStats, 30 * 60 * 1000);
 
 			client.logger.info("[Top.gg] Auto Poster initialized");

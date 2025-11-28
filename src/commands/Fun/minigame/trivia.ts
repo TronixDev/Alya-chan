@@ -1,15 +1,15 @@
 import {
-	Declare,
-	type CommandContext,
-	SubCommand,
-	Options,
-	createStringOption,
-	Container,
-	TextDisplay,
-	Separator,
 	ActionRow,
 	Button,
+	type CommandContext,
 	type ComponentInteraction,
+	Container,
+	createStringOption,
+	Declare,
+	Options,
+	Separator,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -324,7 +324,7 @@ export default class TriviaCommand extends SubCommand {
 						new Button()
 							.setCustomId(`trivia_${i}`)
 							.setLabel(
-								`${letter}) ${answer.length > 60 ? answer.substring(0, 57) + "..." : answer}`,
+								`${letter}) ${answer.length > 60 ? `${answer.substring(0, 57)}...` : answer}`,
 							)
 							.setStyle(getAnswerButtonStyle(i))
 							.setDisabled(disabled || gamePhase === "ended"),
@@ -456,7 +456,7 @@ export default class TriviaCommand extends SubCommand {
 				const action = interaction.customId.split("_")[1];
 				if (!action) return;
 
-				const answerIndex = parseInt(action);
+				const answerIndex = parseInt(action, 10);
 
 				if (
 					Number.isNaN(answerIndex) ||

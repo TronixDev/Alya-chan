@@ -1,13 +1,14 @@
 import {
-	SubCommand,
 	type CommandContext,
-	Declare,
-	Options,
 	createChannelOption,
+	Declare,
+	LocalesT,
+	Options,
+	SubCommand,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
-import { AlyaCategory } from "#alya/types";
 import { ChannelType, MessageFlags } from "seyfert/lib/types";
+import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 const option = {
 	channel: createChannelOption({
@@ -26,9 +27,11 @@ const option = {
 })
 @AlyaOptions({ cooldown: 10, category: AlyaCategory.Configurations })
 @Options(option)
+@LocalesT("cmd.setup.sub.chatbot.name", "cmd.setup.sub.chatbot.description")
 export default class ChatbotSetupCommand extends SubCommand {
 	public override async run(ctx: CommandContext<typeof option>) {
 		const { client, options, guildId } = ctx;
+		const { cmd } = await ctx.getLocale();
 		if (!guildId) return;
 
 		if (!options.channel) return;
@@ -39,7 +42,7 @@ export default class ChatbotSetupCommand extends SubCommand {
 				embeds: [
 					{
 						color: client.config.color.no,
-						description: `${client.config.emoji.no} Chatbot channel is already set: <#${existingSetup.channelId}>`,
+						description: `${client.config.emoji.no} ${cmd.setup.sub.chatbot.run.already_set({ channelId: existingSetup.channelId })}`,
 					},
 				],
 				flags: MessageFlags.Ephemeral,
@@ -52,7 +55,7 @@ export default class ChatbotSetupCommand extends SubCommand {
 			embeds: [
 				{
 					color: client.config.color.yes,
-					description: `${client.config.emoji.yes} Chatbot channel successfully set: <#${options.channel.id}>`,
+					description: `${client.config.emoji.yes} ${cmd.setup.sub.chatbot.run.success({ channelId: options.channel.id })}`,
 				},
 			],
 			flags: MessageFlags.Ephemeral,

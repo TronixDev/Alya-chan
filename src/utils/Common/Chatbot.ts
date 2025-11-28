@@ -1,6 +1,6 @@
-import type { UsingClient, Message } from "seyfert";
 import OpenAI from "openai";
-import { loadLanguageModel, DEFAULT_LANGUAGE } from "#alya/models";
+import type { Message, UsingClient } from "seyfert";
+import { DEFAULT_LANGUAGE, loadLanguageModel } from "#alya/models";
 
 function splitMessage(text: string, maxLength = 2000) {
 	const result: string[] = [];

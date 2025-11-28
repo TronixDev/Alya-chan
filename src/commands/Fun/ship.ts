@@ -1,22 +1,22 @@
+import { join } from "node:path";
+import { createCanvas, GlobalFonts, loadImage } from "@napi-rs/canvas";
 import {
-	Declare,
+	AttachmentBuilder,
 	Command,
 	type CommandContext,
-	createUserOption,
-	Options,
 	Container,
-	TextDisplay,
-	Separator,
-	Middlewares,
-	AttachmentBuilder,
+	createUserOption,
+	Declare,
 	MediaGallery,
 	MediaGalleryItem,
+	Middlewares,
+	Options,
+	Separator,
+	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { AlyaCategory } from "#alya/types";
 import { AlyaOptions } from "#alya/utils";
-import { createCanvas, loadImage, GlobalFonts } from "@napi-rs/canvas";
-import { join } from "node:path";
 
 // Register the Norwester font
 GlobalFonts.registerFromPath(

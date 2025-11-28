@@ -1,5 +1,5 @@
 import { LavalinkEventTypes } from "#alya/types";
-import { createLavalinkEvent, sendNodeLog, getDepth } from "#alya/utils";
+import { createLavalinkEvent, getDepth, sendNodeLog } from "#alya/utils";
 
 export default createLavalinkEvent({
 	name: "trackError",

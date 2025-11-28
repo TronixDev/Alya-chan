@@ -4,9 +4,9 @@ import {
 	type SearchResult,
 } from "lavalink-client";
 import { Logger } from "seyfert";
-import { nodes } from "#alya/config";
-import { LavalinkHandler, PlayerSaver, autoPlayFunction } from "#alya/utils";
 import type Alya from "#alya/client";
+import { nodes } from "#alya/config";
+import { autoPlayFunction, LavalinkHandler, PlayerSaver } from "#alya/utils";
 
 const logger = new Logger({
 	name: "[Manager]",

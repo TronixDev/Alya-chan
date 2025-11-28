@@ -5,8 +5,8 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 @Declare({
 	name: "previous",
@@ -28,7 +28,6 @@ export default class PreviousCommand extends Command {
 		const player = client.manager.getPlayer(guildId);
 		if (!player) return;
 
-		// Get the previous track from the queue
 		const track = await player.queue.shiftPrevious();
 		if (!track) {
 			return await ctx.editOrReply({
@@ -42,7 +41,6 @@ export default class PreviousCommand extends Command {
 			});
 		}
 
-		// Add the track to the beginning of the queue and play it
 		await player.queue.add(track, 0);
 		await player.play();
 

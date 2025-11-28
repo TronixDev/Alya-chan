@@ -1,14 +1,14 @@
 import {
-	Declare,
 	Command,
 	type CommandContext,
-	Options,
 	Container,
-	TextDisplay,
-	Separator,
-	Middlewares,
+	Declare,
 	MediaGallery,
 	MediaGalleryItem,
+	Middlewares,
+	Options,
+	Separator,
+	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { AlyaCategory } from "#alya/types";

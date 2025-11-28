@@ -1,6 +1,6 @@
 import { Command, type CommandContext, Declare, Middlewares } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 @Declare({
 	name: "rewind",
@@ -40,7 +40,6 @@ export default class RewindCommand extends Command {
 
 		const currentTrack = player.queue.current;
 
-		// If it's a stream, we can't rewind
 		if (currentTrack.info.isStream) {
 			return await ctx.editOrReply({
 				embeds: [
@@ -52,12 +51,10 @@ export default class RewindCommand extends Command {
 			});
 		}
 
-		// Current position in milliseconds
 		const currentPosition = player.position;
-		// Rewind by 10 seconds (10000 milliseconds)
+
 		const rewindPosition = Math.max(currentPosition - 10000, 0);
 
-		// Seek to the new position
 		await player.seek(rewindPosition);
 
 		await ctx.editOrReply({

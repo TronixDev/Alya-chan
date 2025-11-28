@@ -5,8 +5,8 @@ import {
 	Embed,
 	LocalesT,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 @Declare({
 	name: "ping",

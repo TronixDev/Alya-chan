@@ -5,8 +5,8 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 @Declare({
 	name: "forward",
@@ -49,7 +49,6 @@ export default class ForwardCommand extends Command {
 
 		const currentTrack = player.queue.current;
 
-		// If it's a stream, we can't forward
 		if (currentTrack.info.isStream) {
 			return await ctx.editOrReply({
 				embeds: [
@@ -61,15 +60,13 @@ export default class ForwardCommand extends Command {
 			});
 		}
 
-		// Current position in milliseconds
 		const currentPosition = player.position;
-		// Forward by 10 seconds (10000 milliseconds)
+
 		const forwardPosition = Math.min(
 			currentPosition + 10000,
 			currentTrack.info.duration,
 		);
 
-		// Seek to the new position
 		await player.seek(forwardPosition);
 
 		await ctx.editOrReply({

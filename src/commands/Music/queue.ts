@@ -1,3 +1,4 @@
+import type { User } from "seyfert";
 import {
 	Command,
 	type CommandContext,
@@ -6,9 +7,8 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import type { User } from "seyfert";
 import { AlyaCategory } from "#alya/types";
-import { AlyaOptions, TimeFormat, EmbedPaginator } from "#alya/utils";
+import { AlyaOptions, EmbedPaginator, TimeFormat } from "#alya/utils";
 
 @Declare({
 	name: "queue",
@@ -45,7 +45,6 @@ export default class QueueCommand extends Command {
 		const paginator = new EmbedPaginator(ctx);
 		const tracksPerPage = 5;
 
-		// Create first page with Now Playing
 		const firstEmbed = new Embed()
 			.setAuthor({ name: component.queue.name, iconUrl: guild.iconURL() })
 			.setColor(client.config.color.primary)
@@ -66,7 +65,6 @@ export default class QueueCommand extends Command {
 			});
 		}
 
-		// Add upcoming tracks to first page
 		if (upcomingTracks.length > 0) {
 			const firstPageTracks = upcomingTracks.slice(0, tracksPerPage);
 			const trackListStrings = firstPageTracks.map((track, i) => {
@@ -92,7 +90,6 @@ export default class QueueCommand extends Command {
 
 		paginator.addEmbed(firstEmbed);
 
-		// Create additional pages for remaining tracks
 		for (let i = tracksPerPage; i < upcomingTracks.length; i += tracksPerPage) {
 			const pageEmbed = new Embed()
 				.setAuthor({ name: "Queue", iconUrl: guild.iconURL() })

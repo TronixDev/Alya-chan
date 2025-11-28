@@ -1,5 +1,5 @@
-import { Environment } from "#alya/config";
 import type { Config } from "drizzle-kit";
+import { Environment } from "#alya/config";
 
 export default {
 	schema: "./src/db/schema.ts",

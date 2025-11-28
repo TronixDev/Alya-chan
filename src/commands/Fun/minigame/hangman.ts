@@ -1,13 +1,13 @@
 import {
-	Declare,
-	type CommandContext,
-	SubCommand,
-	Container,
-	TextDisplay,
-	Separator,
 	ActionRow,
 	Button,
+	type CommandContext,
 	type ComponentInteraction,
+	Container,
+	Declare,
+	Separator,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -242,7 +242,7 @@ export default class HangmanCommand extends SubCommand {
 			if (action === "page") {
 				const pageStr = interaction.customId.split("_")[2];
 				if (pageStr) {
-					currentPage = parseInt(pageStr);
+					currentPage = parseInt(pageStr, 10);
 				}
 				await interaction.update({
 					components: [getComponents(), ...getLetterButtons()],

@@ -5,8 +5,8 @@ import {
 	LocalesT,
 	Middlewares,
 } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 @Declare({
 	name: "loop",
@@ -33,14 +33,12 @@ export default class LoopCommand extends Command {
 		const player = client.manager.getPlayer(guildId);
 		if (!player) return;
 
-		// Toggle loop mode: off -> track -> queue -> off
 		let newMode: "off" | "track" | "queue";
 		if (player.repeatMode === "off") newMode = "track";
 		else if (player.repeatMode === "track") newMode = "queue";
 		else newMode = "off";
 		await player.setRepeatMode(newMode);
 
-		// Respond with the current loop mode
 		let currentMode = "";
 		switch (newMode) {
 			case "off":

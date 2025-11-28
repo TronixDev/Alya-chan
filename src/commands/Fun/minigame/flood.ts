@@ -1,13 +1,13 @@
 import {
-	Declare,
-	type CommandContext,
-	SubCommand,
-	Container,
-	TextDisplay,
-	Separator,
 	ActionRow,
 	Button,
+	type CommandContext,
 	type ComponentInteraction,
+	Container,
+	Declare,
+	Separator,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -128,7 +128,7 @@ export default class FloodCommand extends SubCommand {
 			const colorIndexStr = interaction.customId.split("_")[1];
 			if (!colorIndexStr) return;
 
-			const colorIndex = parseInt(colorIndexStr);
+			const colorIndex = parseInt(colorIndexStr, 10);
 			const selectedColor = colors[colorIndex];
 			if (!selectedColor) return;
 

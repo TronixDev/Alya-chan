@@ -1,18 +1,19 @@
 import {
-	Declare,
-	type CommandContext,
-	SubCommand,
-	Options,
-	createStringOption,
-	Container,
-	TextDisplay,
-	Separator,
 	ActionRow,
 	Button,
-	TextInput,
-	Modal,
+	type CommandContext,
 	type ComponentInteraction,
+	Container,
+	createStringOption,
+	Declare,
+	Label,
+	Modal,
 	type ModalSubmitInteraction,
+	Options,
+	Separator,
+	SubCommand,
+	TextDisplay,
+	TextInput,
 } from "seyfert";
 import { ButtonStyle, MessageFlags, TextInputStyle } from "seyfert/lib/types";
 
@@ -336,20 +337,21 @@ export default class FastTypeCommand extends SubCommand {
 					// Create modal for typing input using Seyfert's Modal builder
 					const input = new TextInput()
 						.setCustomId("fasttype_modal_input")
-						.setLabel("Your Answer")
-						.setStyle(TextInputStyle.Paragraph)
+						.setStyle(TextInputStyle.Short)
 						.setPlaceholder("Type the sentence above here...")
 						.setRequired(true);
 
-					const row = new ActionRow<TextInput>().setComponents([input]);
+					const field = new Label().setLabel("Your Answer").setComponent(input);
 					const modal = new Modal()
 						.setCustomId("fasttype_modal")
 						.setTitle("Fast Type - Submit Your Answer")
-						.setComponents([row])
+						.setComponents([field])
 						.run(async (i: ModalSubmitInteraction) => {
 							// Handle modal submit
 							const modalValue = i.getInputValue("fasttype_modal_input", true);
-							userInput = modalValue;
+							userInput = Array.isArray(modalValue)
+								? modalValue.join(" ")
+								: modalValue;
 							gamePhase = "ended";
 							endTime = Date.now();
 							await i.update({

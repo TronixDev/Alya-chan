@@ -1,15 +1,15 @@
 import {
-	Declare,
-	type CommandContext,
-	SubCommand,
-	Options,
-	createStringOption,
-	Container,
-	TextDisplay,
-	Separator,
 	ActionRow,
 	Button,
+	type CommandContext,
 	type ComponentInteraction,
+	Container,
+	createStringOption,
+	Declare,
+	Options,
+	Separator,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -103,7 +103,7 @@ const wordLists = {
 export default class WordleCommand extends SubCommand {
 	async run(ctx: CommandContext<typeof options>) {
 		const { author } = ctx;
-		const difficulty = parseInt(ctx.options.difficulty || "5");
+		const difficulty = parseInt(ctx.options.difficulty || "5", 10);
 
 		// Game state
 		let gamePhase: "playing" | "ended" = "playing";

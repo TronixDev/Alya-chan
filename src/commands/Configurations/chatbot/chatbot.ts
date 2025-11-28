@@ -1,6 +1,6 @@
-import { AutoLoad, Command, Declare } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
+import { AutoLoad, Command, Declare, LocalesT } from "seyfert";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 @Declare({
 	name: "chatbot",
@@ -10,6 +10,6 @@ import { AlyaCategory } from "#alya/types";
 	defaultMemberPermissions: ["ManageGuild"],
 })
 @AutoLoad()
-// @LocalesT("cmd.setup.name", "cmd.setup.description")
+@LocalesT("cmd.chatbot.name", "cmd.chatbot.description")
 @AlyaOptions({ cooldown: 10, category: AlyaCategory.Configurations })
 export default class ChatbotCommand extends Command {}

@@ -1,12 +1,12 @@
-import { SubCommand, type CommandContext, Declare } from "seyfert";
-import { AlyaOptions } from "#alya/utils";
+import { type CommandContext, Declare, LocalesT, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { AlyaCategory } from "#alya/types";
 import {
-	getLanguageInfo,
 	getCacheStats,
+	getLanguageInfo,
 	validateModelFiles,
 } from "#alya/models";
+import { AlyaCategory } from "#alya/types";
+import { AlyaOptions } from "#alya/utils";
 
 @Declare({
 	name: "status",
@@ -17,9 +17,11 @@ import {
 	defaultMemberPermissions: ["ManageGuild"],
 })
 @AlyaOptions({ cooldown: 5, category: AlyaCategory.Configurations })
+@LocalesT("cmd.chatbot.status.name", "cmd.chatbot.status.description")
 export default class ChatbotStatusCommand extends SubCommand {
 	public override async run(ctx: CommandContext) {
 		const { client, guildId } = ctx;
+		const { cmd } = await ctx.getLocale();
 
 		if (!guildId) return;
 
@@ -46,56 +48,64 @@ export default class ChatbotStatusCommand extends SubCommand {
 				flags: MessageFlags.Ephemeral,
 				embeds: [
 					{
-						title: `🤖 Chatbot Status - ${client.me.username}`,
+						title: `${client.config.emoji.info} ${cmd.chatbot.status.title({ bot: client.me.username })}`,
 						fields: [
 							{
-								name: "🌐 Current Language",
+								name: `${client.config.emoji.globe} ${cmd.chatbot.status.fields.current_language.title}`,
 								value: langInfo
 									? `${langInfo.flag} **${langInfo.name}** (\`${langInfo.code}\`)\n${
 											currentLocale === "auto"
-												? "🌐 *Auto-detects user language*"
+												? `${client.config.emoji.globe} ${cmd.chatbot.status.fields.current_language.auto_note}`
 												: ""
 										}`
-									: `❌ Unknown language code: \`${currentLocale}\``,
+									: `${client.config.emoji.no} ${cmd.chatbot.status.fields.current_language.unknown({ code: currentLocale })}`,
 								inline: true,
 							},
 							{
-								name: "⚙️ Global Status",
-								value: chatbotEnabled ? "🟢 Enabled" : "🔴 Disabled",
+								name: `${client.config.emoji.info} ${cmd.chatbot.status.fields.global_status.title}`,
+								value: chatbotEnabled
+									? `${client.config.emoji.yes} ${cmd.chatbot.status.fields.global_status.enabled}`
+									: `${client.config.emoji.no} ${cmd.chatbot.status.fields.global_status.disabled}`,
 								inline: true,
 							},
 							{
-								name: "📍 Channel Setup",
+								name: `${client.config.emoji.folder} ${cmd.chatbot.status.fields.channel_setup.title}`,
 								value: setupData
-									? `<#${setupData.channelId}>`
-									: "❌ Not configured\n*Responds to mentions only*",
+									? cmd.chatbot.status.fields.channel_setup.configured({
+											channelId: setupData.channelId,
+										})
+									: `${client.config.emoji.no} ${cmd.chatbot.status.fields.channel_setup.not_configured}`,
 								inline: true,
 							},
 							{
-								name: "📊 Model Cache",
+								name: `${client.config.emoji.list} ${cmd.chatbot.status.fields.model_cache.title}`,
 								value: [
-									`**Loaded:** ${cacheStats.size} models`,
-									`**Languages:** ${cacheStats.languages.join(", ") || "None"}`,
+									cmd.chatbot.status.fields.model_cache.loaded({
+										count: cacheStats.size,
+									}),
+									cmd.chatbot.status.fields.model_cache.languages({
+										list: cacheStats.languages.join(", ") || "None",
+									}),
 								].join("\n"),
 								inline: true,
 							},
 							{
-								name: "🔍 Model Files",
+								name: `${client.config.emoji.folder} ${cmd.chatbot.status.fields.model_files.title}`,
 								value: validation.valid
-									? "✅ All model files found"
-									: `❌ Missing files:\n${validation.missing.map((m) => `• ${m}`).join("\n")}`,
+									? `${client.config.emoji.yes} ${cmd.chatbot.status.fields.model_files.valid}`
+									: `${client.config.emoji.no} ${cmd.chatbot.status.fields.model_files.missing({ list: validation.missing.map((m) => `• ${m}`).join("\n") })}`,
 								inline: true,
 							},
 							{
-								name: "📝 How to Change Language",
+								name: `${client.config.emoji.pencil} ${cmd.chatbot.status.fields.how_to_change_language.title}`,
 								value:
-									"Use `/chatbot locale` to change the chatbot language for this server.\n\n**Available Options:**\n• `id` - Indonesian\n• `en` - English\n• `auto` - Multi-language (auto-detect)",
+									cmd.chatbot.status.fields.how_to_change_language.description,
 								inline: false,
 							},
 						],
 						color: client.config.color.primary,
 						footer: {
-							text: "Language models are cached for better performance",
+							text: cmd.chatbot.status.footer,
 						},
 						timestamp: new Date().toISOString(),
 					},
@@ -107,8 +117,7 @@ export default class ChatbotStatusCommand extends SubCommand {
 				flags: MessageFlags.Ephemeral,
 				embeds: [
 					{
-						description:
-							"❌ Failed to get chatbot status. Please try again later.",
+						description: cmd.chatbot.status.error,
 						color: client.config.color.no,
 					},
 				],

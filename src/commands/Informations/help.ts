@@ -3,17 +3,17 @@ import {
 	Command,
 	type CommandContext,
 	ContextMenuCommand,
+	createStringOption,
 	Declare,
 	Embed,
 	LocalesT,
 	Options,
 	StringSelectOption,
 	SubCommand,
-	createStringOption,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { AlyaOptions, EmbedPaginator, AlyaStringMenu } from "#alya/utils";
 import { AlyaCategory } from "#alya/types";
+import { AlyaOptions, AlyaStringMenu, EmbedPaginator } from "#alya/utils";
 
 const option = {
 	command: createStringOption({

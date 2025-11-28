@@ -1,15 +1,15 @@
 import {
-	Declare,
-	type CommandContext,
-	SubCommand,
-	Options,
-	createUserOption,
-	Container,
-	TextDisplay,
-	Separator,
 	ActionRow,
 	Button,
+	type CommandContext,
 	type ComponentInteraction,
+	Container,
+	createUserOption,
+	Declare,
+	Options,
+	Separator,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
@@ -258,7 +258,7 @@ export default class Connect4Command extends SubCommand {
 
 				const columnStr = interaction.customId.split("_")[1];
 				if (!columnStr) return;
-				const column = parseInt(columnStr) - 1;
+				const column = parseInt(columnStr, 10) - 1;
 
 				// Try to drop piece
 				if (!dropPiece(column)) {
