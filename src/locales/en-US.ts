@@ -53,12 +53,12 @@ export default {
 						flag: string;
 						name: string;
 						code: string;
-					}) =>
-						`Successfully set chatbot language to: **${flag} ${name}** (${code})`,
+					}) => `Successfully set chatbot language to: **${flag} ${name}** (${code})`,
 					suffix: {
 						en: "Alya will now respond in English!",
 						id: "Alya will now respond in Bahasa Indonesia!",
-						auto: "Alya will now automatically detect and respond in the same language you use!",
+						auto:
+							"Alya will now automatically detect and respond in the same language you use!",
 						generic: ({ name }: { name: string }) =>
 							`Alya will now use ${name} language model!`,
 					},
@@ -82,14 +82,12 @@ export default {
 					},
 					channel_setup: {
 						title: "Channel Setup",
-						configured: ({ channelId }: { channelId: string }) =>
-							`<#${channelId}>`,
+						configured: ({ channelId }: { channelId: string }) => `<#${channelId}>`,
 						not_configured: "Not configured\n*Responds to mentions only*",
 					},
 					model_cache: {
 						title: "Model Cache",
-						loaded: ({ count }: { count: number }) =>
-							`**Loaded:** ${count} models`,
+						loaded: ({ count }: { count: number }) => `**Loaded:** ${count} models`,
 						languages: ({ list }: { list: string }) => `**Languages:** ${list}`,
 					},
 					model_files: {
@@ -125,12 +123,52 @@ export default {
 				},
 				delete: {
 					name: "delete",
-					description: "Delete the music request channel",
+					description: "Delete a setup",
 					run: {
 						exists: "No music setup channel exists",
 						success: "Successfully deleted the music setup channel",
 						failed: "Failed to delete the music setup channel",
 					},
+				},
+				chatbot: {
+					name: "chatbot",
+					description: "Setup chatbot channel",
+					run: {
+						already_set: ({ channelId }: { channelId: string }) =>
+							`Chatbot channel is already set: <#${channelId}>`,
+						success: ({ channelId }: { channelId: string }) =>
+							`Chatbot channel successfully set: <#${channelId}>`,
+					},
+				},
+				globalchat: {
+					name: "globalchat",
+					description: "Setup global chat channel for cross-server interaction",
+					run: {
+						already_set: ({ channelId }: { channelId: string }) =>
+							`Global chat channel is already set: <#${channelId}>`,
+						api_check_failed: "Unable to verify existing setup. Please try again later.",
+						guild_fetch_failed: "Unable to fetch guild data. Please try again later.",
+						embed_title: "Global Chat Setup",
+						embed_desc: "This is your new global chat channel! Interact with users from other servers.",
+						channel_topic: "Interact with users from other servers!",
+						success: ({ channelId }: { channelId: string }) =>
+							`Global chat channel successfully set: <#${channelId}>`,
+					},
+				},
+			},
+			run: {
+				delete: {
+					prompt: "Select which setup you want to delete:",
+					buttons: {
+						chatbot: "Delete Chatbot",
+						globalchat: "Delete Global Chat",
+						both: "Delete Both",
+					},
+					result: {
+						success: ({ list }: { list: string }) => `Successfully deleted: ${list}`,
+						fail: "Failed to delete setup.",
+					},
+					none: "No setup found to delete.",
 				},
 			},
 		},
