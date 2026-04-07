@@ -1,0 +1,90 @@
+{
+	"name": "alya-chan",
+	"version": "2.1.1",
+	"description": "The versatile bot with everything you need!",
+	"author": {
+		"email": "kiyomi@mja.moe",
+		"name": "iaMJ",
+		"url": "https://mja.moe"
+	},
+	"license": "AGPL-3.0",
+	"homepage": "https://github.com/TronixDev/Alya-chan",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/TronixDev/Alya-chan"
+	},
+	"bugs": {
+		"url": "https://github.com/TronixDev/Alya-chan/issues"
+	},
+	"type": "module",
+	"main": "src/index.ts",
+	"engines": {
+		"bun": ">=1.2.0"
+	},
+	"scripts": {
+		"start": "dotenvx run -- bun run src/index.ts",
+		"dev": "dotenvx run -- bun run --watch src/index.ts --dev --debug",
+		"build": "tsup",
+		"build:exe-all": "bun scripts/build.ts",
+		"format": "biome check --write ./src",
+		"license": "bun run scripts/license.ts",
+		"lint": "biome lint ./src",
+		"lint:fix": "biome lint --write ./src",
+		"type-check": "tsc --noEmit",
+		"db:generate": "dotenvx run -- drizzle-kit generate",
+		"db:migrate": "dotenvx run -- drizzle-kit migrate",
+		"db:studio": "dotenvx run -- drizzle-kit studio",
+		"db:push": "dotenvx run -- drizzle-kit push"
+	},
+	"lint-staged": {
+		"*.ts": [
+			"bun format"
+		]
+	},
+	"dependencies": {
+		"@dotenvx/dotenvx": "^1.58.0",
+		"@elysiajs/cors": "^1.4.1",
+		"@elysiajs/jwt": "^1.4.1",
+		"@elysiajs/swagger": "^1.3.1",
+		"@libsql/client": "^0.17.2",
+		"@napi-rs/canvas": "^0.1.97",
+		"@top-gg/sdk": "^3.1.6",
+		"dns-packet": "^5.6.1",
+		"drizzle-orm": "^0.45.2",
+		"elysia": "^1.4.28",
+		"genius-lyrics": "^4.4.7",
+		"jsonwebtoken": "^9.0.3",
+		"ky": "^1.14.3",
+		"lavalink-client": "^2.9.11",
+		"lowdb": "^7.0.1",
+		"openai": "^6.33.0",
+		"seyfert": "^4.2.3-dev-23986659103.0",
+		"yunaforseyfert": "^1.1.3"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.9",
+		"@types/bun": "^1.3.11",
+		"@types/dns-packet": "^5.6.5",
+		"@types/jsonwebtoken": "^9.0.10",
+		"@types/node": "^25.5.0",
+		"drizzle-kit": "^0.31.10",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.4.0",
+		"tsup": "^8.5.1",
+		"typescript": "^6.0.2"
+	},
+	"trustedDependencies": [
+		"@biomejs/biome",
+		"esbuild"
+	],
+	"keywords": [
+		"discord",
+		"bot",
+		"music",
+		"lavalink",
+		"seyfert",
+		"typescript",
+		"discord-bot",
+		"music-bot"
+	]
+}
