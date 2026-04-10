@@ -248,6 +248,11 @@ export interface AlyaEnvironment {
 	 * @type {string}
 	 */
 	LastFM?: string;
+	/**
+	 * The Gemini API keys (can be multiple, comma-separated).
+	 * @type {string}
+	 */
+	GeminiKeys?: string;
 }
 
 export interface GlobalChatConfig {
@@ -279,4 +284,9 @@ export interface ChatbotConfig {
 	 * @type {boolean}
 	 */
 	enabled: boolean;
+	/**
+	 * The chatbot provider to use.
+	 * @type {"gemini" | "openrouter" | "both"}
+	 */
+	provider: "gemini" | "openrouter" | "both";
 }

@@ -7,8 +7,14 @@
 import type { AlyaConfiguration, AlyaEnvironment } from "#alya/types";
 import { emoji } from "./emoji";
 
-const { TOKEN, DATABASE_URL, DATABASE_PASSWORD, OPENROUTER, LASTFM } =
-	process.env;
+const {
+	TOKEN,
+	DATABASE_URL,
+	DATABASE_PASSWORD,
+	OPENROUTER,
+	LASTFM,
+	GEMINI_KEYS,
+} = process.env;
 
 export const Configuration: AlyaConfiguration = {
 	defaultPrefix: "a!", // Default prefix for commands
@@ -46,6 +52,7 @@ export const Configuration: AlyaConfiguration = {
 	},
 	chatbot: {
 		enabled: false, // Enable or disable chatbot feature
+		provider: "both",
 	},
 	permissions: {
 		stagePermissions: ["MuteMembers"],
@@ -77,6 +84,7 @@ export const Environment: AlyaEnvironment = {
 	DatabasePassword: DATABASE_PASSWORD,
 	OpenRouter: OPENROUTER,
 	LastFM: LASTFM,
+	GeminiKeys: GEMINI_KEYS,
 };
 
 export * from "./emoji";
