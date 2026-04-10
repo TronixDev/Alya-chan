@@ -54,7 +54,7 @@
 		"elysia": "^1.4.28",
 		"genius-lyrics": "^4.4.7",
 		"jsonwebtoken": "^9.0.3",
-		"ky": "^1.14.3",
+		"ky": "^2.0.0",
 		"lavalink-client": "^2.9.11",
 		"lowdb": "^7.0.1",
 		"openai": "^6.33.0",

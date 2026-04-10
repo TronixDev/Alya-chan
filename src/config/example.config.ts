@@ -27,8 +27,7 @@ export const Configuration: AlyaConfiguration = {
 	topgg: {
 		enabled: false,
 		webhookAuth: "xxxxx", // Replace with actual webhook auth token
-		token:
-			"xxxxx", // Replace with actual Top.gg token
+		token: "xxxxx", // Replace with actual Top.gg token
 	},
 	premium: {
 		enabled: false, // Enable or disable premium features
@@ -39,6 +38,7 @@ export const Configuration: AlyaConfiguration = {
 	},
 	developersIds: ["885731228874051624", "169711695932030976"], // Replace with actual developer IDs
 	globalChat: {
+		// *Internal use only
 		enabled: false, // Enable or disable global chat feature
 		apiUrl: "http://example.com", // URL of the global chat API
 		webhookName: "Alya Global Chat", // Name of the webhook for global chat
@@ -60,18 +60,12 @@ export const Configuration: AlyaConfiguration = {
 		warn: 0xffff00, // Color for warning responses
 	},
 	webhooks: {
-		nodeLog:
-			"https://discord.com/api/webhooks/xxxxx/xxxxx", // Node logs
-		guildLog:
-			"https://discord.com/api/webhooks/xxxxx/xxxxx", // Guild logs
-		commandLog:
-			"https://discord.com/api/webhooks/xxxxx/xxxxx", // Command logs
-		voteLog:
-			"https://discord.com/api/webhooks/xxxxx/xxxxx", // Vote logs
-		errorLog:
-			"https://discord.com/api/webhooks/xxxxx/xxxxx", // Error logs
-		report:
-			"https://discord.com/api/webhooks/xxxxx/xxxxx", // Bug or suggestion reports
+		nodeLog: "https://discord.com/api/webhooks/xxxxx/xxxxx", // Node logs
+		guildLog: "https://discord.com/api/webhooks/xxxxx/xxxxx", // Guild logs
+		commandLog: "https://discord.com/api/webhooks/xxxxx/xxxxx", // Command logs
+		voteLog: "https://discord.com/api/webhooks/xxxxx/xxxxx", // Vote logs
+		errorLog: "https://discord.com/api/webhooks/xxxxx/xxxxx", // Error logs
+		report: "https://discord.com/api/webhooks/xxxxx/xxxxx", // Bug or suggestion reports
 	},
 
 	emoji,

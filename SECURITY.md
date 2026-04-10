@@ -129,10 +129,10 @@ For bot administrators and users:
 
 **Need Help with Security?**
 
-[🎮 Discord Server](https://discord.gg/pTbFUFdppU) • [📧 Email Support](mailto:kiyomi@mjba.my) • [📋 Documentation](https://github.com/idMJA/Soundy/wiki)
+[🎮 Discord Server](https://discord.gg/pTbFUFdppU) • [📧 Email Support](mailto:kiyomi@mja.moe) • [📋 Documentation](https://github.com/TronixDev/Alya-chan/wiki)
 
 ---
 
-<sub>🔒 Security is everyone's responsibility - Thank you for helping keep Soundy safe!</sub>
+<sub>🔒 Security is everyone's responsibility - Thank you for helping keep Alya safe!</sub>
 
 </div>
