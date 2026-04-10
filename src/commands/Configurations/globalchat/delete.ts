@@ -26,10 +26,11 @@ export default class GlobalChatDeleteCommand extends SubCommand {
 		const { cmd } = await ctx.getLocale();
 		if (!guildId) return;
 
-		const globalChatHeaders: Record<string, string> = {};
-		if (client.config.globalChat?.apiKey) {
-			globalChatHeaders.Authorization = `Bearer ${client.config.globalChat.apiKey}`;
-		}
+		const headers = {
+			...(client.config.globalChat?.apiKey && {
+				Authorization: `Bearer ${client.config.globalChat.apiKey}`,
+			}),
+		};
 
 		const prompt = new Container().addComponents(
 			new TextDisplay().setContent(cmd.globalchat.sub.delete.run.prompt),
@@ -76,7 +77,7 @@ export default class GlobalChatDeleteCommand extends SubCommand {
 					const response = await ky.delete(
 						`${client.config.globalChat.apiUrl}/remove/${guildId}`,
 						{
-							headers: globalChatHeaders,
+							headers,
 							throwHttpErrors: false,
 						},
 					);

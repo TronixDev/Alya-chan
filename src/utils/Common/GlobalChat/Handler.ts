@@ -13,10 +13,11 @@ export async function handleGlobalChat(
 	const guild = await message.guild();
 	if (!guild) return;
 
-	const globalChatHeaders: Record<string, string> = {};
-	if (client.config.globalChat?.apiKey) {
-		globalChatHeaders.Authorization = `Bearer ${client.config.globalChat.apiKey}`;
-	}
+	const headers = {
+		...(client.config.globalChat?.apiKey && {
+			Authorization: `Bearer ${client.config.globalChat.apiKey}`,
+		}),
+	};
 
 	try {
 		const safeMessage = {
@@ -54,7 +55,7 @@ export async function handleGlobalChat(
 
 		const result = (await ky
 			.post(`${client.config.globalChat.apiUrl}/chat`, {
-				headers: globalChatHeaders,
+				headers,
 				json: {
 					message: safeMessage,
 					guildName: guild.name,

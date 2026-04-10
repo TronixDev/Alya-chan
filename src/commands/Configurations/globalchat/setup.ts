@@ -44,17 +44,18 @@ export default class GlobalChatSetupCommand extends SubCommand {
 		const { cmd } = await ctx.getLocale();
 		if (!guildId) return;
 
-		const globalChatHeaders: Record<string, string> = {};
-		if (client.config.globalChat?.apiKey) {
-			globalChatHeaders.Authorization = `Bearer ${client.config.globalChat.apiKey}`;
-		}
+		const headers = {
+			...(client.config.globalChat?.apiKey && {
+				Authorization: `Bearer ${client.config.globalChat.apiKey}`,
+			}),
+		};
 
 		await ctx.deferReply();
 
 		try {
 			const data = (await ky
 				.get(`${client.config.globalChat.apiUrl}/list`, {
-					headers: globalChatHeaders,
+					headers,
 					throwHttpErrors: false,
 				})
 				.json()) as {
@@ -106,7 +107,7 @@ export default class GlobalChatSetupCommand extends SubCommand {
 			);
 
 			await ky.post(`${client.config.globalChat.apiUrl}/add`, {
-				headers: globalChatHeaders,
+				headers,
 				json: {
 					guildId: guildId,
 					globalChannelId: channelId,
@@ -184,7 +185,7 @@ export default class GlobalChatSetupCommand extends SubCommand {
 			);
 
 			await ky.post(`${client.config.globalChat.apiUrl}/add`, {
-				headers: globalChatHeaders,
+				headers,
 				json: {
 					guildId: guildId,
 					globalChannelId: channelId,

@@ -6,10 +6,11 @@ export async function handleFailedGuilds(
 	failedGuilds: FailedGuild[],
 	client: UsingClient,
 ): Promise<void> {
-	const globalChatHeaders: Record<string, string> = {};
-	if (client.config.globalChat?.apiKey) {
-		globalChatHeaders.Authorization = `Bearer ${client.config.globalChat.apiKey}`;
-	}
+	const headers = {
+		...(client.config.globalChat?.apiKey && {
+			Authorization: `Bearer ${client.config.globalChat.apiKey}`,
+		}),
+	};
 	for (const failedGuild of failedGuilds) {
 		try {
 			client.logger.info(
@@ -18,7 +19,7 @@ export async function handleFailedGuilds(
 
 			const guildData = (await ky
 				.get(`${client.config.globalChat.apiUrl}/list`, {
-					headers: globalChatHeaders,
+					headers,
 					throwHttpErrors: false,
 				})
 				.json()) as {
@@ -42,7 +43,7 @@ export async function handleFailedGuilds(
 
 			const updateResult = (await ky
 				.post(`${client.config.globalChat.apiUrl}/add`, {
-					headers: globalChatHeaders,
+					headers,
 					json: {
 						guildId: failedGuild.guildId,
 						globalChannelId: guildInfo.globalChannelId,
