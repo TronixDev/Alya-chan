@@ -29,57 +29,21 @@ export async function handleGlobalChat(
 				globalName: message.author.globalName,
 				avatarURL: message.author.avatarURL(),
 			},
+			components: message.components ?? null,
 			channelId: message.channelId,
 			guildId: message.guildId,
-			components: message.components?.[0]
-				? [
-						{
-							contents: (message.components[0] as any).components.map((c: any) => ({
-								type: c.type,
-								label: c.label,
-								customId: c.customId,
-								style: c.style,
-								emoji: c.emoji,
-								url: c.url,
-								disabled: c.disabled,
-								placeholder: c.placeholder,
-								minValues: c.minValues,
-								maxValues: c.maxValues,
-								options: c.options,
-							})),
-						},
-					]
-				: undefined,
 			referencedMessage: message.referencedMessage
 				? {
 						id: message.referencedMessage.id,
 						content: message.referencedMessage.content,
+						components:
+							message.referencedMessage.components ??
+							null,
 						author: {
 							id: message.referencedMessage.author.id,
 							username: message.referencedMessage.author.username,
 							globalName: message.referencedMessage.author.globalName,
 						},
-						components: message.referencedMessage.components?.[0]
-							? [
-									{
-										contents: (
-											message.referencedMessage.components[0] as any
-										).components.map((c: any) => ({
-											type: c.type,
-											label: c.label,
-											customId: c.customId,
-											style: c.style,
-											emoji: c.emoji,
-											url: c.url,
-											disabled: c.disabled,
-											placeholder: c.placeholder,
-											minValues: c.minValues,
-											maxValues: c.maxValues,
-											options: c.options,
-										})),
-									},
-								]
-							: undefined,
 					}
 				: null,
 			attachments: message.attachments?.map((a) => ({
