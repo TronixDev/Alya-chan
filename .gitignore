@@ -1,0 +1,23 @@
+dist
+drizzle
+.drizzle
+node_modules
+.fuse_*
+commands.json
+pnpm-lock.yaml
+package-lock.json
+.env
+.env.keys
+.env.production
+sessions.json
+*.zip
+*.tar.gz
+
+# Executables
+alya-chan
+alya-chan-*
+*.exe
+
+# Config
+src/config/config.ts
+src/config/nodes.ts
