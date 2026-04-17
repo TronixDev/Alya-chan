@@ -42,3 +42,18 @@ export interface GlobalChatApiResponse {
 	};
 	error?: string;
 }
+export interface GlobalChatGuildInfoResponse {
+	status: string;
+	message?: string;
+	data?: {
+		guild?: {
+			id: string;
+			global_channel_id: string;
+			created_at: string;
+			updated_at: string;
+		};
+		webhook_ids?: string[];
+		total_webhook?: number;
+		registered: boolean;
+	};
+}

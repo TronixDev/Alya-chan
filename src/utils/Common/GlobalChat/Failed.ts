@@ -1,6 +1,6 @@
 import ky from "ky";
 import type { UsingClient } from "seyfert";
-import type { FailedGuild } from "#alya/types";
+import type { FailedGuild, GlobalChatGuildInfoResponse } from "#alya/types";
 import { ensureWebhooks } from "./Utils";
 
 export async function handleFailedGuilds(
@@ -19,20 +19,17 @@ export async function handleFailedGuilds(
 				`🔧 Attempting to fix webhooks for guild ${failedGuild.guildName} (${failedGuild.guildId})`,
 			);
 
-			const guildData = (await ky
-				.get(`${client.config.globalChat.apiUrl}/list`, {
-					headers,
-					throwHttpErrors: false,
-				})
-				.json()) as {
-				data?: { guilds?: Array<{ id: string; global_channel_id?: string }> };
-			};
+			const data = (await ky
+				.get(
+					`${client.config.globalChat.apiUrl}/guild/${failedGuild.guildId}`,
+					{
+						headers,
+						throwHttpErrors: false,
+					},
+				)
+				.json()) as GlobalChatGuildInfoResponse;
 
-			const guildInfo = guildData.data?.guilds?.find(
-				(g) => g.id === failedGuild.guildId,
-			);
-
-			if (!guildInfo?.global_channel_id) {
+			if (!data.data?.guild?.global_channel_id) {
 				client.logger.warn(
 					`❌ Could not find global channel info for ${failedGuild.guildId}`,
 				);
@@ -42,7 +39,7 @@ export async function handleFailedGuilds(
 			const webhooks = await ensureWebhooks(
 				client,
 				failedGuild.guildId,
-				guildInfo.global_channel_id,
+				data.data.guild.global_channel_id,
 			);
 
 			const updateResult = (await ky
@@ -50,7 +47,7 @@ export async function handleFailedGuilds(
 					headers,
 					json: {
 						guild_id: failedGuild.guildId,
-						global_channel_id: guildInfo.global_channel_id,
+						global_channel_id: data.data.guild.global_channel_id,
 						webhooks,
 					},
 					throwHttpErrors: false,

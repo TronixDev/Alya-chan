@@ -13,7 +13,7 @@ import {
 	OverwriteType,
 	PermissionFlagsBits,
 } from "seyfert/lib/types";
-import { AlyaCategory } from "#alya/types";
+import { AlyaCategory, type GlobalChatGuildInfoResponse } from "#alya/types";
 import { AlyaOptions, ensureWebhooks } from "#alya/utils";
 
 const option = {
@@ -54,21 +54,18 @@ export default class GlobalChatSetupCommand extends SubCommand {
 
 		try {
 			const data = (await ky
-				.get(`${client.config.globalChat.apiUrl}/list`, {
+				.get(`${client.config.globalChat.apiUrl}/guild/${guildId}`, {
 					headers,
 					throwHttpErrors: false,
 				})
-				.json()) as {
-				guilds?: Array<{ id: string; globalChannelId: string }>;
-			};
-			const existingGuild = data.guilds?.find((g) => g.id === guildId);
+				.json()) as GlobalChatGuildInfoResponse;
 
-			if (existingGuild) {
+			if (data.status === "ok" && data.data?.registered) {
 				await ctx.editOrReply({
 					embeds: [
 						{
 							color: client.config.color.no,
-							description: `${client.config.emoji.no} ${cmd.globalchat.sub.setup.run.already_set({ channelId: existingGuild.globalChannelId })}`,
+							description: `${client.config.emoji.no} ${cmd.globalchat.sub.setup.run.already_set({ channelId: data.data.guild?.global_channel_id || "unknown" })}`,
 						},
 					],
 					flags: MessageFlags.Ephemeral,
@@ -76,7 +73,7 @@ export default class GlobalChatSetupCommand extends SubCommand {
 				return;
 			}
 		} catch (error) {
-			console.error("Failed to check existing guild from API:", error);
+			client.logger.error("Failed to check existing guild from API:", error);
 			await ctx.editOrReply({
 				embeds: [
 					{
