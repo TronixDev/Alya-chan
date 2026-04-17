@@ -1,6 +1,7 @@
 import ky from "ky";
 import type { UsingClient } from "seyfert";
 import type { FailedGuild } from "#alya/types";
+import { ensureWebhooks } from "./Utils";
 
 export async function handleFailedGuilds(
 	failedGuilds: FailedGuild[],
@@ -11,10 +12,11 @@ export async function handleFailedGuilds(
 			Authorization: `Bearer ${client.config.globalChat.apiKey}`,
 		}),
 	};
+
 	for (const failedGuild of failedGuilds) {
 		try {
 			client.logger.info(
-				`🔧 Attempting to fix webhook for guild ${failedGuild.guildName} (${failedGuild.guildId})`,
+				`🔧 Attempting to fix webhooks for guild ${failedGuild.guildName} (${failedGuild.guildId})`,
 			);
 
 			const guildData = (await ky
@@ -23,32 +25,33 @@ export async function handleFailedGuilds(
 					throwHttpErrors: false,
 				})
 				.json()) as {
-				data?: { guilds?: Array<{ id: string; globalChannelId?: string }> };
+				data?: { guilds?: Array<{ id: string; global_channel_id?: string }> };
 			};
+
 			const guildInfo = guildData.data?.guilds?.find(
-				(g: { id: string }) => g.id === failedGuild.guildId,
+				(g) => g.id === failedGuild.guildId,
 			);
 
-			if (!guildInfo?.globalChannelId) {
+			if (!guildInfo?.global_channel_id) {
 				client.logger.warn(
-					`❌ Could not find guild info for ${failedGuild.guildId}`,
+					`❌ Could not find global channel info for ${failedGuild.guildId}`,
 				);
 				continue;
 			}
 
-			const webhook = await client.webhooks.create(guildInfo.globalChannelId, {
-				name: client.config.globalChat.webhookName,
-				avatar: client.me.avatarURL(),
-			});
+			const webhooks = await ensureWebhooks(
+				client,
+				failedGuild.guildId,
+				guildInfo.global_channel_id,
+			);
 
 			const updateResult = (await ky
 				.post(`${client.config.globalChat.apiUrl}/add`, {
 					headers,
 					json: {
-						guildId: failedGuild.guildId,
-						globalChannelId: guildInfo.globalChannelId,
-						webhookId: webhook.id,
-						webhookToken: webhook.token,
+						guild_id: failedGuild.guildId,
+						global_channel_id: guildInfo.global_channel_id,
+						webhooks,
 					},
 					throwHttpErrors: false,
 				})
@@ -56,16 +59,17 @@ export async function handleFailedGuilds(
 
 			if (updateResult.status === "ok") {
 				client.logger.info(
-					`✅ Successfully fixed webhook for guild ${failedGuild.guildName}`,
+					`✅ Successfully fixed webhooks for guild ${failedGuild.guildName}`,
 				);
 			} else {
 				client.logger.error(
-					`❌ Failed to update guild ${failedGuild.guildName} in API:`,
+					`❌ Failed to update webhooks for guild ${failedGuild.guildName} in API`,
 				);
 			}
-		} catch {
+		} catch (error) {
 			client.logger.error(
-				`❌ Failed to fix webhook for guild ${failedGuild.guildName}:`,
+				`❌ Error fixing webhooks for guild ${failedGuild.guildName}:`,
+				error,
 			);
 		}
 	}

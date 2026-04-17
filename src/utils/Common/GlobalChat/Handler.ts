@@ -36,9 +36,7 @@ export async function handleGlobalChat(
 				? {
 						id: message.referencedMessage.id,
 						content: message.referencedMessage.content,
-						components:
-							message.referencedMessage.components ??
-							null,
+						components: message.referencedMessage.components ?? null,
 						author: {
 							id: message.referencedMessage.author.id,
 							username: message.referencedMessage.author.username,

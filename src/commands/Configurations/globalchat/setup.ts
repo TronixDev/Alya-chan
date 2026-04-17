@@ -14,7 +14,7 @@ import {
 	PermissionFlagsBits,
 } from "seyfert/lib/types";
 import { AlyaCategory } from "#alya/types";
-import { AlyaOptions } from "#alya/utils";
+import { AlyaOptions, ensureWebhooks } from "#alya/utils";
 
 const option = {
 	channel: createChannelOption({
@@ -61,9 +61,7 @@ export default class GlobalChatSetupCommand extends SubCommand {
 				.json()) as {
 				guilds?: Array<{ id: string; globalChannelId: string }>;
 			};
-			const existingGuild = data.guilds?.find(
-				(g: { id: string; globalChannelId: string }) => g.id === guildId,
-			);
+			const existingGuild = data.guilds?.find((g) => g.id === guildId);
 
 			if (existingGuild) {
 				await ctx.editOrReply({
@@ -92,27 +90,24 @@ export default class GlobalChatSetupCommand extends SubCommand {
 		}
 
 		let channelId: string | undefined;
+		let webhooks: Array<{ id: string; token: string }> = [];
+
 		if (options.channel) {
 			channelId = options.channel.id;
-			const webhook = await client.webhooks.create(channelId, {
-				name: client.config.globalChat.webhookName,
-				avatar: client.me.avatarURL(),
-			});
+			webhooks = await ensureWebhooks(client, guildId, channelId);
 
 			await client.database.createGlobalChatChannel(
 				guildId,
 				channelId,
-				webhook.id,
-				webhook.token,
+				webhooks,
 			);
 
 			await ky.post(`${client.config.globalChat.apiUrl}/add`, {
 				headers,
 				json: {
-					guildId: guildId,
-					globalChannelId: channelId,
-					webhookId: webhook.id,
-					webhookToken: webhook.token,
+					guild_id: guildId,
+					global_channel_id: channelId,
+					webhooks,
 				},
 				throwHttpErrors: false,
 			});
@@ -160,11 +155,7 @@ export default class GlobalChatSetupCommand extends SubCommand {
 			});
 
 			channelId = channel.id;
-
-			const webhook = await client.webhooks.create(channel.id, {
-				name: client.config.globalChat.webhookName,
-				avatar: client.me.avatarURL(),
-			});
+			webhooks = await ensureWebhooks(client, guildId, channelId);
 
 			await client.messages.write(channel.id, {
 				embeds: [
@@ -180,17 +171,15 @@ export default class GlobalChatSetupCommand extends SubCommand {
 			await client.database.createGlobalChatChannel(
 				guildId,
 				channel.id,
-				webhook.id,
-				webhook.token,
+				webhooks,
 			);
 
 			await ky.post(`${client.config.globalChat.apiUrl}/add`, {
 				headers,
 				json: {
-					guildId: guildId,
-					globalChannelId: channelId,
-					webhookId: webhook.id,
-					webhookToken: webhook.token,
+					guild_id: guildId,
+					global_channel_id: channelId,
+					webhooks,
 				},
 				throwHttpErrors: false,
 			});

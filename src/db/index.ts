@@ -188,22 +188,40 @@ export class AlyaDatabase {
 		Array<{
 			id: string;
 			globalChannelId: string;
-			webhookId?: string;
-			webhookToken?: string;
+			webhooks: Array<{ id: string; token: string }>;
 		}>
 	> {
-		const rows = await this.db
+		const guilds = await this.db
 			.select()
 			.from(schema.guild)
 			.where(isNotNull(schema.guild.globalChannelId));
-		return rows
-			.filter((row) => typeof row.globalChannelId === "string")
-			.map((row) => ({
-				id: row.id,
-				globalChannelId: row.globalChannelId as string,
-				webhookId: row.globalWebhookId || undefined,
-				webhookToken: row.globalWebhookToken || undefined,
-			}));
+
+		const results = [];
+		for (const guildRow of guilds) {
+			const webhooks = await this.getGuildWebhooks(guildRow.id);
+			results.push({
+				id: guildRow.id,
+				globalChannelId: guildRow.globalChannelId as string,
+				webhooks,
+			});
+		}
+		return results;
+	}
+
+	/**
+	 * Get webhooks for a specific guild
+	 * @param guildId The guild ID
+	 */
+	public async getGuildWebhooks(
+		guildId: string,
+	): Promise<Array<{ id: string; token: string }>> {
+		return await this.db
+			.select({
+				id: schema.guildWebhooks.id,
+				token: schema.guildWebhooks.token,
+			})
+			.from(schema.guildWebhooks)
+			.where(eq(schema.guildWebhooks.guildId, guildId));
 	}
 
 	/**
@@ -223,29 +241,56 @@ export class AlyaDatabase {
 	 * Create the global chat channel for a guild
 	 * @param guildId The guild ID
 	 * @param channelId The channel ID
-	 * @param webhookId Optional webhook ID
-	 * @param webhookToken Optional webhook token
+	 * @param webhooks Optional array of webhooks
 	 */
 	public async createGlobalChatChannel(
 		guildId: string,
 		channelId: string,
-		webhookId?: string,
-		webhookToken?: string,
+		webhooks?: Array<{ id: string; token: string }>,
 	): Promise<void> {
 		await this.db
 			.insert(schema.guild)
 			.values({
 				id: guildId,
 				globalChannelId: channelId,
-				globalWebhookId: webhookId,
-				globalWebhookToken: webhookToken,
 			})
 			.onConflictDoUpdate({
 				target: schema.guild.id,
 				set: {
 					globalChannelId: channelId,
-					globalWebhookId: webhookId,
-					globalWebhookToken: webhookToken,
+				},
+			});
+
+		if (webhooks && webhooks.length > 0) {
+			for (const webhook of webhooks) {
+				await this.addGuildWebhook(guildId, webhook.id, webhook.token);
+			}
+		}
+	}
+
+	/**
+	 * Add or update a guild webhook
+	 * @param guildId The guild ID
+	 * @param webhookId Webhook ID
+	 * @param webhookToken Webhook token
+	 */
+	public async addGuildWebhook(
+		guildId: string,
+		webhookId: string,
+		webhookToken: string,
+	): Promise<void> {
+		await this.db
+			.insert(schema.guildWebhooks)
+			.values({
+				id: webhookId,
+				guildId: guildId,
+				token: webhookToken,
+			})
+			.onConflictDoUpdate({
+				target: schema.guildWebhooks.id,
+				set: {
+					token: webhookToken,
+					guildId,
 				},
 			});
 	}
@@ -263,6 +308,11 @@ export class AlyaDatabase {
 				globalWebhookToken: null,
 			})
 			.where(eq(schema.guild.id, guildId))
+			.catch(() => null);
+
+		await this.db
+			.delete(schema.guildWebhooks)
+			.where(eq(schema.guildWebhooks.guildId, guildId))
 			.catch(() => null);
 	}
 

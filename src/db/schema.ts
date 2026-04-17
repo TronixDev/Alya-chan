@@ -26,6 +26,16 @@ export const guild = sqliteTable("guild", {
 	updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
+// Webhooks for global chat (supports multiple webhooks per guild)
+export const guildWebhooks = sqliteTable("guild_webhooks", {
+	id: text("id").primaryKey(), // Using webhook ID as primary key
+	guildId: text("guild_id")
+		.notNull()
+		.references(() => guild.id),
+	token: text("token").notNull(),
+	createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+});
+
 // =========================================
 // User Chatbot Locale
 // =========================================
