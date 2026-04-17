@@ -122,7 +122,8 @@ export async function handleGlobalChat(
 			case "error":
 				if (
 					result.error?.includes("message not from global chat channel") ||
-					result.error?.includes("is not registered in global chat")
+					result.error?.includes("is not registered in global chat") ||
+					result.error?.includes("message already processed")
 				) {
 					// These are expected when messages are sent from other channels or guilds not set up
 					// but since we added a check above, this is just a safety measure.
