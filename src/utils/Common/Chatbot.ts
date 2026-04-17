@@ -283,6 +283,9 @@ export async function handleGeminiChatbot(message: Message, locale?: string) {
 	}
 
 	if (!replyText) {
+		if (lastError.includes("429") || lastError.includes("RESOURCE_EXHAUSTED")) {
+			return splitMessage("I am currently reaching my rate limit. Please try again later.");
+		}
 		throw new Error(`Gemini failed: ${lastError}`);
 	}
 
